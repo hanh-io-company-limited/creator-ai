@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator AI - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard">
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1 class="dashboard-title">Creator AI Dashboard</h1>
+            <div class="user-info">
+                <span id="userEmail">Chào mừng!</span>
+                <button class="logout-btn" onclick="authManager.logout()">Đăng xuất</button>
+            </div>
+        </div>
+    </header>
+    
+    <main class="dashboard-content">
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation" role="tablist">
+            <button class="tab-btn active" data-tab="photo" role="tab" aria-selected="true" aria-controls="photo-tab">
+                📸 Tạo Avatar từ Ảnh
+            </button>
+            <button class="tab-btn" data-tab="video" role="tab" aria-selected="false" aria-controls="video-tab">
+                🎥 Tạo Avatar từ Video
+            </button>
+        </nav>
+        
+        <!-- Photo-based Avatar Creation Tab -->
+        <section id="photo-tab" class="tab-content active" role="tabpanel" aria-labelledby="photo-tab">
+            <h2>Tạo Avatar AI từ Ảnh</h2>
+            <p class="tab-description">Tải lên tối đa 10 ảnh cận cảnh để tạo avatar AI chuyên nghiệp</p>
+            
+            <!-- Photo Upload Area -->
+            <div class="upload-area" id="photoUploadArea">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Kéo thả ảnh vào đây hoặc click để chọn</div>
+                <div class="upload-subtext">Hỗ trợ: JPG, PNG - Tối đa 10 ảnh</div>
+                <input type="file" id="photoInput" class="file-input" multiple accept="image/jpeg,image/png">
+                <button class="browse-btn" onclick="document.getElementById('photoInput').click()">
+                    Chọn ảnh
+                </button>
+            </div>
+            
+            <!-- Photo Preview Grid -->
+            <div id="photoPreviewGrid" class="file-preview-grid"></div>
+            
+            <!-- Training Progress -->
+            <div id="photoTrainingProgress" class="progress-container">
+                <div class="progress-label">Đang huấn luyện mô hình AI...</div>
+                <div class="progress-bar">
+                    <div id="photoProgressFill" class="progress-fill"></div>
+                </div>
+                <div id="photoProgressText" class="progress-text">0%</div>
+            </div>
+            
+            <!-- Text Prompt Input -->
+            <div class="text-input-group">
+                <label for="photoPrompt">Mô tả avatar bạn muốn tạo:</label>
+                <textarea id="photoPrompt" placeholder="Ví dụ: Một người đàn ông trung niên mặc vest đen, nụ cười thân thiện, trong văn phòng hiện đại..."></textarea>
+            </div>
+            
+            <!-- Audio Upload for Lip Sync -->
+            <div class="text-input-group">
+                <label for="photoAudioInput">Tải file MP3 cho lip-sync (tùy chọn):</label>
+                <input type="file" id="photoAudioInput" accept="audio/mp3" style="margin-top: 10px;">
+            </div>
+            
+            <!-- Script Input for Voice Synthesis -->
+            <div class="text-input-group">
+                <label for="photoScript">Hoặc nhập kịch bản để tổng hợp giọng nói:</label>
+                <textarea id="photoScript" placeholder="Nhập kịch bản mà bạn muốn avatar nói..."></textarea>
+            </div>
+            
+            <!-- Voice Sample Upload -->
+            <div class="text-input-group">
+                <label for="photoVoiceInput">Tải mẫu giọng nói (MP3 - tùy chọn):</label>
+                <input type="file" id="photoVoiceInput" accept="audio/mp3" style="margin-top: 10px;">
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="photoTrainBtn" class="action-btn" disabled>
+                    🤖 Huấn luyện mô hình AI
+                </button>
+                <button id="photoGenerateBtn" class="action-btn" disabled>
+                    ✨ Tạo Avatar
+                </button>
+                <button id="photoAnimateBtn" class="action-btn" disabled>
+                    🎬 Tạo chuyển động
+                </button>
+                <button id="photoUpscaleBtn" class="action-btn secondary" disabled>
+                    📈 Nâng cấp 4K
+                </button>
+                <button id="photoCreateVideoBtn" class="action-btn" disabled>
+                    🎥 Tạo Video
+                </button>
+            </div>
+            
+            <!-- Generated Content -->
+            <div id="photoGeneratedContent" class="generated-grid"></div>
+        </section>
+        
+        <!-- Video-based Avatar Creation Tab -->
+        <section id="video-tab" class="tab-content" role="tabpanel" aria-labelledby="video-tab">
+            <h2>Tạo Avatar AI từ Video</h2>
+            <p class="tab-description">Tải lên video 3-5 giây để tạo avatar AI chuyên nghiệp</p>
+            
+            <!-- Video Upload Area -->
+            <div class="upload-area" id="videoUploadArea">
+                <div class="upload-icon">🎥</div>
+                <div class="upload-text">Kéo thả video vào đây hoặc click để chọn</div>
+                <div class="upload-subtext">Hỗ trợ: MP4, MOV, AVI - Thời lượng 3-5 giây</div>
+                <input type="file" id="videoInput" class="file-input" accept="video/mp4,video/mov,video/avi">
+                <button class="browse-btn" onclick="document.getElementById('videoInput').click()">
+                    Chọn video
+                </button>
+            </div>
+            
+            <!-- Video Preview -->
+            <div id="videoPreviewGrid" class="file-preview-grid"></div>
+            
+            <!-- Conversion Progress -->
+            <div id="videoConversionProgress" class="progress-container">
+                <div class="progress-label">Đang chuyển đổi video thành avatar...</div>
+                <div class="progress-bar">
+                    <div id="videoProgressFill" class="progress-fill"></div>
+                </div>
+                <div id="videoProgressText" class="progress-text">0%</div>
+            </div>
+            
+            <!-- Audio Upload for Expression Sync -->
+            <div class="text-input-group">
+                <label for="videoAudioInput">Tải file MP3 cho đồng bộ biểu cảm:</label>
+                <input type="file" id="videoAudioInput" accept="audio/mp3" style="margin-top: 10px;">
+            </div>
+            
+            <!-- Script Input -->
+            <div class="text-input-group">
+                <label for="videoScript">Kịch bản cho avatar:</label>
+                <textarea id="videoScript" placeholder="Nhập nội dung mà bạn muốn avatar thể hiện..."></textarea>
+            </div>
+            
+            <!-- Voice Cloning Upload -->
+            <div class="text-input-group">
+                <label for="videoVoiceInput">Tải mẫu giọng nói để nhân bản (MP3):</label>
+                <input type="file" id="videoVoiceInput" accept="audio/mp3" style="margin-top: 10px;">
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="videoConvertBtn" class="action-btn" disabled>
+                    🔄 Chuyển đổi thành Avatar
+                </button>
+                <button id="videoSyncBtn" class="action-btn" disabled>
+                    🎭 Đồng bộ biểu cảm
+                </button>
+                <button id="videoCloneVoiceBtn" class="action-btn" disabled>
+                    🗣️ Nhân bản giọng nói
+                </button>
+                <button id="videoCreateContentBtn" class="action-btn" disabled>
+                    📹 Tạo nội dung
+                </button>
+                <button id="videoExportBtn" class="action-btn secondary" disabled>
+                    💾 Xuất video 1080p
+                </button>
+            </div>
+            
+            <!-- Generated Content -->
+            <div id="videoGeneratedContent" class="generated-grid"></div>
+        </section>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/photo-mode.js"></script>
+    <script src="js/video-mode.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

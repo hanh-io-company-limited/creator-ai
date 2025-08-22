@@ -3,10 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Đăng nhập</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-section">
+                <h1 class="app-title">Creator AI</h1>
+                <p class="app-subtitle">Tạo Avatar AI Chuyên nghiệp</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Nhập địa chỉ email của bạn">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mật khẩu:</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Nhập mật khẩu của bạn">
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Đăng nhập</span>
+                    <span class="btn-loader" style="display: none;">Đang xử lý...</span>
+                </button>
+                
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+            </form>
+            
+            <div class="login-info">
+                <p><strong>Thông tin đăng nhập demo:</strong></p>
+                <p>Email: hanhlehangelcosmetic@gmail.com</p>
+                <p>Mật khẩu: Kimhanh99@</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
 </body>
 </html>
