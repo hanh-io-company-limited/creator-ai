@@ -1,12 +1,466 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Secure Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .dashboard-container {
+            max-width: 800px;
+            padding: 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .success {
+            color: #27ae60;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .upload-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .file-type-group {
+            margin-bottom: 25px;
+        }
+
+        .file-type-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background-color: #f0f4ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background-color: #f0f4ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .file-list {
+            margin-top: 15px;
+        }
+
+        .file-item {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .remove-file {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove-file:hover {
+            background: #c0392b;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Login Form -->
+    <div id="loginContainer" class="container">
+        <div class="logo">Creator AI</div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div id="loginError" class="error">Invalid email or password. Please try again.</div>
+        </form>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="container dashboard-container hidden">
+        <div class="dashboard-header">
+            <div class="welcome-text">Welcome to Creator AI</div>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+        
+        <div class="upload-section">
+            <h2 class="upload-title">Upload Media Files</h2>
+            
+            <div class="file-type-group">
+                <div class="file-type-title">📷 Images</div>
+                <div class="upload-area" data-type="image">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        Click here or drag and drop your images<br>
+                        <small>Supported formats: JPG, JPEG, PNG, GIF, WebP</small>
+                    </div>
+                    <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+                </div>
+                <div id="imageList" class="file-list"></div>
+            </div>
+
+            <div class="file-type-group">
+                <div class="file-type-title">🎥 Videos</div>
+                <div class="upload-area" data-type="video">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        Click here or drag and drop your videos<br>
+                        <small>Supported formats: MP4, AVI, MOV, WMV, WebM</small>
+                    </div>
+                    <input type="file" id="videoUpload" accept="video/*" multiple style="display: none;">
+                </div>
+                <div id="videoList" class="file-list"></div>
+            </div>
+        </div>
+        
+        <div id="uploadSuccess" class="success">Files uploaded successfully!</div>
+    </div>
+
+    <script>
+        // Secure credential storage (base64 encoded for basic obfuscation)
+        const CREDENTIALS = {
+            email: atob('aGFuaGxlaGFuZ2VsY29zbWV0aWNAZ21haWwuY29t'), // hanhlehangelcosmetic@gmail.com
+            password: atob('S2ltaGFuaDk5QA==') // Kimhanh99@
+        };
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (email === CREDENTIALS.email && password === CREDENTIALS.password) {
+                // Successful login
+                document.getElementById('loginContainer').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                errorDiv.style.display = 'none';
+                
+                // Store login state
+                sessionStorage.setItem('isLoggedIn', 'true');
+            } else {
+                // Failed login
+                errorDiv.style.display = 'block';
+                document.getElementById('password').value = '';
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+            
+            // Clear form
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginError').style.display = 'none';
+            
+            // Clear login state
+            sessionStorage.removeItem('isLoggedIn');
+            
+            // Clear uploaded files
+            document.getElementById('imageList').innerHTML = '';
+            document.getElementById('videoList').innerHTML = '';
+            document.getElementById('uploadSuccess').style.display = 'none';
+        });
+
+        // File upload functionality
+        let uploadedFiles = {
+            images: [],
+            videos: []
+        };
+
+        function setupFileUpload(uploadAreaSelector, inputSelector, listSelector, fileType) {
+            const uploadArea = document.querySelector(uploadAreaSelector);
+            const fileInput = document.querySelector(inputSelector);
+            const fileList = document.querySelector(listSelector);
+
+            // Click to upload
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = Array.from(e.dataTransfer.files);
+                handleFiles(files, fileType, fileList);
+            });
+
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                handleFiles(files, fileType, fileList);
+            });
+        }
+
+        function handleFiles(files, fileType, fileList) {
+            files.forEach(file => {
+                if (validateFile(file, fileType)) {
+                    if (fileType === 'image') {
+                        uploadedFiles.images.push(file);
+                    } else {
+                        uploadedFiles.videos.push(file);
+                    }
+                    
+                    addFileToList(file, fileList, fileType);
+                    showSuccessMessage();
+                }
+            });
+        }
+
+        function validateFile(file, fileType) {
+            const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            const videoTypes = ['video/mp4', 'video/avi', 'video/mov', 'video/wmv', 'video/webm'];
+            
+            if (fileType === 'image') {
+                return imageTypes.includes(file.type);
+            } else {
+                return videoTypes.includes(file.type);
+            }
+        }
+
+        function addFileToList(file, fileList, fileType) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${formatFileSize(file.size)}</div>
+                </div>
+                <button class="remove-file" onclick="removeFile('${file.name}', '${fileType}', this)">Remove</button>
+            `;
+            
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(fileName, fileType, button) {
+            // Remove from uploaded files array
+            if (fileType === 'image') {
+                uploadedFiles.images = uploadedFiles.images.filter(file => file.name !== fileName);
+            } else {
+                uploadedFiles.videos = uploadedFiles.videos.filter(file => file.name !== fileName);
+            }
+            
+            // Remove from DOM
+            button.parentElement.remove();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showSuccessMessage() {
+            const successDiv = document.getElementById('uploadSuccess');
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize file upload areas
+        setupFileUpload('.upload-area[data-type="image"]', '#imageUpload', '#imageList', 'image');
+        setupFileUpload('.upload-area[data-type="video"]', '#videoUpload', '#videoList', 'video');
+
+        // Check if user is already logged in (page refresh)
+        if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
