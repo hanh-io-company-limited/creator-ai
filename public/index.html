@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator AI - Hệ thống Sao lưu OneDrive</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💾</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <span class="icon">💾</span>
+                Creator AI Backup
+            </h1>
+            <div class="status-indicator" id="statusIndicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Đang kiểm tra...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Authentication Section -->
+            <section class="auth-section" id="authSection">
+                <div class="card">
+                    <h2>🔐 Xác thực OneDrive</h2>
+                    <p>Kết nối với OneDrive để bắt đầu sao lưu dữ liệu tự động</p>
+                    <button id="loginBtn" class="btn btn-primary">
+                        Đăng nhập OneDrive
+                    </button>
+                </div>
+            </section>
+
+            <!-- Main Dashboard -->
+            <section class="dashboard" id="dashboard" style="display: none;">
+                <!-- Upload Section -->
+                <div class="card">
+                    <h2>📤 Tải lên Dữ liệu</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <div class="upload-icon">📁</div>
+                            <p>Kéo thả tệp vào đây hoặc</p>
+                            <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                                Chọn Tệp
+                            </button>
+                            <input type="file" id="fileInput" multiple hidden>
+                        </div>
+                    </div>
+                    <div id="uploadProgress" class="upload-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p id="progressText">Đang tải lên...</p>
+                    </div>
+                </div>
+
+                <!-- Sync Status -->
+                <div class="card">
+                    <h2>⚡ Trạng thái Đồng bộ</h2>
+                    <div class="sync-info">
+                        <div class="sync-item">
+                            <span class="label">Trạng thái:</span>
+                            <span id="syncStatus" class="value">Đang kiểm tra...</span>
+                        </div>
+                        <div class="sync-item">
+                            <span class="label">Lần đồng bộ cuối:</span>
+                            <span id="lastSync" class="value">Chưa có</span>
+                        </div>
+                        <div class="sync-item">
+                            <span class="label">Số tệp đã sao lưu:</span>
+                            <span id="filesCount" class="value">0</span>
+                        </div>
+                    </div>
+                    <button id="manualSyncBtn" class="btn btn-primary">
+                        Đồng bộ Ngay
+                    </button>
+                </div>
+
+                <!-- File Management -->
+                <div class="card">
+                    <h2>📋 Quản lý Dữ liệu</h2>
+                    <div class="file-controls">
+                        <button id="refreshFilesBtn" class="btn btn-secondary">
+                            🔄 Làm mới
+                        </button>
+                    </div>
+                    <div id="filesList" class="files-list">
+                        <div class="loading">Đang tải danh sách tệp...</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Đang xử lý...</p>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
