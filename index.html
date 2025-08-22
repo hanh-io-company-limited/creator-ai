@@ -3,10 +3,819 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Hệ thống AI Sáng tạo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-form h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .main-app {
+            display: none;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .workspace {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .workspace h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .creator-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tool-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .tool-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .chat-interface {
+            display: none;
+        }
+
+        .chat-container {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.ai {
+            background: white;
+            border: 1px solid #e9ecef;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .send-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        .image-generator {
+            display: none;
+        }
+
+        .generator-controls {
+            margin-bottom: 20px;
+        }
+
+        .generator-controls textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            height: 100px;
+            resize: vertical;
+        }
+
+        .generated-image {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            background: #f8f9fa;
+            border: 2px dashed #e9ecef;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .text-generator {
+            display: none;
+        }
+
+        .text-output {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .creator-tools {
+                grid-template-columns: 1fr;
+            }
+            
+            .login-form {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <form class="login-form" id="loginForm">
+            <h1>Creator AI</h1>
+            <p style="margin-bottom: 30px; color: #666;">Hệ thống AI Sáng tạo Nội dung</p>
+            
+            <div class="form-group">
+                <label for="username">Tên đăng nhập:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="btn">Đăng nhập</button>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                Demo: admin/admin hoặc user/user
+            </p>
+        </form>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">Creator AI</div>
+                <div class="user-info">
+                    <span>Xin chào, <span id="currentUser"></span></span>
+                    <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3>Công cụ sáng tạo</h3>
+                <button class="menu-item active" onclick="showDashboard()">Trang chủ</button>
+                <button class="menu-item" onclick="showChatAI()">Chat AI</button>
+                <button class="menu-item" onclick="showImageGenerator()">Tạo hình ảnh</button>
+                <button class="menu-item" onclick="showTextGenerator()">Tạo văn bản</button>
+                <button class="menu-item" onclick="showCodeGenerator()">Tạo mã nguồn</button>
+            </aside>
+
+            <main class="workspace">
+                <!-- Dashboard -->
+                <div id="dashboard">
+                    <h2>Chào mừng đến với Creator AI</h2>
+                    <p>Chọn một công cụ từ menu bên trái để bắt đầu sáng tạo nội dung với AI.</p>
+                    
+                    <div class="creator-tools">
+                        <div class="tool-card" onclick="showChatAI()">
+                            <h3>🤖 Chat AI</h3>
+                            <p>Trò chuyện với AI để nhận hỗ trợ và tư vấn</p>
+                        </div>
+                        <div class="tool-card" onclick="showImageGenerator()">
+                            <h3>🎨 Tạo hình ảnh</h3>
+                            <p>Tạo hình ảnh từ mô tả văn bản</p>
+                        </div>
+                        <div class="tool-card" onclick="showTextGenerator()">
+                            <h3>✍️ Tạo văn bản</h3>
+                            <p>Tạo nội dung văn bản sáng tạo</p>
+                        </div>
+                        <div class="tool-card" onclick="showCodeGenerator()">
+                            <h3>💻 Tạo mã nguồn</h3>
+                            <p>Tạo và tối ưu hóa code</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat AI -->
+                <div id="chatAI" class="chat-interface">
+                    <h2>Chat với AI</h2>
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message ai">
+                                Xin chào! Tôi là AI Creator, tôi có thể giúp bạn tạo nội dung, trả lời câu hỏi và hỗ trợ công việc sáng tạo. Bạn cần tôi giúp gì?
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chatInput" placeholder="Nhập tin nhắn của bạn...">
+                            <button class="send-btn" onclick="sendMessage()">Gửi</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Generator -->
+                <div id="imageGenerator" class="image-generator">
+                    <h2>Tạo hình ảnh AI</h2>
+                    <div class="generator-controls">
+                        <label>Mô tả hình ảnh:</label>
+                        <textarea id="imagePrompt" placeholder="Mô tả chi tiết hình ảnh bạn muốn tạo..."></textarea>
+                        <button class="btn" onclick="generateImage()">Tạo hình ảnh</button>
+                    </div>
+                    <div class="generated-image" id="generatedImage">
+                        <p>Hình ảnh sẽ được hiển thị ở đây</p>
+                    </div>
+                </div>
+
+                <!-- Text Generator -->
+                <div id="textGenerator" class="text-generator">
+                    <h2>Tạo văn bản AI</h2>
+                    <div class="generator-controls">
+                        <label>Chủ đề hoặc yêu cầu:</label>
+                        <textarea id="textPrompt" placeholder="Nhập chủ đề hoặc yêu cầu tạo văn bản..."></textarea>
+                        <button class="btn" onclick="generateText()">Tạo văn bản</button>
+                    </div>
+                    <div class="text-output" id="textOutput">
+                        Văn bản được tạo sẽ hiển thị ở đây...
+                    </div>
+                </div>
+
+                <!-- Code Generator -->
+                <div id="codeGenerator" class="text-generator">
+                    <h2>Tạo mã nguồn AI</h2>
+                    <div class="generator-controls">
+                        <label>Mô tả chức năng cần code:</label>
+                        <textarea id="codePrompt" placeholder="Mô tả chức năng, ngôn ngữ lập trình, và yêu cầu..."></textarea>
+                        <button class="btn" onclick="generateCode()">Tạo code</button>
+                    </div>
+                    <div class="text-output" id="codeOutput" style="font-family: 'Courier New', monospace; background: #1e1e1e; color: #d4d4d4;">
+                        Code được tạo sẽ hiển thị ở đây...
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = '';
+        let chatHistory = [];
+
+        // Authentication System
+        const users = {
+            'admin': 'admin',
+            'user': 'user',
+            'demo': 'demo'
+        };
+
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (users[username] && users[username] === password) {
+                currentUser = username;
+                document.getElementById('currentUser').textContent = username;
+                
+                // Hide login, show main app
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                
+                // Add welcome message to chat
+                addChatMessage('ai', `Xin chào ${username}! Chào mừng bạn đến với Creator AI. Tôi sẵn sàng hỗ trợ bạn tạo nội dung sáng tạo.`);
+            } else {
+                alert('Tên đăng nhập hoặc mật khẩu không đúng!');
+            }
+        });
+
+        // Logout Function
+        function logout() {
+            currentUser = '';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            // Reset to dashboard
+            showDashboard();
+        }
+
+        // Navigation Functions
+        function hideAllSections() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('chatAI').style.display = 'none';
+            document.getElementById('imageGenerator').style.display = 'none';
+            document.getElementById('textGenerator').style.display = 'none';
+            document.getElementById('codeGenerator').style.display = 'none';
+            
+            // Remove active class from all menu items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+
+        function showDashboard() {
+            hideAllSections();
+            document.getElementById('dashboard').style.display = 'block';
+            document.querySelectorAll('.menu-item')[0].classList.add('active');
+        }
+
+        function showChatAI() {
+            hideAllSections();
+            document.getElementById('chatAI').style.display = 'block';
+            document.querySelectorAll('.menu-item')[1].classList.add('active');
+        }
+
+        function showImageGenerator() {
+            hideAllSections();
+            document.getElementById('imageGenerator').style.display = 'block';
+            document.querySelectorAll('.menu-item')[2].classList.add('active');
+        }
+
+        function showTextGenerator() {
+            hideAllSections();
+            document.getElementById('textGenerator').style.display = 'block';
+            document.querySelectorAll('.menu-item')[3].classList.add('active');
+        }
+
+        function showCodeGenerator() {
+            hideAllSections();
+            document.getElementById('codeGenerator').style.display = 'block';
+            document.querySelectorAll('.menu-item')[4].classList.add('active');
+        }
+
+        // Chat Functions
+        function addChatMessage(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addChatMessage('user', message);
+                input.value = '';
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    const response = generateAIResponse(message);
+                    addChatMessage('ai', response);
+                }, 1000);
+            }
+        }
+
+        // Enter key for chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // AI Response Generator
+        function generateAIResponse(message) {
+            const responses = [
+                "Đó là một câu hỏi thú vị! Tôi hiểu bạn muốn " + message.toLowerCase() + ". Hãy để tôi giúp bạn với điều đó.",
+                "Tôi có thể hỗ trợ bạn về " + message.toLowerCase() + ". Bạn có muốn tôi tạo nội dung cụ thể nào không?",
+                "Về vấn đề " + message.toLowerCase() + " bạn đề cập, tôi có một số ý tưởng sáng tạo để chia sẻ.",
+                "Thật tuyệt! Với " + message.toLowerCase() + ", chúng ta có thể tạo ra nhiều nội dung thú vị.",
+                "Tôi sẵn sàng giúp bạn phát triển ý tưởng về " + message.toLowerCase() + " thành nội dung hoàn chỉnh."
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        // Image Generation
+        function generateImage() {
+            const prompt = document.getElementById('imagePrompt').value;
+            const imageContainer = document.getElementById('generatedImage');
+            
+            if (prompt.trim()) {
+                imageContainer.innerHTML = '<div class="loading"></div><p>Đang tạo hình ảnh...</p>';
+                
+                setTimeout(() => {
+                    // Simulate image generation with SVG placeholder
+                    const svgImage = `data:image/svg+xml;base64,${btoa(`
+                        <svg width="500" height="300" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="500" height="300" fill="#667eea"/>
+                            <text x="250" y="140" font-family="Arial, sans-serif" font-size="16" fill="white" text-anchor="middle">
+                                Hình ảnh AI được tạo
+                            </text>
+                            <text x="250" y="160" font-family="Arial, sans-serif" font-size="14" fill="#f0f0f0" text-anchor="middle">
+                                ${prompt.substring(0, 30)}...
+                            </text>
+                        </svg>
+                    `)}`;
+                    imageContainer.innerHTML = `
+                        <img src="${svgImage}" alt="Generated Image" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        <p style="margin-top: 10px; font-size: 14px; color: #666;">Hình ảnh mô phỏng: "${prompt}"</p>
+                    `;
+                }, 2000);
+            } else {
+                alert('Vui lòng nhập mô tả hình ảnh!');
+            }
+        }
+
+        // Text Generation
+        function generateText() {
+            const prompt = document.getElementById('textPrompt').value;
+            const output = document.getElementById('textOutput');
+            
+            if (prompt.trim()) {
+                output.innerHTML = '<div class="loading"></div> Đang tạo văn bản...';
+                
+                setTimeout(() => {
+                    const generatedText = `
+Chủ đề: ${prompt}
+
+Đây là nội dung văn bản được tạo tự động dựa trên chủ đề "${prompt}".
+
+Creator AI có thể giúp bạn tạo ra nhiều loại nội dung khác nhau như:
+- Bài viết blog chuyên nghiệp
+- Nội dung marketing sáng tạo  
+- Câu chuyện và tiểu thuyết
+- Kịch bản và nội dung giải trí
+- Tài liệu kỹ thuật và hướng dẫn
+
+Với công nghệ AI tiên tiến, chúng tôi có thể tạo ra nội dung phù hợp với phong cách và yêu cầu cụ thể của bạn.
+
+Nội dung này chỉ là ví dụ demo. Trong phiên bản thực tế, AI sẽ tạo ra nội dung chi tiết và chuyên nghiệp hơn nhiều dựa trên yêu cầu cụ thể của bạn.
+                    `;
+                    output.textContent = generatedText;
+                }, 2000);
+            } else {
+                alert('Vui lòng nhập chủ đề hoặc yêu cầu!');
+            }
+        }
+
+        // Code Generation
+        function generateCode() {
+            const prompt = document.getElementById('codePrompt').value;
+            const output = document.getElementById('codeOutput');
+            
+            if (prompt.trim()) {
+                output.innerHTML = '<div class="loading"></div> Đang tạo code...';
+                
+                setTimeout(() => {
+                    const generatedCode = `// Code được tạo cho: ${prompt}
+
+// Ví dụ: Hàm JavaScript cơ bản
+function processData(input) {
+    // Xử lý dữ liệu đầu vào
+    console.log('Đang xử lý:', input);
+    
+    // Logic xử lý (tùy chỉnh theo yêu cầu)
+    const result = input.toString().toUpperCase();
+    
+    return {
+        original: input,
+        processed: result,
+        timestamp: new Date().toISOString()
+    };
+}
+
+// Sử dụng hàm
+const data = processData("${prompt}");
+console.log('Kết quả:', data);
+
+// HTML Template
+const htmlTemplate = \`
+<div class="content">
+    <h2>\${data.processed}</h2>
+    <p>Tạo lúc: \${data.timestamp}</p>
+</div>
+\`;
+
+// CSS Style
+const styles = \`
+.content {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+\`;
+
+/* Đây là code demo. Creator AI có thể tạo:
+ * - JavaScript/TypeScript
+ * - Python
+ * - Java, C#, C++
+ * - HTML/CSS
+ * - React, Vue, Angular
+ * - Node.js, Express
+ * - Và nhiều ngôn ngữ khác
+ */`;
+                    output.textContent = generatedCode;
+                }, 2000);
+            } else {
+                alert('Vui lòng mô tả chức năng cần code!');
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus on username field
+            document.getElementById('username').focus();
+            
+            // Add some initial chat messages
+            setTimeout(() => {
+                if (currentUser) {
+                    addChatMessage('ai', 'Tôi có thể giúp bạn tạo nội dung, hình ảnh, văn bản và code. Hãy thử các công cụ khác nhau!');
+                }
+            }, 500);
+        });
+
+        // Responsive menu toggle for mobile
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('mobile-open');
+        }
+
+        // Add mobile menu styles
+        const mobileStyles = `
+            @media (max-width: 768px) {
+                .sidebar {
+                    position: fixed;
+                    left: -300px;
+                    top: 0;
+                    height: 100vh;
+                    z-index: 1000;
+                    transition: left 0.3s;
+                }
+                
+                .sidebar.mobile-open {
+                    left: 0;
+                }
+                
+                .main-content {
+                    margin-left: 0;
+                }
+            }
+        `;
+
+        // Auto-save functionality (stores in localStorage)
+        function autoSave() {
+            const data = {
+                chatHistory: chatHistory,
+                lastLogin: new Date().toISOString()
+            };
+            localStorage.setItem('creatorAI_data', JSON.stringify(data));
+        }
+
+        // Load saved data
+        function loadSavedData() {
+            const saved = localStorage.getItem('creatorAI_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                chatHistory = data.chatHistory || [];
+            }
+        }
+
+        // Call load on page load
+        loadSavedData();
+        
+        // Auto-save every 30 seconds
+        setInterval(autoSave, 30000);
+    </script>
 </body>
 </html>
