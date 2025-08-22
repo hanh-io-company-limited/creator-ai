@@ -3,10 +3,1397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Hệ thống tạo Avatar AI</title>
+    <style>
+/* Creator AI Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Screen Management */
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Login Screen */
+#loginScreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    color: #667eea;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.login-header p {
+    color: #666;
+    font-size: 1.1em;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input, .form-group textarea {
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.login-btn, .action-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-btn:hover, .action-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.action-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.error-message {
+    color: #e74c3c;
+    text-align: center;
+    padding: 10px;
+    background: #ffeaea;
+    border-radius: 5px;
+    border: 1px solid #e74c3c;
+}
+
+/* Dashboard */
+#dashboardScreen {
+    background: #f5f7fa;
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    background: white;
+    padding: 20px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-header h1 {
+    color: #667eea;
+    font-size: 2em;
+    font-weight: 700;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logout-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
+
+.dashboard-main {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Section Tabs */
+.section-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tab-btn {
+    background: white;
+    border: 2px solid #e0e0e0;
+    padding: 15px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.tab-btn:hover:not(.active) {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.tab-icon {
+    font-size: 1.5em;
+}
+
+/* Content Sections */
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    color: #333;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    color: #666;
+    font-size: 1.2em;
+}
+
+/* Workflow Steps */
+.workflow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.step-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.step-card h3 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Upload Areas */
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.upload-area:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.upload-area.dragover {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-icon {
+    font-size: 3em;
+    color: #ccc;
+}
+
+.upload-note {
+    color: #999;
+    font-size: 0.9em;
+}
+
+/* Image Preview Grid */
+.image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.image-preview {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview .remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Avatar Grid */
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.avatar-item {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.avatar-item:hover {
+    transform: scale(1.05);
+}
+
+.avatar-item img {
+    width: 100%;
+    height: auto;
+}
+
+.avatar-item .ai-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(102, 126, 234, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.avatar-item.selected {
+    border: 3px solid #667eea;
+}
+
+/* Progress Indicators */
+.progress-indicator {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.progress-bar {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    animation: progress-animation 2s infinite;
+}
+
+@keyframes progress-animation {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+/* Option Tabs */
+.option-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.option-tab {
+    background: #f0f0f0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.option-tab.active {
+    background: #667eea;
+    color: white;
+}
+
+.option-content {
+    display: none;
+}
+
+.option-content.active {
+    display: block;
+}
+
+/* Motion Controls */
+.motion-controls {
+    margin: 20px 0;
+}
+
+.motion-controls label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.motion-controls input[type="range"] {
+    flex: 1;
+    margin: 0 10px;
+}
+
+/* Video Results */
+.video-result {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.video-result video {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.download-btn {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s ease;
+}
+
+.download-btn:hover {
+    background: #229954;
+}
+
+/* Video Preview */
+.video-preview {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.video-preview video {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar Selection */
+.avatar-selection {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.selected-avatar img {
+    max-width: 200px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-main {
+        padding: 20px;
+    }
+    
+    .step-card {
+        padding: 20px;
+    }
+    
+    .section-tabs {
+        flex-direction: column;
+    }
+    
+    .image-preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    
+    .avatar-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .login-container {
+        margin: 20px;
+        padding: 30px;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success Messages */
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+}
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Creator AI</h1>
+                <p>Hệ thống tạo Avatar AI chuyên nghiệp</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Nhập email của bạn">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mật khẩu:</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Nhập mật khẩu">
+                </div>
+                
+                <button type="submit" class="login-btn">Đăng nhập</button>
+                
+                <div id="loginError" class="error-message" style="display: none;">
+                    Email hoặc mật khẩu không đúng!
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardScreen" class="screen">
+        <header class="dashboard-header">
+            <h1>Creator AI Dashboard</h1>
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button id="logoutBtn" class="logout-btn">Đăng xuất</button>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="section-tabs">
+                <button class="tab-btn active" data-section="photo">
+                    <span class="tab-icon">📸</span>
+                    Avatar từ Ảnh
+                </button>
+                <button class="tab-btn" data-section="video">
+                    <span class="tab-icon">🎥</span>
+                    Avatar từ Video
+                </button>
+            </div>
+
+            <!-- Photo-based Avatar Section -->
+            <section id="photoSection" class="content-section active">
+                <div class="section-header">
+                    <h2>Tạo Avatar từ Ảnh</h2>
+                    <p>Tải lên tối đa 10 ảnh cận cảnh để tạo avatar AI chuyên nghiệp</p>
+                </div>
+
+                <div class="workflow-steps">
+                    <!-- Step 1: Upload Photos -->
+                    <div class="step-card">
+                        <h3>Bước 1: Tải lên ảnh cận cảnh</h3>
+                        <div class="upload-area" id="photoUpload">
+                            <div class="upload-placeholder">
+                                <span class="upload-icon">📷</span>
+                                <p>Kéo thả hoặc nhấp để tải lên ảnh</p>
+                                <p class="upload-note">Tối đa 10 ảnh, định dạng JPG/PNG</p>
+                            </div>
+                            <input type="file" id="photoInput" multiple accept="image/*" style="display: none;">
+                        </div>
+                        <div id="photoPreview" class="image-preview-grid"></div>
+                        <button id="trainBtn" class="action-btn" disabled>
+                            🎯 Đào tạo Model
+                        </button>
+                        <div id="trainingProgress" class="progress-indicator" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <p>Đang phân tích đặc điểm khuôn mặt...</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Generate Avatar -->
+                    <div class="step-card">
+                        <h3>Bước 2: Tạo Avatar mới</h3>
+                        <div class="form-group">
+                            <label for="textPrompt">Lời nhắc văn bản:</label>
+                            <textarea id="textPrompt" placeholder="Mô tả avatar bạn muốn tạo..."></textarea>
+                        </div>
+                        <button id="generateBtn" class="action-btn" disabled>
+                            ✨ Tạo Avatar (4 ảnh)
+                        </button>
+                        <div id="avatarResults" class="avatar-grid"></div>
+                    </div>
+
+                    <!-- Step 3: Add Motion -->
+                    <div class="step-card">
+                        <h3>Bước 3: Thêm chuyển động</h3>
+                        <div class="selected-avatar">
+                            <p>Chọn một avatar để thêm chuyển động:</p>
+                            <div id="selectedAvatar" class="avatar-selection"></div>
+                        </div>
+                        <div class="motion-controls">
+                            <label>
+                                <input type="range" id="motionDuration" min="5" max="10" value="5">
+                                Thời lượng: <span id="durationValue">5</span> giây
+                            </label>
+                        </div>
+                        <button id="addMotionBtn" class="action-btn" disabled>
+                            🎬 Thêm chuyển động
+                        </button>
+                    </div>
+
+                    <!-- Step 4: Upscale -->
+                    <div class="step-card">
+                        <h3>Bước 4: Nâng cấp chất lượng</h3>
+                        <button id="upscaleBtn" class="action-btn" disabled>
+                            📈 Nâng cấp lên 4K
+                        </button>
+                        <div id="upscaleProgress" class="progress-indicator" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <p>Đang nâng cấp độ phân giải...</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Create Video -->
+                    <div class="step-card">
+                        <h3>Bước 5: Tạo Video</h3>
+                        <div class="video-options">
+                            <div class="option-tabs">
+                                <button class="option-tab active" data-option="audio">Đồng bộ âm thanh</button>
+                                <button class="option-tab" data-option="script">Kịch bản văn bản</button>
+                            </div>
+                            
+                            <div id="audioOption" class="option-content active">
+                                <div class="form-group">
+                                    <label for="audioUpload">Tải lên file âm thanh (MP3):</label>
+                                    <input type="file" id="audioUpload" accept="audio/mp3">
+                                </div>
+                            </div>
+                            
+                            <div id="scriptOption" class="option-content">
+                                <div class="form-group">
+                                    <label for="scriptText">Kịch bản văn bản:</label>
+                                    <textarea id="scriptText" placeholder="Nhập nội dung bạn muốn avatar nói..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="voiceUpload">Tải lên mẫu giọng nói:</label>
+                                    <input type="file" id="voiceUpload" accept="audio/*">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="createVideoBtn" class="action-btn" disabled>
+                            🎥 Tạo Video 1080p
+                        </button>
+                        
+                        <div id="videoResult" class="video-result"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video-based Avatar Section -->
+            <section id="videoSection" class="content-section">
+                <div class="section-header">
+                    <h2>Tạo Avatar từ Video</h2>
+                    <p>Tải lên video ngắn 3-5 giây để tạo avatar AI</p>
+                </div>
+
+                <div class="workflow-steps">
+                    <!-- Step 1: Upload Video -->
+                    <div class="step-card">
+                        <h3>Bước 1: Tải lên video ngắn</h3>
+                        <div class="upload-area" id="videoUpload">
+                            <div class="upload-placeholder">
+                                <span class="upload-icon">🎬</span>
+                                <p>Kéo thả hoặc nhấp để tải lên video</p>
+                                <p class="upload-note">3-5 giây, định dạng MP4/MOV</p>
+                            </div>
+                            <input type="file" id="videoInput" accept="video/*" style="display: none;">
+                        </div>
+                        <div id="videoPreview" class="video-preview"></div>
+                    </div>
+
+                    <!-- Step 2: AI Processing -->
+                    <div class="step-card">
+                        <h3>Bước 2: Xử lý AI</h3>
+                        <button id="processVideoBtn" class="action-btn" disabled>
+                            🤖 Xử lý video AI
+                        </button>
+                        <div id="videoProcessProgress" class="progress-indicator" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <p>Đang tạo avatar từ video...</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Create Content -->
+                    <div class="step-card">
+                        <h3>Bước 3: Tạo nội dung</h3>
+                        <div class="video-content-options">
+                            <div class="option-tabs">
+                                <button class="option-tab active" data-option="videoAudio">Đồng bộ âm thanh</button>
+                                <button class="option-tab" data-option="videoScript">Kịch bản văn bản</button>
+                            </div>
+                            
+                            <div id="videoAudioOption" class="option-content active">
+                                <div class="form-group">
+                                    <label for="videoAudioUpload">Tải lên file âm thanh (MP3):</label>
+                                    <input type="file" id="videoAudioUpload" accept="audio/mp3">
+                                </div>
+                            </div>
+                            
+                            <div id="videoScriptOption" class="option-content">
+                                <div class="form-group">
+                                    <label for="videoScriptText">Kịch bản văn bản:</label>
+                                    <textarea id="videoScriptText" placeholder="Nhập nội dung bạn muốn avatar nói..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="videoVoiceUpload">Tải lên mẫu giọng nói:</label>
+                                    <input type="file" id="videoVoiceUpload" accept="audio/*">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="createVideoContentBtn" class="action-btn" disabled>
+                            🎥 Tạo Video 1080p
+                        </button>
+                        
+                        <div id="videoContentResult" class="video-result"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+// Creator AI JavaScript
+
+// Authentication credentials - Securely hardcoded as required
+const VALID_CREDENTIALS = {
+    email: "hanhlehangelcosmetic@gmail.com",
+    password: "Kimhanh99@"
+};
+
+// Global state
+let currentUser = null;
+let uploadedPhotos = [];
+let uploadedVideo = null;
+let generatedAvatars = [];
+let selectedAvatar = null;
+let isTrainingComplete = false;
+
+// DOM Elements
+const loginScreen = document.getElementById('loginScreen');
+const dashboardScreen = document.getElementById('dashboardScreen');
+const loginForm = document.getElementById('loginForm');
+const loginError = document.getElementById('loginError');
+const userEmail = document.getElementById('userEmail');
+const logoutBtn = document.getElementById('logoutBtn');
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+    setupEventListeners();
+});
+
+function initializeApp() {
+    // Check if user is already logged in
+    const savedUser = localStorage.getItem('creatorai_user');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        showDashboard();
+    } else {
+        showLogin();
+    }
+}
+
+function setupEventListeners() {
+    // Login form
+    loginForm.addEventListener('submit', handleLogin);
+    logoutBtn.addEventListener('click', handleLogout);
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => switchTab(e.target.dataset.section));
+    });
+
+    // Option tabs
+    document.querySelectorAll('.option-tab').forEach(btn => {
+        btn.addEventListener('click', (e) => switchOptionTab(e.target));
+    });
+
+    // Photo upload section
+    setupPhotoUpload();
+    setupVideoUpload();
+    setupPhotoWorkflow();
+    setupVideoWorkflow();
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    if (email === VALID_CREDENTIALS.email && password === VALID_CREDENTIALS.password) {
+        currentUser = { email: email, loginTime: new Date().toISOString() };
+        localStorage.setItem('creatorai_user', JSON.stringify(currentUser));
+        loginError.style.display = 'none';
+        showDashboard();
+    } else {
+        loginError.style.display = 'block';
+        loginError.textContent = 'Email hoặc mật khẩu không đúng!';
+    }
+}
+
+function handleLogout() {
+    currentUser = null;
+    localStorage.removeItem('creatorai_user');
+    resetAppState();
+    showLogin();
+}
+
+function showLogin() {
+    loginScreen.classList.add('active');
+    dashboardScreen.classList.remove('active');
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+}
+
+function showDashboard() {
+    loginScreen.classList.remove('active');
+    dashboardScreen.classList.add('active');
+    userEmail.textContent = currentUser.email;
+}
+
+function switchTab(section) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-section="${section}"]`).classList.add('active');
+
+    // Update content sections
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById(`${section}Section`).classList.add('active');
+}
+
+function switchOptionTab(clickedTab) {
+    const container = clickedTab.closest('.step-card');
+    const optionTabs = container.querySelectorAll('.option-tab');
+    const optionContents = container.querySelectorAll('.option-content');
+
+    // Remove active class from all tabs and contents
+    optionTabs.forEach(tab => tab.classList.remove('active'));
+    optionContents.forEach(content => content.classList.remove('active'));
+
+    // Add active class to clicked tab
+    clickedTab.classList.add('active');
+
+    // Show corresponding content
+    const option = clickedTab.dataset.option;
+    const targetContent = container.querySelector(`#${option}Option`);
+    if (targetContent) {
+        targetContent.classList.add('active');
+    }
+}
+
+function setupPhotoUpload() {
+    const photoUpload = document.getElementById('photoUpload');
+    const photoInput = document.getElementById('photoInput');
+    const photoPreview = document.getElementById('photoPreview');
+    const trainBtn = document.getElementById('trainBtn');
+
+    // Click to upload
+    photoUpload.addEventListener('click', () => photoInput.click());
+
+    // File input change
+    photoInput.addEventListener('change', (e) => {
+        handlePhotoFiles(e.target.files);
+    });
+
+    // Drag and drop
+    photoUpload.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        photoUpload.classList.add('dragover');
+    });
+
+    photoUpload.addEventListener('dragleave', () => {
+        photoUpload.classList.remove('dragover');
+    });
+
+    photoUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        photoUpload.classList.remove('dragover');
+        handlePhotoFiles(e.dataTransfer.files);
+    });
+
+    // Train button
+    trainBtn.addEventListener('click', startTraining);
+}
+
+function handlePhotoFiles(files) {
+    const maxFiles = 10;
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    
+    // Filter valid files
+    const validFiles = Array.from(files).filter(file => {
+        return allowedTypes.includes(file.type) && uploadedPhotos.length < maxFiles;
+    });
+
+    if (validFiles.length === 0) {
+        alert('Vui lòng chọn file ảnh hợp lệ (JPG/PNG) và không vượt quá 10 ảnh.');
+        return;
+    }
+
+    // Add files to uploaded photos
+    validFiles.forEach(file => {
+        if (uploadedPhotos.length < maxFiles) {
+            uploadedPhotos.push(file);
+        }
+    });
+
+    updatePhotoPreview();
+    updateTrainButton();
+}
+
+function updatePhotoPreview() {
+    const photoPreview = document.getElementById('photoPreview');
+    photoPreview.innerHTML = '';
+
+    uploadedPhotos.forEach((file, index) => {
+        const preview = document.createElement('div');
+        preview.className = 'image-preview';
+        
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.alt = `Preview ${index + 1}`;
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '×';
+        removeBtn.onclick = () => removePhoto(index);
+        
+        preview.appendChild(img);
+        preview.appendChild(removeBtn);
+        photoPreview.appendChild(preview);
+    });
+}
+
+function removePhoto(index) {
+    uploadedPhotos.splice(index, 1);
+    updatePhotoPreview();
+    updateTrainButton();
+}
+
+function updateTrainButton() {
+    const trainBtn = document.getElementById('trainBtn');
+    trainBtn.disabled = uploadedPhotos.length === 0;
+}
+
+function startTraining() {
+    const trainBtn = document.getElementById('trainBtn');
+    const trainingProgress = document.getElementById('trainingProgress');
+    
+    trainBtn.disabled = true;
+    trainingProgress.style.display = 'block';
+    
+    // Simulate training process
+    setTimeout(() => {
+        trainingProgress.style.display = 'none';
+        isTrainingComplete = true;
+        updateGenerateButton();
+        showSuccessMessage('Đào tạo hoàn thành! Bây giờ bạn có thể tạo avatar.');
+    }, 3000);
+}
+
+function setupPhotoWorkflow() {
+    const generateBtn = document.getElementById('generateBtn');
+    const addMotionBtn = document.getElementById('addMotionBtn');
+    const upscaleBtn = document.getElementById('upscaleBtn');
+    const createVideoBtn = document.getElementById('createVideoBtn');
+    const motionDuration = document.getElementById('motionDuration');
+    const durationValue = document.getElementById('durationValue');
+
+    generateBtn.addEventListener('click', generateAvatars);
+    addMotionBtn.addEventListener('click', addMotionToAvatar);
+    upscaleBtn.addEventListener('click', upscaleAvatar);
+    createVideoBtn.addEventListener('click', createVideo);
+
+    motionDuration.addEventListener('input', (e) => {
+        durationValue.textContent = e.target.value;
+    });
+}
+
+function updateGenerateButton() {
+    const generateBtn = document.getElementById('generateBtn');
+    generateBtn.disabled = !isTrainingComplete;
+}
+
+function generateAvatars() {
+    const textPrompt = document.getElementById('textPrompt').value;
+    if (!textPrompt.trim()) {
+        alert('Vui lòng nhập lời nhắc văn bản để tạo avatar.');
+        return;
+    }
+
+    const generateBtn = document.getElementById('generateBtn');
+    const avatarResults = document.getElementById('avatarResults');
+    
+    generateBtn.disabled = true;
+    avatarResults.innerHTML = '<div class="spinner"></div>';
+    
+    // Simulate avatar generation
+    setTimeout(() => {
+        avatarResults.innerHTML = '';
+        generatedAvatars = [];
+        
+        // Create 4 placeholder avatars
+        for (let i = 0; i < 4; i++) {
+            const avatarItem = document.createElement('div');
+            avatarItem.className = 'avatar-item';
+            avatarItem.onclick = () => selectAvatar(i);
+            
+            const img = document.createElement('img');
+            img.src = `https://picsum.photos/400/400?random=${Date.now() + i}`;
+            img.alt = `Avatar ${i + 1}`;
+            
+            const label = document.createElement('div');
+            label.className = 'ai-label';
+            label.textContent = 'AI Photo';
+            
+            avatarItem.appendChild(img);
+            avatarItem.appendChild(label);
+            avatarResults.appendChild(avatarItem);
+            
+            generatedAvatars.push({
+                id: i,
+                src: img.src,
+                prompt: textPrompt
+            });
+        }
+        
+        generateBtn.disabled = false;
+        showSuccessMessage('Đã tạo 4 avatar thành công!');
+    }, 2000);
+}
+
+function selectAvatar(avatarId) {
+    // Remove previous selection
+    document.querySelectorAll('.avatar-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Select new avatar
+    event.currentTarget.classList.add('selected');
+    selectedAvatar = generatedAvatars[avatarId];
+    
+    // Update selected avatar display
+    const selectedAvatarDiv = document.getElementById('selectedAvatar');
+    selectedAvatarDiv.innerHTML = `
+        <img src="${selectedAvatar.src}" alt="Selected Avatar" style="max-width: 200px; border-radius: 10px;">
+    `;
+    
+    // Enable motion button
+    document.getElementById('addMotionBtn').disabled = false;
+}
+
+function addMotionToAvatar() {
+    if (!selectedAvatar) return;
+    
+    const addMotionBtn = document.getElementById('addMotionBtn');
+    const duration = document.getElementById('motionDuration').value;
+    
+    addMotionBtn.disabled = true;
+    addMotionBtn.innerHTML = '🎬 Đang xử lý...';
+    
+    // Simulate motion addition
+    setTimeout(() => {
+        addMotionBtn.innerHTML = '✅ Hoàn thành';
+        document.getElementById('upscaleBtn').disabled = false;
+        showSuccessMessage(`Đã thêm chuyển động ${duration} giây thành công!`);
+    }, 2000);
+}
+
+function upscaleAvatar() {
+    const upscaleBtn = document.getElementById('upscaleBtn');
+    const upscaleProgress = document.getElementById('upscaleProgress');
+    
+    upscaleBtn.disabled = true;
+    upscaleProgress.style.display = 'block';
+    
+    setTimeout(() => {
+        upscaleProgress.style.display = 'none';
+        upscaleBtn.innerHTML = '✅ Nâng cấp hoàn thành';
+        document.getElementById('createVideoBtn').disabled = false;
+        showSuccessMessage('Đã nâng cấp lên 4K thành công!');
+    }, 3000);
+}
+
+function createVideo() {
+    const createVideoBtn = document.getElementById('createVideoBtn');
+    const videoResult = document.getElementById('videoResult');
+    
+    createVideoBtn.disabled = true;
+    createVideoBtn.innerHTML = '🎥 Đang tạo video...';
+    
+    setTimeout(() => {
+        videoResult.innerHTML = `
+            <video controls width="100%" style="max-width: 600px;">
+                <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                Trình duyệt của bạn không hỗ trợ video.
+            </video>
+            <br>
+            <a href="#" class="download-btn">📥 Tải xuống Video</a>
+        `;
+        
+        createVideoBtn.innerHTML = '✅ Video hoàn thành';
+        showSuccessMessage('Video 1080p đã được tạo thành công!');
+    }, 4000);
+}
+
+function setupVideoUpload() {
+    const videoUpload = document.getElementById('videoUpload');
+    const videoInput = document.getElementById('videoInput');
+    const videoPreview = document.getElementById('videoPreview');
+
+    videoUpload.addEventListener('click', () => videoInput.click());
+
+    videoInput.addEventListener('change', (e) => {
+        handleVideoFile(e.target.files[0]);
+    });
+
+    videoUpload.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        videoUpload.classList.add('dragover');
+    });
+
+    videoUpload.addEventListener('dragleave', () => {
+        videoUpload.classList.remove('dragover');
+    });
+
+    videoUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        videoUpload.classList.remove('dragover');
+        handleVideoFile(e.dataTransfer.files[0]);
+    });
+}
+
+function handleVideoFile(file) {
+    if (!file) return;
+    
+    const allowedTypes = ['video/mp4', 'video/mov', 'video/avi'];
+    
+    if (!allowedTypes.includes(file.type)) {
+        alert('Vui lòng chọn file video hợp lệ (MP4/MOV/AVI).');
+        return;
+    }
+
+    uploadedVideo = file;
+    updateVideoPreview();
+    updateProcessVideoButton();
+}
+
+function updateVideoPreview() {
+    const videoPreview = document.getElementById('videoPreview');
+    
+    if (uploadedVideo) {
+        const video = document.createElement('video');
+        video.controls = true;
+        video.src = URL.createObjectURL(uploadedVideo);
+        video.style.maxWidth = '100%';
+        video.style.maxHeight = '300px';
+        video.style.borderRadius = '10px';
+        
+        videoPreview.innerHTML = '';
+        videoPreview.appendChild(video);
+    }
+}
+
+function updateProcessVideoButton() {
+    const processVideoBtn = document.getElementById('processVideoBtn');
+    processVideoBtn.disabled = !uploadedVideo;
+}
+
+function setupVideoWorkflow() {
+    const processVideoBtn = document.getElementById('processVideoBtn');
+    const createVideoContentBtn = document.getElementById('createVideoContentBtn');
+    
+    processVideoBtn.addEventListener('click', processVideo);
+    createVideoContentBtn.addEventListener('click', createVideoContent);
+}
+
+function processVideo() {
+    const processVideoBtn = document.getElementById('processVideoBtn');
+    const videoProcessProgress = document.getElementById('videoProcessProgress');
+    
+    processVideoBtn.disabled = true;
+    videoProcessProgress.style.display = 'block';
+    
+    setTimeout(() => {
+        videoProcessProgress.style.display = 'none';
+        processVideoBtn.innerHTML = '✅ Xử lý hoàn thành';
+        document.getElementById('createVideoContentBtn').disabled = false;
+        showSuccessMessage('Video avatar đã được xử lý thành công!');
+    }, 3000);
+}
+
+function createVideoContent() {
+    const createVideoContentBtn = document.getElementById('createVideoContentBtn');
+    const videoContentResult = document.getElementById('videoContentResult');
+    
+    createVideoContentBtn.disabled = true;
+    createVideoContentBtn.innerHTML = '🎥 Đang tạo video...';
+    
+    setTimeout(() => {
+        videoContentResult.innerHTML = `
+            <video controls width="100%" style="max-width: 600px;">
+                <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                Trình duyệt của bạn không hỗ trợ video.
+            </video>
+            <br>
+            <a href="#" class="download-btn">📥 Tải xuống Video</a>
+        `;
+        
+        createVideoContentBtn.innerHTML = '✅ Video hoàn thành';
+        showSuccessMessage('Video 1080p đã được tạo thành công!');
+    }, 4000);
+}
+
+function showSuccessMessage(message) {
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.textContent = message;
+    
+    // Find the current active step card
+    const activeSection = document.querySelector('.content-section.active');
+    const stepCards = activeSection.querySelectorAll('.step-card');
+    
+    // Add to the last step card temporarily
+    if (stepCards.length > 0) {
+        const lastCard = stepCards[stepCards.length - 1];
+        lastCard.appendChild(successDiv);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (successDiv.parentNode) {
+                successDiv.parentNode.removeChild(successDiv);
+            }
+        }, 3000);
+    }
+}
+
+function resetAppState() {
+    uploadedPhotos = [];
+    uploadedVideo = null;
+    generatedAvatars = [];
+    selectedAvatar = null;
+    isTrainingComplete = false;
+    
+    // Reset UI elements
+    document.getElementById('photoPreview').innerHTML = '';
+    document.getElementById('videoPreview').innerHTML = '';
+    document.getElementById('avatarResults').innerHTML = '';
+    document.getElementById('selectedAvatar').innerHTML = '';
+    document.getElementById('videoResult').innerHTML = '';
+    document.getElementById('videoContentResult').innerHTML = '';
+    
+    // Reset buttons
+    document.getElementById('trainBtn').disabled = true;
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('addMotionBtn').disabled = true;
+    document.getElementById('upscaleBtn').disabled = true;
+    document.getElementById('createVideoBtn').disabled = true;
+    document.getElementById('processVideoBtn').disabled = true;
+    document.getElementById('createVideoContentBtn').disabled = true;
+    
+    // Reset forms
+    document.getElementById('textPrompt').value = '';
+    document.getElementById('motionDuration').value = 5;
+    document.getElementById('durationValue').textContent = '5';
+    
+    // Reset to photo section
+    switchTab('photo');
+}
+
+// Utility functions
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function validateEmailFormat(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Error handling
+window.addEventListener('error', function(e) {
+    console.error('Application error:', e.error);
+    alert('Đã xảy ra lỗi. Vui lòng thử lại hoặc làm mới trang.');
+});
+
+// Prevent page reload on form submission
+document.addEventListener('submit', function(e) {
+    e.preventDefault();
+});
+    </script>
 </body>
 </html>
