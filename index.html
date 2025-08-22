@@ -1,12 +1,130 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Avatar Video Generation</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <div class="container">
+        <header>
+            <h1>Creator AI</h1>
+            <p>Create AI-powered video avatars from photos and videos</p>
+        </header>
+
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="photo">Photo Avatars</button>
+            <button class="tab-btn" data-tab="video">Video Avatars</button>
+        </nav>
+
+        <!-- Photo Avatar Tab -->
+        <div id="photo-tab" class="tab-content active">
+            <div class="upload-section">
+                <h2>Upload Photo</h2>
+                <div class="upload-area" id="photo-upload">
+                    <i class="upload-icon">📷</i>
+                    <p>Click to upload a photo or drag and drop</p>
+                    <input type="file" id="photo-input" accept="image/*" hidden>
+                </div>
+                <div id="photo-preview" class="preview-area hidden"></div>
+            </div>
+        </div>
+
+        <!-- Video Avatar Tab -->
+        <div id="video-tab" class="tab-content">
+            <div class="upload-section">
+                <h2>Upload Video (3-5 seconds)</h2>
+                <div class="upload-area" id="video-upload">
+                    <i class="upload-icon">🎬</i>
+                    <p>Click to upload a 3-5 second video or drag and drop</p>
+                    <input type="file" id="video-input" accept="video/*" hidden>
+                </div>
+                <div class="video-requirements">
+                    <h4>Requirements:</h4>
+                    <ul>
+                        <li>Duration: 3-5 seconds</li>
+                        <li>Format: MP4, MOV, AVI</li>
+                        <li>Max size: 50MB</li>
+                        <li>Clear face visibility recommended</li>
+                    </ul>
+                </div>
+                <div id="video-preview" class="preview-area hidden"></div>
+            </div>
+        </div>
+
+        <!-- Content Creation Section -->
+        <div id="content-creation" class="content-section hidden">
+            <h2>Create Content</h2>
+            
+            <div class="creation-options">
+                <div class="option-card">
+                    <h3>Script-based Generation</h3>
+                    <textarea id="script-input" placeholder="Enter your script here..."></textarea>
+                    <button class="btn primary" onclick="generateFromScript()">Generate Video</button>
+                </div>
+
+                <div class="option-card">
+                    <h3>Audio Synchronization</h3>
+                    <div class="audio-upload-area" id="audio-upload">
+                        <i class="upload-icon">🎵</i>
+                        <p>Upload MP3 audio file</p>
+                        <input type="file" id="audio-input" accept="audio/mp3,audio/mpeg" hidden>
+                    </div>
+                    <div id="audio-preview" class="audio-preview hidden"></div>
+                    <button class="btn primary" onclick="syncWithAudio()">Sync with Audio</button>
+                </div>
+
+                <div class="option-card">
+                    <h3>Voice + Emotion Matching</h3>
+                    <div class="voice-controls">
+                        <label>Emotion Style:</label>
+                        <select id="emotion-select">
+                            <option value="neutral">Neutral</option>
+                            <option value="happy">Happy</option>
+                            <option value="excited">Excited</option>
+                            <option value="serious">Serious</option>
+                            <option value="calm">Calm</option>
+                        </select>
+                    </div>
+                    <textarea id="voice-script" placeholder="Enter text for voice generation..."></textarea>
+                    <button class="btn primary" onclick="generateWithVoice()">Generate with Voice</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Section -->
+        <div id="processing-section" class="processing-section hidden">
+            <h2>Processing Your Avatar</h2>
+            <div class="processing-status">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p id="processing-text">Analyzing video...</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="results-section hidden">
+            <h2>Your Generated Video</h2>
+            <div class="result-preview">
+                <video id="result-video" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="result-info">
+                    <p><strong>Resolution:</strong> 1080p</p>
+                    <p><strong>Duration:</strong> <span id="result-duration">--</span></p>
+                    <p><strong>Format:</strong> MP4</p>
+                </div>
+            </div>
+            <div class="result-actions">
+                <button class="btn primary" onclick="downloadVideo()">Download Video</button>
+                <button class="btn secondary" onclick="createNew()">Create New</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
