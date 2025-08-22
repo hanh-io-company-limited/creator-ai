@@ -1,12 +1,1023 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Advanced Avatar Generation Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-button:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .upload-area:hover .upload-icon {
+            color: #667eea;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            box-shadow: 0 4px 15px rgba(132, 250, 176, 0.4);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(132, 250, 176, 0.6);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .prompt-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .prompt-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .generated-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .content-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .content-item img,
+        .content-item video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .content-item .label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .content-item .actions {
+            padding: 15px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .audio-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .quality-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .quality-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quality-option.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .main-tabs {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .generated-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <div class="container">
+        <div class="header">
+            <h1>Creator AI</h1>
+            <p>Advanced Avatar Generation Platform - Transform Photos & Videos into AI-Powered Content</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="photoCount">0</div>
+                <div class="stat-label">Photos Uploaded</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="videoCount">0</div>
+                <div class="stat-label">Videos Generated</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avatarCount">0</div>
+                <div class="stat-label">Avatars Created</div>
+            </div>
+        </div>
+
+        <div class="main-tabs">
+            <button class="tab-button active" onclick="switchTab('photo')">Photo-Based Avatars</button>
+            <button class="tab-button" onclick="switchTab('video')">Video-Based Avatars</button>
+        </div>
+
+        <!-- Photo-Based Avatars Tab -->
+        <div id="photo-tab" class="tab-content active">
+            <div class="section">
+                <h3>📸 Upload Close-Up Photos (Up to 10)</h3>
+                <div class="upload-area" onclick="document.getElementById('photoInput').click()">
+                    <div class="upload-icon">📷</div>
+                    <h4>Click to upload or drag photos here</h4>
+                    <p>Upload up to 10 close-up photos for avatar training</p>
+                    <input type="file" id="photoInput" class="file-input" multiple accept="image/*">
+                </div>
+                <div class="progress-bar" id="photoProgress">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="file-list" id="photoList"></div>
+                <button class="btn" id="trainButton" onclick="trainAvatar()" disabled>🎯 Train Avatar Model</button>
+            </div>
+
+            <div class="section">
+                <h3>✨ Generate New Avatars</h3>
+                <textarea class="prompt-input" id="avatarPrompt" placeholder="Enter text prompt to generate avatar images (e.g., 'professional headshot in business attire', 'casual outdoor portrait')"></textarea>
+                <button class="btn" onclick="generateAvatars()">🎨 Generate 4 Avatar Images</button>
+                <div class="generated-content" id="avatarResults"></div>
+            </div>
+
+            <div class="section">
+                <h3>🎬 Add Motion to Images</h3>
+                <p>Select generated images to convert into 5-10 second videos with full-body motion and background</p>
+                <div class="quality-selector">
+                    <div class="quality-option selected" data-duration="5">5 seconds</div>
+                    <div class="quality-option" data-duration="7">7 seconds</div>
+                    <div class="quality-option" data-duration="10">10 seconds</div>
+                </div>
+                <button class="btn btn-secondary" onclick="addMotionToImages()">🎭 Add Motion to Selected Images</button>
+                <div class="generated-content" id="motionResults"></div>
+            </div>
+
+            <div class="section">
+                <h3>🔍 Upgrade Image Quality</h3>
+                <p>Enhance your generated images to 4K resolution</p>
+                <button class="btn" onclick="upgradeQuality()">⬆️ Upgrade to 4K Quality</button>
+                <div class="generated-content" id="qualityResults"></div>
+            </div>
+
+            <div class="section">
+                <h3>🎵 Create Videos with Audio</h3>
+                <div class="audio-controls">
+                    <h4>Option 1: Upload Audio File (MP3)</h4>
+                    <div class="upload-area" onclick="document.getElementById('audioInput').click()">
+                        <div class="upload-icon">🎵</div>
+                        <p>Upload MP3 file for lip-sync and expression synchronization</p>
+                        <input type="file" id="audioInput" class="file-input" accept=".mp3">
+                    </div>
+                    <button class="btn" onclick="syncWithAudio()">🎤 Generate Video with Lip-Sync</button>
+                </div>
+
+                <div class="audio-controls">
+                    <h4>Option 2: Text-to-Speech with Voice Upload</h4>
+                    <textarea class="prompt-input" id="scriptInput" placeholder="Enter your script here..."></textarea>
+                    <div class="upload-area" onclick="document.getElementById('voiceInput').click()">
+                        <div class="upload-icon">🗣️</div>
+                        <p>Upload your voice sample for personalized speech synthesis</p>
+                        <input type="file" id="voiceInput" class="file-input" accept=".mp3,.wav">
+                    </div>
+                    <button class="btn" onclick="generateSpeechVideo()">🎬 Generate Video with Synthesized Speech</button>
+                </div>
+
+                <div class="generated-content" id="finalVideoResults"></div>
+            </div>
+        </div>
+
+        <!-- Video-Based Avatars Tab -->
+        <div id="video-tab" class="tab-content">
+            <div class="section">
+                <h3>🎥 Upload Short Video Clips (3-5 seconds)</h3>
+                <div class="upload-area" onclick="document.getElementById('videoInput').click()">
+                    <div class="upload-icon">🎬</div>
+                    <h4>Click to upload or drag video clips here</h4>
+                    <p>Upload 3-5 second video clips for avatar creation</p>
+                    <input type="file" id="videoInput" class="file-input" multiple accept="video/*">
+                </div>
+                <div class="progress-bar" id="videoProgress">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="file-list" id="videoList"></div>
+                <button class="btn" id="processVideoButton" onclick="processVideoAvatar()" disabled>🔄 Process Video Avatar</button>
+            </div>
+
+            <div class="section">
+                <h3>🤖 AI Video Processing</h3>
+                <div class="quality-selector">
+                    <div class="quality-option selected" data-quality="720p">720p</div>
+                    <div class="quality-option" data-quality="1080p">1080p HD</div>
+                    <div class="quality-option" data-quality="4k">4K Ultra HD</div>
+                </div>
+                <button class="btn" onclick="processWithAI()">🧠 AI Process Video Avatars</button>
+                <div class="generated-content" id="processedVideoResults"></div>
+            </div>
+
+            <div class="section">
+                <h3>🎵 Video Content Creation</h3>
+                <div class="audio-controls">
+                    <h4>Lip-Sync with Audio File</h4>
+                    <div class="upload-area" onclick="document.getElementById('videoAudioInput').click()">
+                        <div class="upload-icon">🎵</div>
+                        <p>Upload MP3 file for video avatar lip-sync</p>
+                        <input type="file" id="videoAudioInput" class="file-input" accept=".mp3">
+                    </div>
+                    <button class="btn" onclick="videoLipSync()">🎤 Generate Video with Lip-Sync</button>
+                </div>
+
+                <div class="audio-controls">
+                    <h4>Script-Based Content</h4>
+                    <textarea class="prompt-input" id="videoScriptInput" placeholder="Enter script for video avatar..."></textarea>
+                    <div class="upload-area" onclick="document.getElementById('videoVoiceInput').click()">
+                        <div class="upload-icon">🗣️</div>
+                        <p>Upload voice sample for video avatar speech</p>
+                        <input type="file" id="videoVoiceInput" class="file-input" accept=".mp3,.wav">
+                    </div>
+                    <button class="btn" onclick="generateVideoContent()">🎬 Generate Video Content</button>
+                </div>
+
+                <div class="generated-content" id="videoContentResults"></div>
+            </div>
+
+            <div class="section">
+                <h3>📹 Final Video Output (1080p)</h3>
+                <p>All final videos are rendered in high-quality 1080p resolution</p>
+                <button class="btn btn-secondary" onclick="renderFinalVideo()">🎭 Render Final 1080p Video</button>
+                <div class="generated-content" id="finalVideoOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Global state
+        let uploadedPhotos = [];
+        let uploadedVideos = [];
+        let generatedAvatars = [];
+        let isModelTrained = false;
+        let selectedDuration = 5;
+        let selectedQuality = '1080p';
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Update buttons
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Notification system
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+
+        // Photo upload handling
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (uploadedPhotos.length + files.length > 10) {
+                showNotification('Maximum 10 photos allowed');
+                return;
+            }
+            
+            files.forEach(file => {
+                if (uploadedPhotos.length < 10) {
+                    uploadedPhotos.push(file);
+                    addFileToList(file, 'photoList');
+                }
+            });
+            
+            updatePhotoCount();
+            updateTrainButton();
+            simulateUploadProgress('photoProgress');
+        });
+
+        // Video upload handling
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                uploadedVideos.push(file);
+                addFileToList(file, 'videoList');
+            });
+            
+            updateVideoCount();
+            updateProcessVideoButton();
+            simulateUploadProgress('videoProgress');
+        });
+
+        // File list management
+        function addFileToList(file, listId) {
+            const fileList = document.getElementById(listId);
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <span>📁 ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                <button class="btn" onclick="removeFile('${file.name}', '${listId}')">❌</button>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(fileName, listId) {
+            if (listId === 'photoList') {
+                uploadedPhotos = uploadedPhotos.filter(file => file.name !== fileName);
+                updatePhotoCount();
+                updateTrainButton();
+            } else if (listId === 'videoList') {
+                uploadedVideos = uploadedVideos.filter(file => file.name !== fileName);
+                updateVideoCount();
+                updateProcessVideoButton();
+            }
+            
+            // Remove from DOM
+            const fileList = document.getElementById(listId);
+            const fileItems = fileList.querySelectorAll('.file-item');
+            fileItems.forEach(item => {
+                if (item.textContent.includes(fileName)) {
+                    item.remove();
+                }
+            });
+        }
+
+        // Progress simulation
+        function simulateUploadProgress(progressId) {
+            const progressBar = document.getElementById(progressId);
+            const progressFill = progressBar.querySelector('.progress-fill');
+            progressBar.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => progressBar.style.display = 'none', 1000);
+                }
+                progressFill.style.width = progress + '%';
+            }, 500);
+        }
+
+        // Update counters
+        function updatePhotoCount() {
+            document.getElementById('photoCount').textContent = uploadedPhotos.length;
+        }
+
+        function updateVideoCount() {
+            document.getElementById('videoCount').textContent = uploadedVideos.length;
+        }
+
+        function updateAvatarCount() {
+            document.getElementById('avatarCount').textContent = generatedAvatars.length;
+        }
+
+        // Button state management
+        function updateTrainButton() {
+            const trainButton = document.getElementById('trainButton');
+            trainButton.disabled = uploadedPhotos.length < 3;
+        }
+
+        function updateProcessVideoButton() {
+            const processButton = document.getElementById('processVideoButton');
+            processButton.disabled = uploadedVideos.length === 0;
+        }
+
+        // Avatar training
+        function trainAvatar() {
+            if (uploadedPhotos.length < 3) {
+                showNotification('Please upload at least 3 photos for training');
+                return;
+            }
+            
+            showNotification('Training avatar model... This may take a few minutes');
+            
+            // Simulate training process
+            const trainButton = document.getElementById('trainButton');
+            trainButton.disabled = true;
+            trainButton.textContent = '🔄 Training...';
+            
+            setTimeout(() => {
+                isModelTrained = true;
+                trainButton.textContent = '✅ Model Trained';
+                showNotification('Avatar model training completed!');
+            }, 3000);
+        }
+
+        // Avatar generation
+        function generateAvatars() {
+            const prompt = document.getElementById('avatarPrompt').value;
+            if (!prompt.trim()) {
+                showNotification('Please enter a text prompt');
+                return;
+            }
+            
+            if (!isModelTrained) {
+                showNotification('Please train the avatar model first');
+                return;
+            }
+            
+            showNotification('Generating 4 avatar images...');
+            
+            // Simulate avatar generation
+            const resultsContainer = document.getElementById('avatarResults');
+            resultsContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 4; i++) {
+                setTimeout(() => {
+                    const avatarItem = document.createElement('div');
+                    avatarItem.className = 'content-item';
+                    avatarItem.innerHTML = `
+                        <img src="https://picsum.photos/300/200?random=${Date.now() + i}" alt="Generated Avatar ${i}">
+                        <div class="label">AI Photo</div>
+                        <div class="actions">
+                            <button class="btn" onclick="selectForMotion(this)">Select for Motion</button>
+                            <button class="btn btn-secondary" onclick="selectForQuality(this)">Select for 4K</button>
+                        </div>
+                    `;
+                    resultsContainer.appendChild(avatarItem);
+                    generatedAvatars.push({id: Date.now() + i, prompt: prompt});
+                    updateAvatarCount();
+                }, i * 800);
+            }
+        }
+
+        // Motion addition
+        function selectForMotion(button) {
+            const item = button.closest('.content-item');
+            item.classList.toggle('selected');
+            button.textContent = item.classList.contains('selected') ? 'Selected ✓' : 'Select for Motion';
+        }
+
+        function addMotionToImages() {
+            const selectedItems = document.querySelectorAll('#avatarResults .content-item.selected');
+            if (selectedItems.length === 0) {
+                showNotification('Please select at least one image for motion');
+                return;
+            }
+            
+            showNotification(`Adding ${selectedDuration}-second motion to ${selectedItems.length} image(s)...`);
+            
+            const motionResults = document.getElementById('motionResults');
+            motionResults.innerHTML = '';
+            
+            selectedItems.forEach((item, index) => {
+                setTimeout(() => {
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'content-item';
+                    videoItem.innerHTML = `
+                        <video controls>
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                        </video>
+                        <div class="label">AI Video (${selectedDuration}s)</div>
+                        <div class="actions">
+                            <button class="btn" onclick="downloadVideo(this)">Download</button>
+                        </div>
+                    `;
+                    motionResults.appendChild(videoItem);
+                }, (index + 1) * 1500);
+            });
+        }
+
+        // Quality upgrade
+        function selectForQuality(button) {
+            const item = button.closest('.content-item');
+            item.classList.toggle('quality-selected');
+            button.textContent = item.classList.contains('quality-selected') ? 'Selected ✓' : 'Select for 4K';
+        }
+
+        function upgradeQuality() {
+            const selectedItems = document.querySelectorAll('#avatarResults .content-item.quality-selected');
+            if (selectedItems.length === 0) {
+                showNotification('Please select at least one image for quality upgrade');
+                return;
+            }
+            
+            showNotification(`Upgrading ${selectedItems.length} image(s) to 4K quality...`);
+            
+            const qualityResults = document.getElementById('qualityResults');
+            qualityResults.innerHTML = '';
+            
+            selectedItems.forEach((item, index) => {
+                setTimeout(() => {
+                    const qualityItem = document.createElement('div');
+                    qualityItem.className = 'content-item';
+                    qualityItem.innerHTML = `
+                        <img src="https://picsum.photos/800/600?random=${Date.now() + index}" alt="4K Enhanced Image">
+                        <div class="label">4K Enhanced</div>
+                        <div class="actions">
+                            <button class="btn" onclick="downloadImage(this)">Download 4K</button>
+                        </div>
+                    `;
+                    qualityResults.appendChild(qualityItem);
+                }, (index + 1) * 2000);
+            });
+        }
+
+        // Audio and video generation
+        function syncWithAudio() {
+            const audioFile = document.getElementById('audioInput').files[0];
+            if (!audioFile) {
+                showNotification('Please upload an audio file first');
+                return;
+            }
+            
+            showNotification('Generating video with lip-sync...');
+            
+            setTimeout(() => {
+                const finalResults = document.getElementById('finalVideoResults');
+                const videoItem = document.createElement('div');
+                videoItem.className = 'content-item';
+                videoItem.innerHTML = `
+                    <video controls>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    </video>
+                    <div class="label">1080p Lip-Sync Video</div>
+                    <div class="actions">
+                        <button class="btn" onclick="downloadVideo(this)">Download 1080p</button>
+                    </div>
+                `;
+                finalResults.appendChild(videoItem);
+                showNotification('Lip-sync video generated successfully!');
+            }, 3000);
+        }
+
+        function generateSpeechVideo() {
+            const script = document.getElementById('scriptInput').value;
+            const voiceFile = document.getElementById('voiceInput').files[0];
+            
+            if (!script.trim()) {
+                showNotification('Please enter a script');
+                return;
+            }
+            
+            if (!voiceFile) {
+                showNotification('Please upload a voice sample');
+                return;
+            }
+            
+            showNotification('Generating video with synthesized speech...');
+            
+            setTimeout(() => {
+                const finalResults = document.getElementById('finalVideoResults');
+                const videoItem = document.createElement('div');
+                videoItem.className = 'content-item';
+                videoItem.innerHTML = `
+                    <video controls>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+                    </video>
+                    <div class="label">1080p Speech Video</div>
+                    <div class="actions">
+                        <button class="btn" onclick="downloadVideo(this)">Download 1080p</button>
+                    </div>
+                `;
+                finalResults.appendChild(videoItem);
+                showNotification('Speech video generated successfully!');
+            }, 4000);
+        }
+
+        // Video avatar processing
+        function processVideoAvatar() {
+            if (uploadedVideos.length === 0) {
+                showNotification('Please upload video clips first');
+                return;
+            }
+            
+            showNotification('Processing video avatars...');
+            
+            const processButton = document.getElementById('processVideoButton');
+            processButton.disabled = true;
+            processButton.textContent = '🔄 Processing...';
+            
+            setTimeout(() => {
+                processButton.textContent = '✅ Processing Complete';
+                showNotification('Video avatar processing completed!');
+            }, 3000);
+        }
+
+        function processWithAI() {
+            showNotification('AI processing video avatars...');
+            
+            setTimeout(() => {
+                const processedResults = document.getElementById('processedVideoResults');
+                const videoItem = document.createElement('div');
+                videoItem.className = 'content-item';
+                videoItem.innerHTML = `
+                    <video controls>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                    </video>
+                    <div class="label">AI Processed ${selectedQuality}</div>
+                    <div class="actions">
+                        <button class="btn" onclick="downloadVideo(this)">Download</button>
+                    </div>
+                `;
+                processedResults.appendChild(videoItem);
+                showNotification('AI processing completed!');
+            }, 3000);
+        }
+
+        // Video content creation
+        function videoLipSync() {
+            const audioFile = document.getElementById('videoAudioInput').files[0];
+            if (!audioFile) {
+                showNotification('Please upload an audio file first');
+                return;
+            }
+            
+            showNotification('Generating video avatar with lip-sync...');
+            
+            setTimeout(() => {
+                const contentResults = document.getElementById('videoContentResults');
+                const videoItem = document.createElement('div');
+                videoItem.className = 'content-item';
+                videoItem.innerHTML = `
+                    <video controls>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4" type="video/mp4">
+                    </video>
+                    <div class="label">Video Avatar Lip-Sync</div>
+                    <div class="actions">
+                        <button class="btn" onclick="downloadVideo(this)">Download</button>
+                    </div>
+                `;
+                contentResults.appendChild(videoItem);
+                showNotification('Video lip-sync completed!');
+            }, 3500);
+        }
+
+        function generateVideoContent() {
+            const script = document.getElementById('videoScriptInput').value;
+            const voiceFile = document.getElementById('videoVoiceInput').files[0];
+            
+            if (!script.trim()) {
+                showNotification('Please enter a script');
+                return;
+            }
+            
+            showNotification('Generating video content...');
+            
+            setTimeout(() => {
+                const contentResults = document.getElementById('videoContentResults');
+                const videoItem = document.createElement('div');
+                videoItem.className = 'content-item';
+                videoItem.innerHTML = `
+                    <video controls>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
+                    </video>
+                    <div class="label">Generated Video Content</div>
+                    <div class="actions">
+                        <button class="btn" onclick="downloadVideo(this)">Download</button>
+                    </div>
+                `;
+                contentResults.appendChild(videoItem);
+                showNotification('Video content generated!');
+            }, 4000);
+        }
+
+        function renderFinalVideo() {
+            showNotification('Rendering final 1080p video...');
+            
+            setTimeout(() => {
+                const finalOutput = document.getElementById('finalVideoOutput');
+                const videoItem = document.createElement('div');
+                videoItem.className = 'content-item';
+                videoItem.innerHTML = `
+                    <video controls>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    </video>
+                    <div class="label">Final 1080p Video</div>
+                    <div class="actions">
+                        <button class="btn" onclick="downloadVideo(this)">Download 1080p</button>
+                        <button class="btn btn-secondary" onclick="shareVideo(this)">Share</button>
+                    </div>
+                `;
+                finalOutput.appendChild(videoItem);
+                showNotification('Final video rendered successfully!');
+            }, 5000);
+        }
+
+        // Utility functions
+        function downloadVideo(button) {
+            showNotification('Download started!');
+        }
+
+        function downloadImage(button) {
+            showNotification('Download started!');
+        }
+
+        function shareVideo(button) {
+            showNotification('Share options opened!');
+        }
+
+        // Quality and duration selectors
+        document.addEventListener('DOMContentLoaded', function() {
+            // Duration selector
+            document.querySelectorAll('.quality-option[data-duration]').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.quality-option[data-duration]').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedDuration = parseInt(this.dataset.duration);
+                });
+            });
+            
+            // Quality selector
+            document.querySelectorAll('.quality-option[data-quality]').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.quality-option[data-quality]').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedQuality = this.dataset.quality;
+                });
+            });
+            
+            // Drag and drop functionality
+            ['photo', 'video'].forEach(type => {
+                const uploadArea = document.querySelector(`#${type}-tab .upload-area`);
+                if (uploadArea) {
+                    uploadArea.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        this.classList.add('dragover');
+                    });
+                    
+                    uploadArea.addEventListener('dragleave', function(e) {
+                        e.preventDefault();
+                        this.classList.remove('dragover');
+                    });
+                    
+                    uploadArea.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        this.classList.remove('dragover');
+                        
+                        const files = Array.from(e.dataTransfer.files);
+                        const input = this.querySelector('input[type="file"]');
+                        
+                        if (input) {
+                            // Trigger the same logic as file input
+                            const event = new Event('change');
+                            Object.defineProperty(event, 'target', {
+                                value: { files: files },
+                                enumerable: true
+                            });
+                            input.dispatchEvent(event);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
