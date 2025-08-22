@@ -115,7 +115,7 @@ const VideoPage: React.FC = () => {
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Video creation failed');
+        throw new (window as any).Error('Video creation failed');
       }
 
       // For demo, use a placeholder video

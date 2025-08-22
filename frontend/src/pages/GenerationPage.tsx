@@ -73,7 +73,7 @@ const GenerationPage: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Generation failed');
+        throw new (window as any).Error('Generation failed');
       }
 
       const result = await response.json();

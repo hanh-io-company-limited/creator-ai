@@ -74,7 +74,7 @@ const UploadPage: React.FC = () => {
       setUploadProgress(100);
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        throw new (window as any).Error('Upload failed');
       }
 
       const result = await response.json();
@@ -112,7 +112,7 @@ const UploadPage: React.FC = () => {
       });
       
       if (!response.ok) {
-        throw new Error('Training start failed');
+        throw new (window as any).Error('Training start failed');
       }
       
       const result = await response.json();

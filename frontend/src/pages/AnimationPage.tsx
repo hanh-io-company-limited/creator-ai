@@ -100,7 +100,7 @@ const AnimationPage: React.FC = () => {
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Animation creation failed');
+        throw new (window as any).Error('Animation creation failed');
       }
 
       // For demo, use a placeholder gif

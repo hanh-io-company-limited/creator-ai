@@ -1,0 +1,49 @@
+# Development Docker Compose Configuration
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - AI_MODELS_URL=http://ai-models:8000
+    volumes:
+      - ./uploads:/app/uploads
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    depends_on:
+      - ai-models
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:3001/api
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    depends_on:
+      - backend
+
+  ai-models:
+    build:
+      context: ./ai-models
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./ai-models:/app
+      - ./uploads:/app/uploads
+
+volumes:
+  uploads_data:
