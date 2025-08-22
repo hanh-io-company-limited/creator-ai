@@ -1,12 +1,223 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Complete Content Creation Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🎬 Creator AI</h1>
+                <p>Complete Content Creation Platform</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="demo@creatorai.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="demo123">
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+                <div class="demo-credentials">
+                    <p><strong>Demo Credentials:</strong></p>
+                    <p>Email: demo@creatorai.com</p>
+                    <p>Password: demo123</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="screen hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>🎬 Creator AI</h1>
+                <nav class="main-nav">
+                    <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+                    <button class="nav-btn" data-section="media">Media Library</button>
+                    <button class="nav-btn" data-section="video">Video Creator</button>
+                    <button class="nav-btn" data-section="projects">Projects</button>
+                    <button class="nav-btn" data-section="chat">Collaboration</button>
+                </nav>
+            </div>
+            <div class="header-right">
+                <span id="userEmail" class="user-info"></span>
+                <button id="logoutBtn" class="btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>📊 Quick Stats</h3>
+                        <div class="stats">
+                            <div class="stat">
+                                <span class="stat-number" id="projectCount">0</span>
+                                <span class="stat-label">Projects</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number" id="mediaCount">0</span>
+                                <span class="stat-label">Media Files</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number" id="videoCount">0</span>
+                                <span class="stat-label">Videos</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>🕒 Recent Activity</h3>
+                        <div id="recentActivity" class="activity-list">
+                            <p class="no-activity">No recent activity</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>🚀 Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="action-btn" data-action="new-project">New Project</button>
+                            <button class="action-btn" data-action="upload-media">Upload Media</button>
+                            <button class="action-btn" data-action="create-video">Create Video</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Media Library Section -->
+            <section id="media" class="content-section">
+                <div class="section-header">
+                    <h2>📁 Media Library</h2>
+                    <div class="section-actions">
+                        <input type="file" id="mediaFileInput" multiple accept="image/*,video/*,audio/*" style="display: none;">
+                        <button id="uploadBtn" class="btn-primary">Upload Files</button>
+                        <select id="mediaFilter" class="filter-select">
+                            <option value="all">All Files</option>
+                            <option value="image">Images</option>
+                            <option value="video">Videos</option>
+                            <option value="audio">Audio</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="mediaDropZone" class="drop-zone">
+                    <div class="drop-zone-content">
+                        <p>📁 Drag and drop files here or click upload</p>
+                        <p class="drop-zone-note">Supports images, videos, and audio files</p>
+                    </div>
+                </div>
+                <div id="mediaGrid" class="media-grid"></div>
+            </section>
+
+            <!-- Video Creator Section -->
+            <section id="video" class="content-section">
+                <div class="section-header">
+                    <h2>🎬 Video Creator</h2>
+                    <div class="section-actions">
+                        <button id="newVideoBtn" class="btn-primary">New Video</button>
+                        <button id="exportVideoBtn" class="btn-secondary">Export Video</button>
+                    </div>
+                </div>
+                <div class="video-creator">
+                    <div class="video-preview">
+                        <video id="videoPreview" controls>
+                            <source src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="preview-controls">
+                            <button id="playBtn">▶️</button>
+                            <button id="pauseBtn">⏸️</button>
+                            <button id="stopBtn">⏹️</button>
+                        </div>
+                    </div>
+                    <div class="timeline-container">
+                        <h3>Timeline</h3>
+                        <div id="timeline" class="timeline">
+                            <div class="timeline-track" data-track="video">
+                                <div class="track-label">Video</div>
+                                <div class="track-content" id="videoTrack"></div>
+                            </div>
+                            <div class="timeline-track" data-track="audio">
+                                <div class="track-label">Audio</div>
+                                <div class="track-content" id="audioTrack"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="content-section">
+                <div class="section-header">
+                    <h2>📋 Projects</h2>
+                    <div class="section-actions">
+                        <button id="newProjectBtn" class="btn-primary">New Project</button>
+                    </div>
+                </div>
+                <div id="projectsGrid" class="projects-grid"></div>
+            </section>
+
+            <!-- Collaboration Section -->
+            <section id="chat" class="content-section">
+                <div class="section-header">
+                    <h2>💬 Collaboration Chat</h2>
+                    <div class="section-actions">
+                        <span class="status-indicator">🟢 Offline Mode</span>
+                    </div>
+                </div>
+                <div class="chat-container">
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="Type your message..." class="chat-input">
+                        <button id="sendChatBtn" class="btn-primary">Send</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="projectModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Project</h3>
+                <button class="modal-close" data-modal="projectModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="projectForm">
+                    <div class="form-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Description</label>
+                        <textarea id="projectDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectType">Type</label>
+                        <select id="projectType">
+                            <option value="video">Video Project</option>
+                            <option value="audio">Audio Project</option>
+                            <option value="image">Image Project</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" data-modal="projectModal">Cancel</button>
+                <button type="submit" form="projectForm" class="btn-primary">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
