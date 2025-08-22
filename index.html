@@ -3,10 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Trí tuệ nhân tạo sáng tạo thông minh</title>
+    <meta name="description" content="Nền tảng AI Creator thông minh với khả năng tạo avatar, xử lý hình ảnh 4K, và tích hợp đám mây">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%238B5CF6'/><stop offset='100%' style='stop-color:%23A855F7'/></linearGradient></defs><circle cx='50' cy='50' r='40' fill='url(%23grad)'/><text x='50' y='60' text-anchor='middle' font-family='Arial' font-size='30' fill='white'>AI</text></svg>">
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Khởi tạo Creator AI...</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">AI</div>
+                <span class="brand-text">Creator AI</span>
+            </div>
+            <div class="nav-links">
+                <button class="nav-link active" data-section="home">
+                    <span class="nav-icon">🏠</span>
+                    <span data-lang="nav.home">Trang chủ</span>
+                </button>
+                <button class="nav-link" data-section="avatar">
+                    <span class="nav-icon">👤</span>
+                    <span data-lang="nav.avatar">Tạo Avatar</span>
+                </button>
+                <button class="nav-link" data-section="enhance">
+                    <span class="nav-icon">✨</span>
+                    <span data-lang="nav.enhance">Nâng cấp 4K</span>
+                </button>
+                <button class="nav-link" data-section="sync">
+                    <span class="nav-icon">☁️</span>
+                    <span data-lang="nav.sync">Đồng bộ</span>
+                </button>
+                <button class="nav-link" data-section="logs">
+                    <span class="nav-icon">📋</span>
+                    <span data-lang="nav.logs">Nhật ký</span>
+                </button>
+                <button class="nav-link" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span data-lang="nav.settings">Cài đặt</span>
+                </button>
+            </div>
+            <div class="nav-actions">
+                <button class="language-toggle" id="language-toggle">
+                    <span class="flag">🇻🇳</span>
+                    <span class="lang-text">VI</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title" data-lang="hero.title">
+                        Trí tuệ nhân tạo sáng tạo thông minh
+                    </h1>
+                    <p class="hero-subtitle" data-lang="hero.subtitle">
+                        Tạo avatar từ hình ảnh và video với công nghệ AI tiên tiến. Nâng cấp chất lượng lên 4K và đồng bộ toàn bộ dữ liệu lên đám mây.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="navigateToSection('avatar')" data-lang="hero.start">
+                            Bắt đầu tạo Avatar
+                        </button>
+                        <button class="btn btn-secondary" onclick="navigateToSection('enhance')" data-lang="hero.enhance">
+                            Nâng cấp 4K
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="ai-visualization">
+                        <div class="ai-core"></div>
+                        <div class="ai-rings">
+                            <div class="ring ring-1"></div>
+                            <div class="ring ring-2"></div>
+                            <div class="ring ring-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3 data-lang="features.avatar.title">Tạo Avatar thông minh</h3>
+                    <p data-lang="features.avatar.desc">Tạo avatar sống động từ 1-10 ảnh chân dung hoặc video ngắn 3-5 giây với công nghệ AI tiên tiến</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 data-lang="features.enhance.title">Nâng cấp 4K</h3>
+                    <p data-lang="features.enhance.desc">Tăng cường chất lượng hình ảnh lên 4K và xuất video chất lượng cao 1080p</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎵</div>
+                    <h3 data-lang="features.voice.title">Đồng bộ giọng nói</h3>
+                    <p data-lang="features.voice.desc">Hỗ trợ đầu vào văn bản và file MP3 để tạo video với khẩu hình và giọng nói đồng bộ</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">☁️</div>
+                    <h3 data-lang="features.cloud.title">Đồng bộ đám mây</h3>
+                    <p data-lang="features.cloud.desc">Tự động đồng bộ tất cả mô hình và dữ liệu lên OneDrive để quản lý hiệu quả</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 data-lang="features.ai.title">AI tự học</h3>
+                    <p data-lang="features.ai.desc">Hệ thống AI học và phát triển không giới hạn từ dữ liệu người dùng</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 data-lang="features.analytics.title">Theo dõi chi tiết</h3>
+                    <p data-lang="features.analytics.desc">Ghi lại mọi hoạt động và cung cấp báo cáo chi tiết về quá trình xử lý</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Avatar Creation Section -->
+        <section id="avatar" class="section">
+            <div class="section-header">
+                <h2 data-lang="avatar.title">Tạo Avatar từ ảnh và video</h2>
+                <p data-lang="avatar.subtitle">Tải lên tối đa 10 ảnh chân dung hoặc video ngắn để tạo avatar sống động</p>
+            </div>
+
+            <div class="upload-area">
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">📷</div>
+                    <h3 data-lang="upload.title">Kéo & thả file vào đây</h3>
+                    <p data-lang="upload.subtitle">Hỗ trợ: JPG, PNG, MP4, MOV (tối đa 10 file)</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()" data-lang="upload.browse">
+                        Chọn file
+                    </button>
+                    <input type="file" id="file-input" multiple accept="image/*,video/*" style="display: none;">
+                </div>
+
+                <div class="upload-preview" id="upload-preview">
+                    <!-- Upload previews will be inserted here -->
+                </div>
+            </div>
+
+            <div class="avatar-options">
+                <div class="option-group">
+                    <h4 data-lang="avatar.options.style">Phong cách Avatar</h4>
+                    <div class="option-buttons">
+                        <button class="option-btn active" data-style="realistic">
+                            <span class="option-icon">👤</span>
+                            <span data-lang="avatar.style.realistic">Thực tế</span>
+                        </button>
+                        <button class="option-btn" data-style="cartoon">
+                            <span class="option-icon">🎨</span>
+                            <span data-lang="avatar.style.cartoon">Hoạt hình</span>
+                        </button>
+                        <button class="option-btn" data-style="anime">
+                            <span class="option-icon">🌸</span>
+                            <span data-lang="avatar.style.anime">Anime</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <h4 data-lang="avatar.options.quality">Chất lượng đầu ra</h4>
+                    <div class="option-buttons">
+                        <button class="option-btn" data-quality="1080p">
+                            <span class="option-icon">📺</span>
+                            <span>1080p</span>
+                        </button>
+                        <button class="option-btn active" data-quality="4k">
+                            <span class="option-icon">🔍</span>
+                            <span>4K Ultra HD</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="processing-area" id="processing-area" style="display: none;">
+                <div class="processing-status">
+                    <div class="progress-circle">
+                        <div class="progress-inner">
+                            <span class="progress-percent">0%</span>
+                        </div>
+                    </div>
+                    <div class="processing-info">
+                        <h4 data-lang="processing.title">Đang xử lý Avatar...</h4>
+                        <p class="processing-step" data-lang="processing.analyzing">Phân tích đặc điểm khuôn mặt</p>
+                        <div class="processing-timeline">
+                            <div class="timeline-step active">
+                                <span class="step-icon">👁️</span>
+                                <span data-lang="timeline.analysis">Phân tích</span>
+                            </div>
+                            <div class="timeline-step">
+                                <span class="step-icon">🧠</span>
+                                <span data-lang="timeline.training">Huấn luyện</span>
+                            </div>
+                            <div class="timeline-step">
+                                <span class="step-icon">🎬</span>
+                                <span data-lang="timeline.generation">Tạo Avatar</span>
+                            </div>
+                            <div class="timeline-step">
+                                <span class="step-icon">✨</span>
+                                <span data-lang="timeline.enhancement">Nâng cấp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="avatar-actions">
+                <button class="btn btn-primary" id="create-avatar-btn" onclick="startAvatarCreation()" data-lang="avatar.create">
+                    Tạo Avatar
+                </button>
+                <button class="btn btn-secondary" onclick="addTextInput()" data-lang="avatar.add_text">
+                    Thêm văn bản
+                </button>
+                <button class="btn btn-secondary" onclick="addAudioInput()" data-lang="avatar.add_audio">
+                    Thêm âm thanh
+                </button>
+            </div>
+        </section>
+
+        <!-- Enhancement Section -->
+        <section id="enhance" class="section">
+            <div class="section-header">
+                <h2 data-lang="enhance.title">Nâng cấp chất lượng 4K</h2>
+                <p data-lang="enhance.subtitle">Tăng cường chất lượng hình ảnh và video với AI tiên tiến</p>
+            </div>
+
+            <div class="enhance-grid">
+                <div class="enhance-option">
+                    <div class="enhance-icon">🖼️</div>
+                    <h3 data-lang="enhance.image.title">Nâng cấp hình ảnh</h3>
+                    <p data-lang="enhance.image.desc">Tăng độ phân giải lên 4K với AI super-resolution</p>
+                    <button class="btn btn-primary" onclick="openImageEnhancer()" data-lang="enhance.image.start">
+                        Bắt đầu
+                    </button>
+                </div>
+                <div class="enhance-option">
+                    <div class="enhance-icon">🎥</div>
+                    <h3 data-lang="enhance.video.title">Nâng cấp video</h3>
+                    <p data-lang="enhance.video.desc">Xuất video chất lượng cao 1080p với khẩu hình đồng bộ</p>
+                    <button class="btn btn-primary" onclick="openVideoEnhancer()" data-lang="enhance.video.start">
+                        Bắt đầu
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cloud Sync Section -->
+        <section id="sync" class="section">
+            <div class="section-header">
+                <h2 data-lang="sync.title">Đồng bộ đám mây</h2>
+                <p data-lang="sync.subtitle">Quản lý và đồng bộ dữ liệu với OneDrive</p>
+            </div>
+
+            <div class="sync-status">
+                <div class="sync-info">
+                    <div class="sync-icon">☁️</div>
+                    <div class="sync-details">
+                        <h3 data-lang="sync.status">Trạng thái đồng bộ</h3>
+                        <p class="sync-last-update" data-lang="sync.last_update">Lần cập nhật cuối: Chưa đồng bộ</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="connectOneDrive()" data-lang="sync.connect">
+                        Kết nối OneDrive
+                    </button>
+                </div>
+            </div>
+
+            <div class="sync-options">
+                <div class="sync-option">
+                    <input type="checkbox" id="sync-models" checked>
+                    <label for="sync-models" data-lang="sync.models">Đồng bộ mô hình AI</label>
+                </div>
+                <div class="sync-option">
+                    <input type="checkbox" id="sync-results" checked>
+                    <label for="sync-results" data-lang="sync.results">Đồng bộ kết quả xử lý</label>
+                </div>
+                <div class="sync-option">
+                    <input type="checkbox" id="sync-logs" checked>
+                    <label for="sync-logs" data-lang="sync.logs">Đồng bộ nhật ký hoạt động</label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Logs Section -->
+        <section id="logs" class="section">
+            <div class="section-header">
+                <h2 data-lang="logs.title">Nhật ký hoạt động</h2>
+                <p data-lang="logs.subtitle">Theo dõi tất cả hoạt động của hệ thống</p>
+            </div>
+
+            <div class="logs-filters">
+                <button class="filter-btn active" data-filter="all" data-lang="logs.filter.all">Tất cả</button>
+                <button class="filter-btn" data-filter="upload" data-lang="logs.filter.upload">Tải lên</button>
+                <button class="filter-btn" data-filter="processing" data-lang="logs.filter.processing">Xử lý</button>
+                <button class="filter-btn" data-filter="sync" data-lang="logs.filter.sync">Đồng bộ</button>
+                <button class="filter-btn" data-filter="error" data-lang="logs.filter.error">Lỗi</button>
+            </div>
+
+            <div class="logs-container" id="logs-container">
+                <!-- Logs will be populated here -->
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="section">
+            <div class="section-header">
+                <h2 data-lang="settings.title">Cài đặt hệ thống</h2>
+                <p data-lang="settings.subtitle">Tùy chỉnh và cấu hình hệ thống AI</p>
+            </div>
+
+            <div class="settings-grid">
+                <div class="settings-group">
+                    <h3 data-lang="settings.ai.title">Cài đặt AI</h3>
+                    <div class="setting-item">
+                        <label data-lang="settings.ai.learning">Cho phép AI tự học</label>
+                        <input type="checkbox" id="ai-learning" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label data-lang="settings.ai.unlimited">Sáng tạo không giới hạn</label>
+                        <input type="checkbox" id="ai-unlimited" checked>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3 data-lang="settings.quality.title">Chất lượng</h3>
+                    <div class="setting-item">
+                        <label data-lang="settings.quality.default">Chất lượng mặc định</label>
+                        <select id="default-quality">
+                            <option value="1080p">1080p</option>
+                            <option value="4k" selected>4K</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3 data-lang="settings.storage.title">Lưu trữ</h3>
+                    <div class="setting-item">
+                        <label data-lang="settings.storage.auto_sync">Tự động đồng bộ</label>
+                        <input type="checkbox" id="auto-sync" checked>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="scripts.js"></script>
 </body>
 </html>
