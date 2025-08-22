@@ -3,10 +3,1225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Công cụ tạo nội dung AI</title>
+    
+    <!-- Embedded CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-tertiary: #f3f4f6;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-tertiary: #374151;
+            --border-color: #4b5563;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .logo::before {
+            content: "🤖";
+            font-size: 2rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Tool Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tool-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .tool-card.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Workspace */
+        .workspace {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .workspace.active {
+            display: block;
+        }
+
+        .workspace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .workspace-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .workspace-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Output Area */
+        .output-area {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            min-height: 200px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .workspace-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .workspace-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mt-2 { margin-top: 1rem; }
+        .p-2 { padding: 1rem; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 1rem; }
+        .w-full { width: 100%; }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Creator AI</div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-tab="home">Trang chủ</a>
+                    <a href="#" class="nav-link" data-tab="text">Văn bản</a>
+                    <a href="#" class="nav-link" data-tab="image">Hình ảnh</a>
+                    <a href="#" class="nav-link" data-tab="content">Nội dung</a>
+                    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1>Creator AI</h1>
+                <p>Công cụ tạo nội dung AI toàn diện - Tạo văn bản, hình ảnh và nội dung sáng tạo với sức mạnh trí tuệ nhân tạo</p>
+            </section>
+
+            <!-- Home Tab -->
+            <div id="home-tab" class="tab-content active">
+                <div class="tools-grid">
+                    <div class="tool-card" onclick="switchTab('text')">
+                        <div class="tool-icon">✍️</div>
+                        <div class="tool-title">Tạo văn bản AI</div>
+                        <div class="tool-description">Tạo blog, bài viết, email và nội dung văn bản chất lượng cao với AI</div>
+                    </div>
+                    
+                    <div class="tool-card" onclick="switchTab('image')">
+                        <div class="tool-icon">🎨</div>
+                        <div class="tool-title">Tạo prompt hình ảnh</div>
+                        <div class="tool-description">Tạo prompt chi tiết để tạo hình ảnh AI tuyệt đẹp</div>
+                    </div>
+                    
+                    <div class="tool-card" onclick="switchTab('content')">
+                        <div class="tool-icon">📋</div>
+                        <div class="tool-title">Lập kế hoạch nội dung</div>
+                        <div class="tool-description">Tạo lịch nội dung và chiến lược marketing toàn diện</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Generation Tab -->
+            <div id="text-tab" class="tab-content">
+                <div class="workspace">
+                    <div class="workspace-header">
+                        <div class="workspace-title">🤖 Tạo văn bản AI</div>
+                        <div class="workspace-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="clearTextOutput()">Xóa</button>
+                            <button class="btn btn-success btn-sm" onclick="copyToClipboard('text-output')">Sao chép</button>
+                            <button class="btn btn-warning btn-sm" onclick="exportText()">Xuất file</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Loại nội dung</label>
+                        <select class="form-select" id="text-type">
+                            <option value="blog">Bài viết blog</option>
+                            <option value="email">Email marketing</option>
+                            <option value="social">Bài viết mạng xã hội</option>
+                            <option value="product">Mô tả sản phẩm</option>
+                            <option value="story">Câu chuyện</option>
+                            <option value="technical">Văn bản kỹ thuật</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Chủ đề hoặc từ khóa</label>
+                        <input type="text" class="form-input" id="text-topic" placeholder="Nhập chủ đề bạn muốn viết về...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Độ dài mong muốn</label>
+                        <select class="form-select" id="text-length">
+                            <option value="short">Ngắn (100-300 từ)</option>
+                            <option value="medium">Trung bình (300-600 từ)</option>
+                            <option value="long">Dài (600-1000 từ)</option>
+                            <option value="very-long">Rất dài (1000+ từ)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tông điệu</label>
+                        <select class="form-select" id="text-tone">
+                            <option value="professional">Chuyên nghiệp</option>
+                            <option value="casual">Thân thiện</option>
+                            <option value="creative">Sáng tạo</option>
+                            <option value="formal">Trang trọng</option>
+                            <option value="humorous">Hài hước</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Yêu cầu bổ sung (tùy chọn)</label>
+                        <textarea class="form-textarea" id="text-requirements" placeholder="Thêm yêu cầu cụ thể về nội dung, cấu trúc, hoặc phong cách..."></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary w-full" onclick="generateText()">
+                        <span id="text-generate-icon">✨</span>
+                        <span id="text-generate-text">Tạo nội dung</span>
+                    </button>
+                    
+                    <div class="progress-bar hidden" id="text-progress">
+                        <div class="progress-fill"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Kết quả</label>
+                        <div class="output-area" id="text-output">Nội dung được tạo sẽ hiển thị ở đây...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Prompt Tab -->
+            <div id="image-tab" class="tab-content">
+                <div class="workspace">
+                    <div class="workspace-header">
+                        <div class="workspace-title">🎨 Tạo prompt hình ảnh AI</div>
+                        <div class="workspace-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="clearImageOutput()">Xóa</button>
+                            <button class="btn btn-success btn-sm" onclick="copyToClipboard('image-output')">Sao chép</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Chủ đề hình ảnh</label>
+                        <input type="text" class="form-input" id="image-subject" placeholder="Mô tả chủ đề chính của hình ảnh...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phong cách nghệ thuật</label>
+                        <select class="form-select" id="image-style">
+                            <option value="photorealistic">Ảnh thực tế</option>
+                            <option value="digital-art">Nghệ thuật số</option>
+                            <option value="oil-painting">Tranh sơn dầu</option>
+                            <option value="watercolor">Màu nước</option>
+                            <option value="anime">Anime/Manga</option>
+                            <option value="cartoon">Hoạt hình</option>
+                            <option value="abstract">Trừu tượng</option>
+                            <option value="minimalist">Tối giản</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Màu sắc chủ đạo</label>
+                        <select class="form-select" id="image-colors">
+                            <option value="vibrant">Sống động</option>
+                            <option value="pastel">Pastel</option>
+                            <option value="monochrome">Đơn sắc</option>
+                            <option value="warm">Tông ấm</option>
+                            <option value="cool">Tông lạnh</option>
+                            <option value="natural">Tự nhiên</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Độ phức tạp</label>
+                        <select class="form-select" id="image-complexity">
+                            <option value="simple">Đơn giản</option>
+                            <option value="detailed">Chi tiết</option>
+                            <option value="highly-detailed">Rất chi tiết</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Yêu cầu bổ sung</label>
+                        <textarea class="form-textarea" id="image-requirements" placeholder="Thêm yêu cầu về ánh sáng, góc chụp, cảm xúc..."></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary w-full" onclick="generateImagePrompt()">
+                        <span id="image-generate-icon">🎨</span>
+                        <span id="image-generate-text">Tạo prompt</span>
+                    </button>
+                    
+                    <div class="progress-bar hidden" id="image-progress">
+                        <div class="progress-fill"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Prompt được tạo</label>
+                        <div class="output-area" id="image-output">Prompt hình ảnh sẽ hiển thị ở đây...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Planning Tab -->
+            <div id="content-tab" class="tab-content">
+                <div class="workspace">
+                    <div class="workspace-header">
+                        <div class="workspace-title">📋 Lập kế hoạch nội dung</div>
+                        <div class="workspace-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="clearContentOutput()">Xóa</button>
+                            <button class="btn btn-success btn-sm" onclick="copyToClipboard('content-output')">Sao chép</button>
+                            <button class="btn btn-warning btn-sm" onclick="exportContent()">Xuất CSV</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Lĩnh vực/Ngành</label>
+                        <select class="form-select" id="content-industry">
+                            <option value="technology">Công nghệ</option>
+                            <option value="business">Kinh doanh</option>
+                            <option value="health">Sức khỏe</option>
+                            <option value="education">Giáo dục</option>
+                            <option value="entertainment">Giải trí</option>
+                            <option value="food">Ẩm thực</option>
+                            <option value="travel">Du lịch</option>
+                            <option value="fashion">Thời trang</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nền tảng</label>
+                        <select class="form-select" id="content-platform">
+                            <option value="blog">Blog/Website</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="twitter">Twitter/X</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Thời gian (tuần)</label>
+                        <select class="form-select" id="content-duration">
+                            <option value="1">1 tuần</option>
+                            <option value="2">2 tuần</option>
+                            <option value="4">1 tháng</option>
+                            <option value="12">3 tháng</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tần suất đăng</label>
+                        <select class="form-select" id="content-frequency">
+                            <option value="daily">Hàng ngày</option>
+                            <option value="3-times-week">3 lần/tuần</option>
+                            <option value="weekly">Hàng tuần</option>
+                            <option value="bi-weekly">2 tuần/lần</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Mục tiêu chính</label>
+                        <select class="form-select" id="content-goal">
+                            <option value="awareness">Tăng nhận biết thương hiệu</option>
+                            <option value="engagement">Tăng tương tác</option>
+                            <option value="leads">Tạo khách hàng tiềm năng</option>
+                            <option value="sales">Tăng doanh số</option>
+                            <option value="education">Giáo dục khách hàng</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary w-full" onclick="generateContentPlan()">
+                        <span id="content-generate-icon">📅</span>
+                        <span id="content-generate-text">Tạo kế hoạch</span>
+                    </button>
+                    
+                    <div class="progress-bar hidden" id="content-progress">
+                        <div class="progress-fill"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Kế hoạch nội dung</label>
+                        <div class="output-area" id="content-output">Kế hoạch nội dung sẽ hiển thị ở đây...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        // Global state
+        let currentTheme = 'light';
+        let isGenerating = false;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+            setupNavigation();
+            setupEventListeners();
+        });
+
+        // Theme management
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('creator-ai-theme');
+            if (savedTheme) {
+                currentTheme = savedTheme;
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                updateThemeButton();
+            }
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('creator-ai-theme', currentTheme);
+            updateThemeButton();
+        }
+
+        function updateThemeButton() {
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Navigation
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tab = link.getAttribute('data-tab');
+                    switchTab(tab);
+                });
+            });
+        }
+
+        function switchTab(tabName) {
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-tab') === tabName) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        function setupEventListeners() {
+            // Enter key listeners for inputs
+            const inputs = document.querySelectorAll('.form-input, .form-textarea');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        const currentTab = document.querySelector('.tab-content.active').id;
+                        if (currentTab === 'text-tab') generateText();
+                        else if (currentTab === 'image-tab') generateImagePrompt();
+                        else if (currentTab === 'content-tab') generateContentPlan();
+                    }
+                });
+            });
+        }
+
+        // Progress bar animation
+        function animateProgress(elementId, duration = 3000) {
+            const progressBar = document.getElementById(elementId);
+            const progressFill = progressBar.querySelector('.progress-fill');
+            
+            progressBar.classList.remove('hidden');
+            progressFill.style.width = '0%';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+            }, 200);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                progressFill.style.width = '100%';
+                setTimeout(() => {
+                    progressBar.classList.add('hidden');
+                }, 500);
+            }, duration);
+        }
+
+        // Text Generation
+        function generateText() {
+            if (isGenerating) return;
+            isGenerating = true;
+
+            const type = document.getElementById('text-type').value;
+            const topic = document.getElementById('text-topic').value;
+            const length = document.getElementById('text-length').value;
+            const tone = document.getElementById('text-tone').value;
+            const requirements = document.getElementById('text-requirements').value;
+
+            if (!topic.trim()) {
+                alert('Vui lòng nhập chủ đề!');
+                isGenerating = false;
+                return;
+            }
+
+            // Update UI
+            const button = document.querySelector('#text-tab .btn-primary');
+            const icon = document.getElementById('text-generate-icon');
+            const text = document.getElementById('text-generate-text');
+            
+            icon.innerHTML = '<span class="spinner"></span>';
+            text.textContent = 'Đang tạo...';
+            button.classList.add('loading');
+
+            animateProgress('text-progress');
+
+            // Simulate AI generation
+            setTimeout(() => {
+                const content = generateMockTextContent(type, topic, length, tone, requirements);
+                document.getElementById('text-output').textContent = content;
+                
+                // Reset UI
+                icon.textContent = '✨';
+                text.textContent = 'Tạo nội dung';
+                button.classList.remove('loading');
+                isGenerating = false;
+            }, 3500);
+        }
+
+        function generateMockTextContent(type, topic, length, tone, requirements) {
+            const templates = {
+                blog: `# ${topic}
+
+## Giới thiệu
+${topic} đang trở thành một xu hướng quan trọng trong thời đại hiện tại. Với sự phát triển không ngừng của công nghệ, chúng ta có thể thấy những thay đổi đáng kể trong cách tiếp cận và ứng dụng ${topic}.
+
+## Tầm quan trọng của ${topic}
+Việc hiểu rõ về ${topic} sẽ giúp chúng ta:
+- Nắm bắt được những cơ hội mới
+- Tối ưu hóa hiệu quả công việc
+- Phát triển kỹ năng cần thiết cho tương lai
+
+## Ứng dụng thực tế
+${topic} có thể được áp dụng trong nhiều lĩnh vực khác nhau, từ kinh doanh đến đời sống hàng ngày. Những ví dụ cụ thể bao gồm...
+
+## Kết luận
+Tóm lại, ${topic} là một chủ đề đáng để chúng ta quan tâm và đầu tư thời gian tìm hiểu. Với những thông tin đã chia sẻ, hy vọng bạn có thể áp dụng vào thực tế một cách hiệu quả.`,
+
+                email: `Chủ đề: Khám phá ${topic} - Cơ hội không thể bỏ qua!
+
+Xin chào [Tên khách hàng],
+
+Bạn có biết rằng ${topic} đang tạo ra những thay đổi đáng kể trong ngành không?
+
+Tôi muốn chia sẻ với bạn những thông tin quan trọng về ${topic} và cách nó có thể mang lại lợi ích cho doanh nghiệp của bạn.
+
+🔥 Những lợi ích chính:
+• Tăng hiệu quả công việc
+• Tiết kiệm thời gian và chi phí
+• Cải thiện trải nghiệm khách hàng
+
+Để tìm hiểu thêm, hãy liên hệ với chúng tôi ngay hôm nay!
+
+Trân trọng,
+[Tên của bạn]`,
+
+                social: `🌟 ${topic} - Xu hướng mới không thể bỏ qua! 🌟
+
+Bạn đã sẵn sàng khám phá ${topic} chưa? 
+
+✨ Những điều thú vị về ${topic}:
+🔸 Tiềm năng phát triển mạnh mẽ
+🔸 Ứng dụng đa dạng trong cuộc sống
+🔸 Cơ hội học hỏi và phát triển
+
+💡 Chia sẻ suy nghĩ của bạn về ${topic} trong phần bình luận nhé!
+
+#${topic.replace(/\s+/g, '')} #Innovation #Technology #Future`,
+
+                product: `${topic} - Giải pháp hoàn hảo cho nhu cầu của bạn
+
+⭐ Tính năng nổi bật:
+• Chất lượng cao, độ bền vượt trội
+• Thiết kế hiện đại, tiện dụng
+• Dễ sử dụng và bảo trì
+
+🎯 Phù hợp cho:
+- Người dùng cá nhân
+- Doanh nghiệp vừa và nhỏ
+- Các tổ chức lớn
+
+💰 Giá cả cạnh tranh với chất lượng đảm bảo
+🚚 Giao hàng nhanh chóng toàn quốc
+🛡️ Bảo hành chính hãng
+
+Đặt hàng ngay để nhận ưu đãi đặc biệt!`,
+
+                story: `${topic}
+
+Ngày nọ, trong một thế giới không xa lắm, có một câu chuyện về ${topic} đầy thú vị...
+
+Nhân vật chính của chúng ta bắt đầu hành trình khám phá ${topic} với những điều bất ngờ. Qua từng bước đi, họ học được những bài học quý giá về cuộc sống và ý nghĩa thực sự của ${topic}.
+
+Trong quá trình khám phá, họ gặp phải nhiều thử thách, nhưng cũng có những khoảnh khắc đầy cảm hứng. Mỗi trải nghiệm đều mang lại những hiểu biết mới về bản thân và thế giới xung quanh.
+
+Cuối cùng, câu chuyện kết thúc với một thông điệp ý nghĩa về ${topic} và cách nó có thể thay đổi cuộc sống chúng ta theo hướng tích cực.`,
+
+                technical: `Tài liệu kỹ thuật: ${topic}
+
+1. TỔNG QUAN
+${topic} là một khái niệm/công nghệ quan trọng trong lĩnh vực kỹ thuật hiện đại. Việc hiểu rõ và áp dụng đúng ${topic} sẽ mang lại hiệu quả cao trong công việc.
+
+2. YÊU CẦU KỸ THUẬT
+- Kiến thức cơ bản về lĩnh vực liên quan
+- Hiểu biết về các công cụ và phương pháp
+- Kinh nghiệm thực tế trong triển khai
+
+3. HƯỚNG DẪN TRIỂN KHAI
+Bước 1: Chuẩn bị môi trường và công cụ
+Bước 2: Thiết lập cấu hình ban đầu
+Bước 3: Thực hiện theo quy trình chuẩn
+Bước 4: Kiểm tra và tối ưu hóa
+
+4. LƯU Ý VÀ KHUYẾN NGHỊ
+- Tuân thủ các tiêu chuẩn an toàn
+- Thực hiện sao lưu định kỳ
+- Cập nhật thường xuyên`
+            };
+
+            return templates[type] || templates.blog;
+        }
+
+        function clearTextOutput() {
+            document.getElementById('text-output').textContent = 'Nội dung được tạo sẽ hiển thị ở đây...';
+        }
+
+        // Image Prompt Generation
+        function generateImagePrompt() {
+            if (isGenerating) return;
+            isGenerating = true;
+
+            const subject = document.getElementById('image-subject').value;
+            const style = document.getElementById('image-style').value;
+            const colors = document.getElementById('image-colors').value;
+            const complexity = document.getElementById('image-complexity').value;
+            const requirements = document.getElementById('image-requirements').value;
+
+            if (!subject.trim()) {
+                alert('Vui lòng nhập chủ đề hình ảnh!');
+                isGenerating = false;
+                return;
+            }
+
+            // Update UI
+            const button = document.querySelector('#image-tab .btn-primary');
+            const icon = document.getElementById('image-generate-icon');
+            const text = document.getElementById('image-generate-text');
+            
+            icon.innerHTML = '<span class="spinner"></span>';
+            text.textContent = 'Đang tạo...';
+            button.classList.add('loading');
+
+            animateProgress('image-progress');
+
+            setTimeout(() => {
+                const prompt = generateMockImagePrompt(subject, style, colors, complexity, requirements);
+                document.getElementById('image-output').textContent = prompt;
+                
+                // Reset UI
+                icon.textContent = '🎨';
+                text.textContent = 'Tạo prompt';
+                button.classList.remove('loading');
+                isGenerating = false;
+            }, 3500);
+        }
+
+        function generateMockImagePrompt(subject, style, colors, complexity, requirements) {
+            const styleMap = {
+                photorealistic: 'photorealistic, professional photography, high resolution, sharp focus',
+                'digital-art': 'digital art, concept art, trending on artstation, detailed',
+                'oil-painting': 'oil painting, classical art style, painterly, textured brushstrokes',
+                watercolor: 'watercolor painting, soft colors, flowing, artistic',
+                anime: 'anime style, manga art, Japanese animation, detailed character design',
+                cartoon: 'cartoon style, animated, colorful, playful art style',
+                abstract: 'abstract art, geometric shapes, modern art, avant-garde',
+                minimalist: 'minimalist design, clean lines, simple composition, elegant'
+            };
+
+            const colorMap = {
+                vibrant: 'vibrant colors, saturated, bright, energetic color palette',
+                pastel: 'pastel colors, soft tones, gentle hues, dreamy atmosphere',
+                monochrome: 'monochrome, black and white, grayscale, dramatic contrast',
+                warm: 'warm color palette, reds, oranges, yellows, cozy atmosphere',
+                cool: 'cool color palette, blues, greens, purples, serene mood',
+                natural: 'natural colors, earth tones, organic color scheme'
+            };
+
+            const complexityMap = {
+                simple: 'simple composition, clean, uncluttered',
+                detailed: 'detailed, intricate, well-crafted',
+                'highly-detailed': 'highly detailed, ultra-detailed, masterpiece, 8k quality'
+            };
+
+            let prompt = `${subject}, ${styleMap[style]}, ${colorMap[colors]}, ${complexityMap[complexity]}`;
+            
+            if (requirements.trim()) {
+                prompt += `, ${requirements}`;
+            }
+
+            prompt += ', high quality, professional, artistic composition';
+
+            return `PROMPT CHO AI TẠO HÌNH ẢNH:
+
+"${prompt}"
+
+PROMPT TIẾNG ANH (để sử dụng với các AI tools):
+"${prompt}"
+
+NEGATIVE PROMPT (những gì cần tránh):
+"blurry, low quality, distorted, ugly, bad anatomy, extra limbs, watermark, text"
+
+GỢI Ý SỬ DỤNG:
+- Sử dụng với Midjourney, DALL-E, Stable Diffusion
+- Có thể điều chỉnh độ mạnh (strength) từ 0.7-1.0
+- Thử nghiệm với các tỷ lệ khác nhau (16:9, 1:1, 9:16)
+- Thêm "--ar 16:9" cho Midjourney để có tỷ lệ phù hợp`;
+        }
+
+        function clearImageOutput() {
+            document.getElementById('image-output').textContent = 'Prompt hình ảnh sẽ hiển thị ở đây...';
+        }
+
+        // Content Planning
+        function generateContentPlan() {
+            if (isGenerating) return;
+            isGenerating = true;
+
+            const industry = document.getElementById('content-industry').value;
+            const platform = document.getElementById('content-platform').value;
+            const duration = parseInt(document.getElementById('content-duration').value);
+            const frequency = document.getElementById('content-frequency').value;
+            const goal = document.getElementById('content-goal').value;
+
+            // Update UI
+            const button = document.querySelector('#content-tab .btn-primary');
+            const icon = document.getElementById('content-generate-icon');
+            const text = document.getElementById('content-generate-text');
+            
+            icon.innerHTML = '<span class="spinner"></span>';
+            text.textContent = 'Đang tạo...';
+            button.classList.add('loading');
+
+            animateProgress('content-progress');
+
+            setTimeout(() => {
+                const plan = generateMockContentPlan(industry, platform, duration, frequency, goal);
+                document.getElementById('content-output').textContent = plan;
+                
+                // Reset UI
+                icon.textContent = '📅';
+                text.textContent = 'Tạo kế hoạch';
+                button.classList.remove('loading');
+                isGenerating = false;
+            }, 3500);
+        }
+
+        function generateMockContentPlan(industry, platform, duration, frequency, goal) {
+            const industryTopics = {
+                technology: ['AI và Machine Learning', 'Cybersecurity', 'Cloud Computing', 'Mobile Apps', 'IoT', 'Blockchain'],
+                business: ['Leadership', 'Digital Marketing', 'E-commerce', 'Startup Tips', 'Productivity', 'Team Management'],
+                health: ['Dinh dưỡng', 'Tập luyện', 'Sức khỏe tinh thần', 'Y học', 'Wellness', 'Phòng bệnh'],
+                education: ['Học online', 'Kỹ năng mềm', 'Nghề nghiệp', 'Giáo dục trẻ em', 'Ngôn ngữ', 'Khoa học'],
+                entertainment: ['Phim ảnh', 'Âm nhạc', 'Game', 'Sách', 'Du lịch', 'Ẩm thực'],
+                food: ['Công thức nấu ăn', 'Dinh dưỡng', 'Nhà hàng', 'Ẩm thực địa phương', 'Baking', 'Healthy food'],
+                travel: ['Điểm đến', 'Kinh nghiệm du lịch', 'Budget travel', 'Food & Culture', 'Adventure', 'City guides'],
+                fashion: ['Xu hướng thời trang', 'Style tips', 'Sustainable fashion', 'Beauty', 'Accessories', 'Outfit ideas']
+            };
+
+            const frequencyMap = {
+                daily: 7,
+                '3-times-week': 3,
+                weekly: 1,
+                'bi-weekly': 0.5
+            };
+
+            const totalPosts = Math.ceil(duration * frequencyMap[frequency]);
+            const topics = industryTopics[industry] || industryTopics.business;
+            
+            let plan = `KẾ HOẠCH NỘI DUNG ${duration} TUẦN - ${platform.toUpperCase()}
+=================================================
+
+📊 THỐNG KÊ TỔNG QUAN:
+• Thời gian: ${duration} tuần
+• Tần suất: ${frequency === 'daily' ? 'Hàng ngày' : frequency === '3-times-week' ? '3 lần/tuần' : frequency === 'weekly' ? 'Hàng tuần' : '2 tuần/lần'}
+• Tổng số bài đăng: ${totalPosts}
+• Mục tiêu: ${goal === 'awareness' ? 'Tăng nhận biết thương hiệu' : goal === 'engagement' ? 'Tăng tương tác' : goal === 'leads' ? 'Tạo khách hàng tiềm năng' : goal === 'sales' ? 'Tăng doanh số' : 'Giáo dục khách hàng'}
+
+🎯 CHIẾN LƯỢC NỘI DUNG:
+`;
+
+            // Generate weekly breakdown
+            for (let week = 1; week <= duration; week++) {
+                plan += `\n📅 TUẦN ${week}:\n`;
+                
+                const postsThisWeek = Math.ceil(frequencyMap[frequency]);
+                for (let post = 1; post <= postsThisWeek; post++) {
+                    const topic = topics[Math.floor(Math.random() * topics.length)];
+                    const contentTypes = ['Video', 'Infographic', 'Article', 'Tips', 'Behind-the-scenes', 'User-generated content'];
+                    const contentType = contentTypes[Math.floor(Math.random() * contentTypes.length)];
+                    
+                    plan += `  ${post}. ${topic} (${contentType})\n`;
+                    plan += `     • Hashtags: #${topic.replace(/\s+/g, '').toLowerCase()} #${industry} #tips\n`;
+                    plan += `     • Call-to-action: Tương tác, chia sẻ kinh nghiệm\n`;
+                }
+            }
+
+            plan += `\n📈 METRICS ĐỂ THEO DÕI:
+• Lượt tiếp cận (Reach)
+• Tương tác (Engagement Rate)
+• Số lượng theo dõi mới
+• Click-through rate (CTR)
+• Conversion rate (nếu có)
+
+💡 GỢI Ý THỰC HIỆN:
+• Sử dụng công cụ lập lịch đăng (Buffer, Hootsuite)
+• Chuẩn bị nội dung trước 1 tuần
+• Phân tích hiệu quả hàng tuần để điều chỉnh
+• Tương tác với audience trong 1-2 giờ sau khi đăng
+• A/B test với các format khác nhau
+
+🔄 CONTENT MIX ĐỀ XUẤT:
+• 40% - Nội dung giáo dục/thông tin
+• 30% - Nội dung giải trí/inspiration
+• 20% - Behind-the-scenes/personal
+• 10% - Promotional content`;
+
+            return plan;
+        }
+
+        function clearContentOutput() {
+            document.getElementById('content-output').textContent = 'Kế hoạch nội dung sẽ hiển thị ở đây...';
+        }
+
+        // Utility Functions
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Show feedback
+                const originalText = element.textContent;
+                element.textContent = '✅ Đã sao chép vào clipboard!';
+                setTimeout(() => {
+                    element.textContent = originalText;
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                const originalText = element.textContent;
+                element.textContent = '✅ Đã sao chép!';
+                setTimeout(() => {
+                    element.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function exportText() {
+            const content = document.getElementById('text-output').textContent;
+            if (content === 'Nội dung được tạo sẽ hiển thị ở đây...') {
+                alert('Chưa có nội dung để xuất!');
+                return;
+            }
+            
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `creator-ai-content-${Date.now()}.txt`;
+            link.click();
+        }
+
+        function exportContent() {
+            const content = document.getElementById('content-output').textContent;
+            if (content === 'Kế hoạch nội dung sẽ hiển thị ở đây...') {
+                alert('Chưa có kế hoạch để xuất!');
+                return;
+            }
+            
+            // Convert to CSV format (simplified)
+            const csvContent = content.replace(/\n/g, '\r\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `creator-ai-plan-${Date.now()}.csv`;
+            link.click();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        switchTab('home');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        switchTab('text');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        switchTab('image');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        switchTab('content');
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        toggleTheme();
+                        break;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
