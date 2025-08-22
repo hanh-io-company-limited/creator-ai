@@ -1,12 +1,138 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Video Avatar Creator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <div class="container">
+        <header>
+            <h1>Creator AI</h1>
+            <p>Create stunning video avatars with AI-powered lip sync and emotion generation</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Video Upload Section -->
+            <section class="upload-section">
+                <h2>1. Upload Your Video Avatar</h2>
+                <div class="upload-area" id="videoUploadArea">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">📹</div>
+                        <p>Drop your 3-5 second video here or click to browse</p>
+                        <small>Supported formats: MP4, MOV, AVI (Max: 50MB)</small>
+                    </div>
+                    <input type="file" id="videoInput" accept="video/*" hidden>
+                </div>
+                <div class="video-preview" id="videoPreview" style="display: none;">
+                    <video controls id="uploadedVideo"></video>
+                    <div class="video-info">
+                        <span id="videoFileName"></span>
+                        <span id="videoDuration"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audio Upload Section -->
+            <section class="upload-section">
+                <h2>2. Upload Audio for Lip Sync</h2>
+                <div class="upload-area" id="audioUploadArea">
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">🎵</div>
+                        <p>Drop your audio file here or click to browse</p>
+                        <small>Supported formats: MP3, WAV, M4A (Max: 20MB)</small>
+                    </div>
+                    <input type="file" id="audioInput" accept="audio/*" hidden>
+                </div>
+                <div class="audio-preview" id="audioPreview" style="display: none;">
+                    <audio controls id="uploadedAudio"></audio>
+                    <div class="audio-info">
+                        <span id="audioFileName"></span>
+                        <span id="audioDuration"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Text Script Section -->
+            <section class="script-section">
+                <h2>3. Enter Your Script (Optional)</h2>
+                <div class="script-input">
+                    <textarea id="scriptText" placeholder="Enter the script you want your avatar to speak. The AI will generate speech and sync it with your video avatar."></textarea>
+                    <div class="script-options">
+                        <label>
+                            <input type="checkbox" id="useUploadedVoice"> Use uploaded audio voice profile
+                        </label>
+                        <select id="voiceSelect">
+                            <option value="neutral">Neutral Voice</option>
+                            <option value="friendly">Friendly Voice</option>
+                            <option value="professional">Professional Voice</option>
+                            <option value="energetic">Energetic Voice</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Processing Controls -->
+            <section class="controls-section">
+                <h2>4. Generate Your Video</h2>
+                <div class="quality-options">
+                    <label>Output Quality:</label>
+                    <select id="qualitySelect">
+                        <option value="1080p">1080p (Recommended)</option>
+                        <option value="720p">720p</option>
+                        <option value="480p">480p</option>
+                    </select>
+                </div>
+                <button id="generateBtn" class="generate-btn" disabled>
+                    Generate AI Video Avatar
+                </button>
+            </section>
+
+            <!-- Processing Status -->
+            <section class="status-section" id="statusSection" style="display: none;">
+                <h2>Processing Status</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="status-text" id="statusText">Initializing...</div>
+                </div>
+                <div class="processing-steps">
+                    <div class="step" id="step1">
+                        <span class="step-icon">⏳</span>
+                        <span>Analyzing video avatar</span>
+                    </div>
+                    <div class="step" id="step2">
+                        <span class="step-icon">⏳</span>
+                        <span>Processing audio features</span>
+                    </div>
+                    <div class="step" id="step3">
+                        <span class="step-icon">⏳</span>
+                        <span>Generating lip sync</span>
+                    </div>
+                    <div class="step" id="step4">
+                        <span class="step-icon">⏳</span>
+                        <span>Rendering final video</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Output Section -->
+            <section class="output-section" id="outputSection" style="display: none;">
+                <h2>Your Generated Video</h2>
+                <div class="output-video">
+                    <video controls id="outputVideo" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23666'%3EGenerated Video Preview%3C/text%3E%3C/svg%3E"></video>
+                </div>
+                <div class="output-actions">
+                    <button class="download-btn">Download Video (1080p)</button>
+                    <button class="share-btn">Share</button>
+                    <button class="restart-btn">Create Another</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
