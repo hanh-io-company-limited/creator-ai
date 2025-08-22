@@ -3,10 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Hệ thống tạo Avatar AI</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Creator AI</h1>
+                <p>Hệ thống tạo Avatar AI chuyên nghiệp</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Nhập email của bạn">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mật khẩu:</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Nhập mật khẩu">
+                </div>
+                
+                <button type="submit" class="login-btn">Đăng nhập</button>
+                
+                <div id="loginError" class="error-message" style="display: none;">
+                    Email hoặc mật khẩu không đúng!
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardScreen" class="screen">
+        <header class="dashboard-header">
+            <h1>Creator AI Dashboard</h1>
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button id="logoutBtn" class="logout-btn">Đăng xuất</button>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="section-tabs">
+                <button class="tab-btn active" data-section="photo">
+                    <span class="tab-icon">📸</span>
+                    Avatar từ Ảnh
+                </button>
+                <button class="tab-btn" data-section="video">
+                    <span class="tab-icon">🎥</span>
+                    Avatar từ Video
+                </button>
+            </div>
+
+            <!-- Photo-based Avatar Section -->
+            <section id="photoSection" class="content-section active">
+                <div class="section-header">
+                    <h2>Tạo Avatar từ Ảnh</h2>
+                    <p>Tải lên tối đa 10 ảnh cận cảnh để tạo avatar AI chuyên nghiệp</p>
+                </div>
+
+                <div class="workflow-steps">
+                    <!-- Step 1: Upload Photos -->
+                    <div class="step-card">
+                        <h3>Bước 1: Tải lên ảnh cận cảnh</h3>
+                        <div class="upload-area" id="photoUpload">
+                            <div class="upload-placeholder">
+                                <span class="upload-icon">📷</span>
+                                <p>Kéo thả hoặc nhấp để tải lên ảnh</p>
+                                <p class="upload-note">Tối đa 10 ảnh, định dạng JPG/PNG</p>
+                            </div>
+                            <input type="file" id="photoInput" multiple accept="image/*" style="display: none;">
+                        </div>
+                        <div id="photoPreview" class="image-preview-grid"></div>
+                        <button id="trainBtn" class="action-btn" disabled>
+                            🎯 Đào tạo Model
+                        </button>
+                        <div id="trainingProgress" class="progress-indicator" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <p>Đang phân tích đặc điểm khuôn mặt...</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Generate Avatar -->
+                    <div class="step-card">
+                        <h3>Bước 2: Tạo Avatar mới</h3>
+                        <div class="form-group">
+                            <label for="textPrompt">Lời nhắc văn bản:</label>
+                            <textarea id="textPrompt" placeholder="Mô tả avatar bạn muốn tạo..."></textarea>
+                        </div>
+                        <button id="generateBtn" class="action-btn" disabled>
+                            ✨ Tạo Avatar (4 ảnh)
+                        </button>
+                        <div id="avatarResults" class="avatar-grid"></div>
+                    </div>
+
+                    <!-- Step 3: Add Motion -->
+                    <div class="step-card">
+                        <h3>Bước 3: Thêm chuyển động</h3>
+                        <div class="selected-avatar">
+                            <p>Chọn một avatar để thêm chuyển động:</p>
+                            <div id="selectedAvatar" class="avatar-selection"></div>
+                        </div>
+                        <div class="motion-controls">
+                            <label>
+                                <input type="range" id="motionDuration" min="5" max="10" value="5">
+                                Thời lượng: <span id="durationValue">5</span> giây
+                            </label>
+                        </div>
+                        <button id="addMotionBtn" class="action-btn" disabled>
+                            🎬 Thêm chuyển động
+                        </button>
+                    </div>
+
+                    <!-- Step 4: Upscale -->
+                    <div class="step-card">
+                        <h3>Bước 4: Nâng cấp chất lượng</h3>
+                        <button id="upscaleBtn" class="action-btn" disabled>
+                            📈 Nâng cấp lên 4K
+                        </button>
+                        <div id="upscaleProgress" class="progress-indicator" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <p>Đang nâng cấp độ phân giải...</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Create Video -->
+                    <div class="step-card">
+                        <h3>Bước 5: Tạo Video</h3>
+                        <div class="video-options">
+                            <div class="option-tabs">
+                                <button class="option-tab active" data-option="audio">Đồng bộ âm thanh</button>
+                                <button class="option-tab" data-option="script">Kịch bản văn bản</button>
+                            </div>
+                            
+                            <div id="audioOption" class="option-content active">
+                                <div class="form-group">
+                                    <label for="audioUpload">Tải lên file âm thanh (MP3):</label>
+                                    <input type="file" id="audioUpload" accept="audio/mp3">
+                                </div>
+                            </div>
+                            
+                            <div id="scriptOption" class="option-content">
+                                <div class="form-group">
+                                    <label for="scriptText">Kịch bản văn bản:</label>
+                                    <textarea id="scriptText" placeholder="Nhập nội dung bạn muốn avatar nói..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="voiceUpload">Tải lên mẫu giọng nói:</label>
+                                    <input type="file" id="voiceUpload" accept="audio/*">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="createVideoBtn" class="action-btn" disabled>
+                            🎥 Tạo Video 1080p
+                        </button>
+                        
+                        <div id="videoResult" class="video-result"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video-based Avatar Section -->
+            <section id="videoSection" class="content-section">
+                <div class="section-header">
+                    <h2>Tạo Avatar từ Video</h2>
+                    <p>Tải lên video ngắn 3-5 giây để tạo avatar AI</p>
+                </div>
+
+                <div class="workflow-steps">
+                    <!-- Step 1: Upload Video -->
+                    <div class="step-card">
+                        <h3>Bước 1: Tải lên video ngắn</h3>
+                        <div class="upload-area" id="videoUpload">
+                            <div class="upload-placeholder">
+                                <span class="upload-icon">🎬</span>
+                                <p>Kéo thả hoặc nhấp để tải lên video</p>
+                                <p class="upload-note">3-5 giây, định dạng MP4/MOV</p>
+                            </div>
+                            <input type="file" id="videoInput" accept="video/*" style="display: none;">
+                        </div>
+                        <div id="videoPreview" class="video-preview"></div>
+                    </div>
+
+                    <!-- Step 2: AI Processing -->
+                    <div class="step-card">
+                        <h3>Bước 2: Xử lý AI</h3>
+                        <button id="processVideoBtn" class="action-btn" disabled>
+                            🤖 Xử lý video AI
+                        </button>
+                        <div id="videoProcessProgress" class="progress-indicator" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <p>Đang tạo avatar từ video...</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Create Content -->
+                    <div class="step-card">
+                        <h3>Bước 3: Tạo nội dung</h3>
+                        <div class="video-content-options">
+                            <div class="option-tabs">
+                                <button class="option-tab active" data-option="videoAudio">Đồng bộ âm thanh</button>
+                                <button class="option-tab" data-option="videoScript">Kịch bản văn bản</button>
+                            </div>
+                            
+                            <div id="videoAudioOption" class="option-content active">
+                                <div class="form-group">
+                                    <label for="videoAudioUpload">Tải lên file âm thanh (MP3):</label>
+                                    <input type="file" id="videoAudioUpload" accept="audio/mp3">
+                                </div>
+                            </div>
+                            
+                            <div id="videoScriptOption" class="option-content">
+                                <div class="form-group">
+                                    <label for="videoScriptText">Kịch bản văn bản:</label>
+                                    <textarea id="videoScriptText" placeholder="Nhập nội dung bạn muốn avatar nói..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="videoVoiceUpload">Tải lên mẫu giọng nói:</label>
+                                    <input type="file" id="videoVoiceUpload" accept="audio/*">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="createVideoContentBtn" class="action-btn" disabled>
+                            🎥 Tạo Video 1080p
+                        </button>
+                        
+                        <div id="videoContentResult" class="video-result"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
