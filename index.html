@@ -1,12 +1,1095 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Avatar & Video Generator</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-area {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .preview-container {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 15px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-canvas,
+        .video-preview {
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            margin-top: 15px;
+            display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .color-option.selected {
+            border-color: #2d3748;
+        }
+
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .video-controls {
+            margin-top: 15px;
+        }
+
+        .video-controls button {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Creator AI</h1>
+            <p>Generate Amazing Avatars & Videos with AI Technology</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Avatar Generator -->
+            <div class="card">
+                <h2>🧑‍🎨 Avatar Generator</h2>
+                
+                <div class="form-group">
+                    <label for="avatar-style">Avatar Style</label>
+                    <select id="avatar-style">
+                        <option value="realistic">Realistic</option>
+                        <option value="cartoon">Cartoon</option>
+                        <option value="anime">Anime</option>
+                        <option value="pixel">Pixel Art</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="avatar-gender">Gender</label>
+                    <select id="avatar-gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="non-binary">Non-binary</option>
+                        <option value="random">Random</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Skin Tone</label>
+                    <div class="color-picker" id="skin-colors">
+                        <div class="color-option" style="background: #FFDBAC;" data-color="#FFDBAC"></div>
+                        <div class="color-option" style="background: #F1C27D;" data-color="#F1C27D"></div>
+                        <div class="color-option" style="background: #E0AC69;" data-color="#E0AC69"></div>
+                        <div class="color-option" style="background: #C68642;" data-color="#C68642"></div>
+                        <div class="color-option" style="background: #8D5524;" data-color="#8D5524"></div>
+                        <div class="color-option" style="background: #5B3A1A;" data-color="#5B3A1A"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Hair Color</label>
+                    <div class="color-picker" id="hair-colors">
+                        <div class="color-option" style="background: #2C1B18;" data-color="#2C1B18"></div>
+                        <div class="color-option" style="background: #B55239;" data-color="#B55239"></div>
+                        <div class="color-option" style="background: #DEAA87;" data-color="#DEAA87"></div>
+                        <div class="color-option" style="background: #F2E6A1;" data-color="#F2E6A1"></div>
+                        <div class="color-option" style="background: #CCCCCC;" data-color="#CCCCCC"></div>
+                        <div class="color-option" style="background: #FF0080;" data-color="#FF0080"></div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="generateAvatar()">
+                    <span id="avatar-btn-text">Generate Avatar</span>
+                </button>
+
+                <div class="progress-bar" id="avatar-progress">
+                    <div class="progress-fill" id="avatar-progress-fill"></div>
+                </div>
+
+                <div class="preview-area">
+                    <div class="preview-container" id="avatar-preview">
+                        <p>Your generated avatar will appear here</p>
+                    </div>
+                    <button class="btn download-btn" id="download-avatar" onclick="downloadAvatar()">
+                        📥 Download Avatar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Generator -->
+            <div class="card">
+                <h2>🎬 Video Generator</h2>
+                
+                <div class="form-group">
+                    <label for="video-theme">Video Theme</label>
+                    <select id="video-theme">
+                        <option value="nature">Nature & Landscapes</option>
+                        <option value="abstract">Abstract Art</option>
+                        <option value="space">Space & Cosmos</option>
+                        <option value="underwater">Underwater</option>
+                        <option value="city">Urban Cityscape</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="video-duration">Duration (seconds)</label>
+                    <input type="range" id="video-duration" class="slider" min="5" max="30" value="10">
+                    <span id="duration-display">10 seconds</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="video-style">Animation Style</label>
+                    <select id="video-style">
+                        <option value="smooth">Smooth Transitions</option>
+                        <option value="dynamic">Dynamic Movement</option>
+                        <option value="subtle">Subtle Animation</option>
+                        <option value="artistic">Artistic Effects</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="video-prompt">Custom Description (Optional)</label>
+                    <textarea id="video-prompt" rows="3" placeholder="Describe your vision for the video..."></textarea>
+                </div>
+
+                <button class="btn" onclick="generateVideo()">
+                    <span id="video-btn-text">Generate Video</span>
+                </button>
+
+                <div class="progress-bar" id="video-progress">
+                    <div class="progress-fill" id="video-progress-fill"></div>
+                </div>
+
+                <div class="preview-area">
+                    <div class="preview-container" id="video-preview">
+                        <p>Your generated video will appear here</p>
+                    </div>
+                    <div class="video-controls" id="video-controls" style="display: none;">
+                        <button onclick="playPauseVideo()">▶️ Play/Pause</button>
+                        <button onclick="restartVideo()">🔄 Restart</button>
+                    </div>
+                    <button class="btn download-btn" id="download-video" onclick="downloadVideo()">
+                        📥 Download Video
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>AI-Powered</h3>
+                <p>Advanced algorithms create unique content every time</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>Instant Download</h3>
+                <p>Download your creations directly to your device</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Mobile Friendly</h3>
+                <p>Works perfectly on all devices and browsers</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Customizable</h3>
+                <p>Full control over style, colors, and animations</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentAvatar = null;
+        let currentVideo = null;
+        let selectedSkinColor = '#FFDBAC';
+        let selectedHairColor = '#2C1B18';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeColorPickers();
+            initializeSliders();
+        });
+
+        // Color picker initialization
+        function initializeColorPickers() {
+            // Skin color picker
+            const skinColors = document.querySelectorAll('#skin-colors .color-option');
+            skinColors[0].classList.add('selected'); // Default selection
+            
+            skinColors.forEach(color => {
+                color.addEventListener('click', function() {
+                    skinColors.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedSkinColor = this.dataset.color;
+                });
+            });
+
+            // Hair color picker
+            const hairColors = document.querySelectorAll('#hair-colors .color-option');
+            hairColors[0].classList.add('selected'); // Default selection
+            
+            hairColors.forEach(color => {
+                color.addEventListener('click', function() {
+                    hairColors.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedHairColor = this.dataset.color;
+                });
+            });
+        }
+
+        // Slider initialization
+        function initializeSliders() {
+            const durationSlider = document.getElementById('video-duration');
+            const durationDisplay = document.getElementById('duration-display');
+            
+            durationSlider.addEventListener('input', function() {
+                durationDisplay.textContent = this.value + ' seconds';
+            });
+        }
+
+        // Avatar generation function
+        async function generateAvatar() {
+            const btn = document.getElementById('avatar-btn-text');
+            const progress = document.getElementById('avatar-progress');
+            const progressFill = document.getElementById('avatar-progress-fill');
+            const preview = document.getElementById('avatar-preview');
+            const downloadBtn = document.getElementById('download-avatar');
+
+            // Show loading state
+            btn.innerHTML = '<span class="loading"></span>Generating...';
+            progress.style.display = 'block';
+            downloadBtn.style.display = 'none';
+
+            // Simulate AI processing with progress
+            for (let i = 0; i <= 100; i += 10) {
+                progressFill.style.width = i + '%';
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            // Get user preferences
+            const style = document.getElementById('avatar-style').value;
+            const gender = document.getElementById('avatar-gender').value;
+
+            // Generate avatar
+            const canvas = createAvatarCanvas(style, gender, selectedSkinColor, selectedHairColor);
+            currentAvatar = canvas;
+
+            // Display result
+            preview.innerHTML = '';
+            preview.appendChild(canvas);
+            
+            // Reset UI
+            btn.textContent = 'Generate New Avatar';
+            progress.style.display = 'none';
+            downloadBtn.style.display = 'inline-block';
+        }
+
+        // Create avatar canvas
+        function createAvatarCanvas(style, gender, skinColor, hairColor) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 300;
+            canvas.height = 300;
+            canvas.className = 'avatar-canvas';
+            const ctx = canvas.getContext('2d');
+
+            // Background
+            ctx.fillStyle = '#f0f8ff';
+            ctx.fillRect(0, 0, 300, 300);
+
+            // Face
+            ctx.fillStyle = skinColor;
+            ctx.beginPath();
+            ctx.arc(150, 150, 80, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair based on style
+            if (style === 'cartoon') {
+                drawCartoonHair(ctx, hairColor, gender);
+            } else if (style === 'anime') {
+                drawAnimeHair(ctx, hairColor, gender);
+            } else if (style === 'pixel') {
+                drawPixelHair(ctx, hairColor, gender);
+            } else {
+                drawRealisticHair(ctx, hairColor, gender);
+            }
+
+            // Eyes
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(130, 130, 12, 0, Math.PI * 2);
+            ctx.arc(170, 130, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#333333';
+            ctx.beginPath();
+            ctx.arc(130, 130, 6, 0, Math.PI * 2);
+            ctx.arc(170, 130, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose
+            ctx.fillStyle = adjustColorBrightness(skinColor, -20);
+            ctx.beginPath();
+            ctx.arc(150, 150, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mouth
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(150, 170, 15, 0, Math.PI);
+            ctx.stroke();
+
+            // Add style-specific details
+            if (style === 'pixel') {
+                addPixelEffect(ctx);
+            }
+
+            return canvas;
+        }
+
+        // Hair drawing functions
+        function drawCartoonHair(ctx, color, gender) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            if (gender === 'female') {
+                // Long hair
+                ctx.arc(150, 100, 90, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillRect(60, 140, 180, 100);
+            } else {
+                // Short hair
+                ctx.arc(150, 100, 85, 0, Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function drawAnimeHair(ctx, color, gender) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            // Spiky anime hair
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2;
+                const x = 150 + Math.cos(angle) * (gender === 'female' ? 100 : 90);
+                const y = 100 + Math.sin(angle) * (gender === 'female' ? 80 : 70);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawPixelHair(ctx, color, gender) {
+            ctx.fillStyle = color;
+            const pixelSize = 10;
+            const pattern = gender === 'female' ? 
+                [[1,1,1,1,1,1,1,1,1],
+                 [1,1,1,1,1,1,1,1,1],
+                 [1,1,0,1,1,1,0,1,1],
+                 [1,1,1,1,1,1,1,1,1]] :
+                [[1,1,1,1,1,1,1],
+                 [1,1,1,1,1,1,1],
+                 [1,1,0,1,0,1,1]];
+            
+            for (let y = 0; y < pattern.length; y++) {
+                for (let x = 0; x < pattern[y].length; x++) {
+                    if (pattern[y][x]) {
+                        ctx.fillRect(105 + x * pixelSize, 70 + y * pixelSize, pixelSize, pixelSize);
+                    }
+                }
+            }
+        }
+
+        function drawRealisticHair(ctx, color, gender) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            // Realistic hair with gradient
+            const gradient = ctx.createRadialGradient(150, 80, 20, 150, 120, 80);
+            gradient.addColorStop(0, adjustColorBrightness(color, 30));
+            gradient.addColorStop(1, color);
+            ctx.fillStyle = gradient;
+            
+            if (gender === 'female') {
+                ctx.ellipse(150, 100, 95, 85, 0, 0, Math.PI * 2);
+            } else {
+                ctx.ellipse(150, 100, 85, 70, 0, 0, Math.PI);
+            }
+            ctx.fill();
+        }
+
+        function addPixelEffect(ctx) {
+            const imageData = ctx.getImageData(0, 0, 300, 300);
+            const pixelSize = 3;
+            
+            for (let y = 0; y < 300; y += pixelSize) {
+                for (let x = 0; x < 300; x += pixelSize) {
+                    const index = (y * 300 + x) * 4;
+                    const r = imageData.data[index];
+                    const g = imageData.data[index + 1];
+                    const b = imageData.data[index + 2];
+                    
+                    ctx.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx.fillRect(x, y, pixelSize, pixelSize);
+                }
+            }
+        }
+
+        // Video generation function
+        async function generateVideo() {
+            const btn = document.getElementById('video-btn-text');
+            const progress = document.getElementById('video-progress');
+            const progressFill = document.getElementById('video-progress-fill');
+            const preview = document.getElementById('video-preview');
+            const downloadBtn = document.getElementById('download-video');
+            const controls = document.getElementById('video-controls');
+
+            // Show loading state
+            btn.innerHTML = '<span class="loading"></span>Generating...';
+            progress.style.display = 'block';
+            downloadBtn.style.display = 'none';
+            controls.style.display = 'none';
+
+            // Simulate AI processing with progress
+            for (let i = 0; i <= 100; i += 5) {
+                progressFill.style.width = i + '%';
+                await new Promise(resolve => setTimeout(resolve, 150));
+            }
+
+            // Get user preferences
+            const theme = document.getElementById('video-theme').value;
+            const duration = parseInt(document.getElementById('video-duration').value);
+            const style = document.getElementById('video-style').value;
+
+            // Generate video
+            const canvas = createVideoCanvas(theme, duration, style);
+            currentVideo = canvas;
+
+            // Display result
+            preview.innerHTML = '';
+            preview.appendChild(canvas);
+            
+            // Reset UI
+            btn.textContent = 'Generate New Video';
+            progress.style.display = 'none';
+            downloadBtn.style.display = 'inline-block';
+            controls.style.display = 'block';
+
+            // Start animation
+            startVideoAnimation(canvas, theme, duration, style);
+        }
+
+        // Create video canvas
+        function createVideoCanvas(theme, duration, style) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 300;
+            canvas.className = 'video-preview';
+            canvas.style.border = '2px solid #e2e8f0';
+            
+            // Add data attributes for animation
+            canvas.dataset.theme = theme;
+            canvas.dataset.duration = duration;
+            canvas.dataset.style = style;
+            canvas.dataset.playing = 'true';
+            
+            return canvas;
+        }
+
+        // Start video animation
+        function startVideoAnimation(canvas, theme, duration, style) {
+            const ctx = canvas.getContext('2d');
+            let frame = 0;
+            const totalFrames = duration * 30; // 30 FPS
+            let animationId;
+
+            function animate() {
+                if (canvas.dataset.playing !== 'true') return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw based on theme
+                switch (theme) {
+                    case 'nature':
+                        drawNatureScene(ctx, frame, totalFrames, style);
+                        break;
+                    case 'abstract':
+                        drawAbstractScene(ctx, frame, totalFrames, style);
+                        break;
+                    case 'space':
+                        drawSpaceScene(ctx, frame, totalFrames, style);
+                        break;
+                    case 'underwater':
+                        drawUnderwaterScene(ctx, frame, totalFrames, style);
+                        break;
+                    case 'city':
+                        drawCityScene(ctx, frame, totalFrames, style);
+                        break;
+                }
+
+                frame++;
+                if (frame >= totalFrames) {
+                    frame = 0; // Loop
+                }
+
+                animationId = requestAnimationFrame(animate);
+            }
+
+            canvas.animationId = animationId;
+            animate();
+        }
+
+        // Video scene drawing functions
+        function drawNatureScene(ctx, frame, totalFrames, style) {
+            const progress = frame / totalFrames;
+            
+            // Sky gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+            gradient.addColorStop(0, `hsl(${200 + Math.sin(progress * Math.PI * 2) * 20}, 70%, 80%)`);
+            gradient.addColorStop(1, `hsl(${120 + Math.sin(progress * Math.PI * 2) * 30}, 60%, 70%)`);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 400, 150);
+
+            // Mountains
+            ctx.fillStyle = '#4a5568';
+            ctx.beginPath();
+            ctx.moveTo(0, 150);
+            for (let x = 0; x <= 400; x += 20) {
+                const y = 150 - Math.sin((x + frame * 2) * 0.01) * 50 - 30;
+                ctx.lineTo(x, y);
+            }
+            ctx.lineTo(400, 300);
+            ctx.lineTo(0, 300);
+            ctx.fill();
+
+            // Trees (animated swaying)
+            for (let i = 0; i < 5; i++) {
+                const x = 50 + i * 70;
+                const sway = Math.sin((frame + i * 30) * 0.1) * 5;
+                
+                ctx.fillStyle = '#8b4513';
+                ctx.fillRect(x + sway, 200, 10, 50);
+                
+                ctx.fillStyle = '#228b22';
+                ctx.beginPath();
+                ctx.arc(x + 5 + sway, 190, 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Animated clouds
+            for (let i = 0; i < 3; i++) {
+                const x = (100 + i * 150 + frame * 0.5) % 450 - 50;
+                drawCloud(ctx, x, 30 + i * 20);
+            }
+        }
+
+        function drawAbstractScene(ctx, frame, totalFrames, style) {
+            const progress = frame / totalFrames;
+            
+            // Animated background
+            for (let i = 0; i < 10; i++) {
+                const hue = (i * 36 + frame * 2) % 360;
+                ctx.fillStyle = `hsla(${hue}, 70%, 60%, 0.3)`;
+                
+                const size = 50 + Math.sin(progress * Math.PI * 2 + i) * 20;
+                const x = 100 + Math.cos(progress * Math.PI * 2 + i * 0.5) * 100;
+                const y = 100 + Math.sin(progress * Math.PI * 2 + i * 0.3) * 80;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Geometric patterns
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 20; i++) {
+                const angle = (i / 20) * Math.PI * 2 + progress * Math.PI * 2;
+                const x1 = 200 + Math.cos(angle) * 50;
+                const y1 = 150 + Math.sin(angle) * 50;
+                const x2 = 200 + Math.cos(angle + Math.PI) * 80;
+                const y2 = 150 + Math.sin(angle + Math.PI) * 80;
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+        }
+
+        function drawSpaceScene(ctx, frame, totalFrames, style) {
+            // Space background
+            ctx.fillStyle = '#000011';
+            ctx.fillRect(0, 0, 400, 300);
+
+            // Stars
+            for (let i = 0; i < 100; i++) {
+                const x = (i * 47) % 400;
+                const y = (i * 73) % 300;
+                const twinkle = Math.sin(frame * 0.1 + i) * 0.5 + 0.5;
+                
+                ctx.fillStyle = `rgba(255, 255, 255, ${twinkle})`;
+                ctx.fillRect(x, y, 1, 1);
+            }
+
+            // Planets
+            const planetX = 100 + Math.cos(frame * 0.02) * 50;
+            const planetY = 100 + Math.sin(frame * 0.02) * 30;
+            
+            const gradient = ctx.createRadialGradient(planetX, planetY, 10, planetX, planetY, 40);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(1, '#4ecdc4');
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(planetX, planetY, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Comet
+            const cometX = (frame * 3) % 500 - 50;
+            const cometY = 50 + Math.sin(frame * 0.05) * 20;
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(cometX, cometY, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Comet tail
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(cometX, cometY);
+            ctx.lineTo(cometX - 20, cometY + 5);
+            ctx.stroke();
+        }
+
+        function drawUnderwaterScene(ctx, frame, totalFrames, style) {
+            // Water gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, '#87ceeb');
+            gradient.addColorStop(1, '#191970');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 400, 300);
+
+            // Bubbles
+            for (let i = 0; i < 20; i++) {
+                const x = (i * 43) % 400;
+                const y = (300 - (frame + i * 10) % 350);
+                const size = 3 + (i % 5);
+                
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Fish
+            for (let i = 0; i < 3; i++) {
+                const fishX = 50 + Math.sin((frame + i * 50) * 0.02) * 100;
+                const fishY = 100 + i * 50;
+                
+                drawFish(ctx, fishX, fishY, '#ffa500');
+            }
+
+            // Seaweed
+            for (let i = 0; i < 5; i++) {
+                const x = 30 + i * 80;
+                const sway = Math.sin((frame + i * 20) * 0.05) * 10;
+                
+                ctx.strokeStyle = '#228b22';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.moveTo(x, 300);
+                ctx.quadraticCurveTo(x + sway, 250, x + sway * 1.5, 200);
+                ctx.stroke();
+            }
+        }
+
+        function drawCityScene(ctx, frame, totalFrames, style) {
+            // Sky
+            const timeOfDay = Math.sin(frame * 0.01) * 0.5 + 0.5;
+            const skyColor = `hsl(${220}, ${30 + timeOfDay * 40}%, ${20 + timeOfDay * 60}%)`;
+            ctx.fillStyle = skyColor;
+            ctx.fillRect(0, 0, 400, 200);
+
+            // Buildings
+            for (let i = 0; i < 8; i++) {
+                const x = i * 50;
+                const height = 100 + (i % 3) * 50;
+                const windowLight = Math.random() > 0.7;
+                
+                ctx.fillStyle = '#2d3748';
+                ctx.fillRect(x, 300 - height, 45, height);
+                
+                // Windows
+                for (let w = 0; w < 3; w++) {
+                    for (let h = 0; h < Math.floor(height / 20); h++) {
+                        const light = (frame + i + w + h) % 60 < 30;
+                        ctx.fillStyle = light ? '#ffd700' : '#1a202c';
+                        ctx.fillRect(x + 5 + w * 12, 290 - h * 20, 8, 8);
+                    }
+                }
+            }
+
+            // Cars
+            const carX = (frame * 2) % 450 - 50;
+            drawCar(ctx, carX, 280);
+        }
+
+        // Helper drawing functions
+        function drawCloud(ctx, x, y) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(x, y, 15, 0, Math.PI * 2);
+            ctx.arc(x + 15, y, 20, 0, Math.PI * 2);
+            ctx.arc(x + 30, y, 15, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawFish(ctx, x, y, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, 15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Tail
+            ctx.beginPath();
+            ctx.moveTo(x - 15, y);
+            ctx.lineTo(x - 25, y - 8);
+            ctx.lineTo(x - 25, y + 8);
+            ctx.fill();
+        }
+
+        function drawCar(ctx, x, y) {
+            ctx.fillStyle = '#e53e3e';
+            ctx.fillRect(x, y, 30, 15);
+            
+            // Wheels
+            ctx.fillStyle = '#2d3748';
+            ctx.beginPath();
+            ctx.arc(x + 7, y + 15, 4, 0, Math.PI * 2);
+            ctx.arc(x + 23, y + 15, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Video control functions
+        function playPauseVideo() {
+            if (currentVideo) {
+                const isPlaying = currentVideo.dataset.playing === 'true';
+                currentVideo.dataset.playing = isPlaying ? 'false' : 'true';
+                
+                if (currentVideo.dataset.playing === 'true') {
+                    startVideoAnimation(
+                        currentVideo, 
+                        currentVideo.dataset.theme,
+                        parseInt(currentVideo.dataset.duration),
+                        currentVideo.dataset.style
+                    );
+                } else {
+                    if (currentVideo.animationId) {
+                        cancelAnimationFrame(currentVideo.animationId);
+                    }
+                }
+            }
+        }
+
+        function restartVideo() {
+            if (currentVideo) {
+                if (currentVideo.animationId) {
+                    cancelAnimationFrame(currentVideo.animationId);
+                }
+                currentVideo.dataset.playing = 'true';
+                startVideoAnimation(
+                    currentVideo, 
+                    currentVideo.dataset.theme,
+                    parseInt(currentVideo.dataset.duration),
+                    currentVideo.dataset.style
+                );
+            }
+        }
+
+        // Download functions
+        function downloadAvatar() {
+            if (currentAvatar) {
+                const link = document.createElement('a');
+                link.download = `creator-ai-avatar-${Date.now()}.png`;
+                link.href = currentAvatar.toDataURL();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function downloadVideo() {
+            if (currentVideo) {
+                // For a real video download, we would need to capture frames and create a video file
+                // For this demo, we'll download a single frame as an image
+                const link = document.createElement('a');
+                link.download = `creator-ai-video-${Date.now()}.png`;
+                link.href = currentVideo.toDataURL();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show notification
+                alert('Video frame downloaded! In a real implementation, this would be a complete video file.');
+            }
+        }
+
+        // Utility functions
+        function adjustColorBrightness(color, amount) {
+            const usePound = color[0] === '#';
+            const col = usePound ? color.slice(1) : color;
+            const num = parseInt(col, 16);
+            let r = (num >> 16) + amount;
+            let g = (num >> 8 & 0x00FF) + amount;
+            let b = (num & 0x0000FF) + amount;
+            r = r > 255 ? 255 : r < 0 ? 0 : r;
+            g = g > 255 ? 255 : g < 0 ? 0 : g;
+            b = b > 255 ? 255 : b < 0 ? 0 : b;
+            return (usePound ? '#' : '') + (r << 16 | g << 8 | b).toString(16).padStart(6, '0');
+        }
+
+        // Demo mode - auto-generate content every 10 seconds
+        function startDemoMode() {
+            setInterval(() => {
+                if (Math.random() > 0.5) {
+                    if (document.getElementById('avatar-btn-text').textContent !== 'Generating...') {
+                        generateAvatar();
+                    }
+                } else {
+                    if (document.getElementById('video-btn-text').textContent !== 'Generating...') {
+                        generateVideo();
+                    }
+                }
+            }, 10000);
+        }
+
+        // Optional: Start demo mode (uncomment to enable)
+        // startDemoMode();
+    </script>
 </body>
 </html>
