@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator AI Download Test</title>
+</head>
+<body>
+    <h1>Creator AI Download Functionality Test</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        // Test cross-browser compatibility
+        function runCompatibilityTests() {
+            const results = [];
+            const resultsDiv = document.getElementById('test-results');
+            
+            // Test required APIs
+            const tests = {
+                'Canvas API': () => !!document.createElement('canvas').getContext,
+                'Blob API': () => !!window.Blob,
+                'URL.createObjectURL': () => !!window.URL && !!window.URL.createObjectURL,
+                'MediaRecorder API': () => !!window.MediaRecorder,
+                'Download attribute': () => {
+                    const a = document.createElement('a');
+                    return 'download' in a;
+                }
+            };
+            
+            resultsDiv.innerHTML = '<h2>Browser Compatibility Test Results:</h2>';
+            
+            for (const [testName, testFunc] of Object.entries(tests)) {
+                try {
+                    const passed = testFunc();
+                    const status = passed ? '✅ PASS' : '❌ FAIL';
+                    const color = passed ? 'green' : 'red';
+                    
+                    resultsDiv.innerHTML += `
+                        <p style="color: ${color}; font-family: monospace;">
+                            ${status} - ${testName}
+                        </p>
+                    `;
+                    
+                    results.push({ test: testName, passed });
+                } catch (error) {
+                    resultsDiv.innerHTML += `
+                        <p style="color: red; font-family: monospace;">
+                            ❌ ERROR - ${testName}: ${error.message}
+                        </p>
+                    `;
+                    results.push({ test: testName, passed: false, error: error.message });
+                }
+            }
+            
+            // Summary
+            const passedCount = results.filter(r => r.passed).length;
+            const totalCount = results.length;
+            const allPassed = passedCount === totalCount;
+            
+            resultsDiv.innerHTML += `
+                <h3 style="color: ${allPassed ? 'green' : 'orange'};">
+                    Summary: ${passedCount}/${totalCount} tests passed
+                </h3>
+            `;
+            
+            if (allPassed) {
+                resultsDiv.innerHTML += `
+                    <p style="color: green; font-weight: bold;">
+                        🎉 All download functionality should work correctly in this browser!
+                    </p>
+                `;
+            } else {
+                resultsDiv.innerHTML += `
+                    <p style="color: orange; font-weight: bold;">
+                        ⚠️ Some features may not work properly in this browser.
+                    </p>
+                `;
+            }
+            
+            // Browser info
+            resultsDiv.innerHTML += `
+                <h3>Browser Information:</h3>
+                <p style="font-family: monospace;">
+                    User Agent: ${navigator.userAgent}
+                </p>
+            `;
+            
+            return results;
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', runCompatibilityTests);
+    </script>
+</body>
+</html>

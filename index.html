@@ -1,12 +1,73 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Generate and Download Content</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <header>
+        <h1>Creator AI</h1>
+        <p>Generate avatars, videos, and more with AI. Download your creations instantly!</p>
+    </header>
+
+    <main>
+        <!-- Avatar Generation Section -->
+        <section class="content-section" id="avatar-section">
+            <h2>Avatar Generator</h2>
+            <div class="generation-controls">
+                <button id="generate-avatar" class="generate-btn">Generate Avatar</button>
+                <div class="content-display" id="avatar-display">
+                    <p class="placeholder">Click "Generate Avatar" to create your AI avatar</p>
+                </div>
+                <button id="download-avatar" class="download-btn" style="display: none;">
+                    📥 Download Avatar
+                </button>
+            </div>
+        </section>
+
+        <!-- Video Generation Section -->
+        <section class="content-section" id="video-section">
+            <h2>Video Generator</h2>
+            <div class="generation-controls">
+                <button id="generate-video" class="generate-btn">Generate Video</button>
+                <div class="content-display" id="video-display">
+                    <p class="placeholder">Click "Generate Video" to create your AI video</p>
+                </div>
+                <button id="download-video" class="download-btn" style="display: none;">
+                    📥 Download Video
+                </button>
+            </div>
+        </section>
+
+        <!-- Image Generation Section -->
+        <section class="content-section" id="image-section">
+            <h2>Image Generator</h2>
+            <div class="generation-controls">
+                <button id="generate-image" class="generate-btn">Generate Image</button>
+                <div class="content-display" id="image-display">
+                    <p class="placeholder">Click "Generate Image" to create your AI image</p>
+                </div>
+                <button id="download-image" class="download-btn" style="display: none;">
+                    📥 Download Image
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="instructions">
+            <h3>Download Instructions</h3>
+            <ul>
+                <li>Generate content using the buttons above</li>
+                <li>Click the download button to save files to your device</li>
+                <li>Files will be saved to your default download folder</li>
+                <li>Supported formats: PNG for images/avatars, WebM for videos</li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
 </body>
 </html>
