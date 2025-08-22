@@ -3,10 +3,1511 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Tạo Avatar và Video AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .login-form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-form h1 {
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2em;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Upload Areas */
+        .upload-area {
+            border: 3px dashed #764ba2;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: rgba(118, 75, 162, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: rgba(118, 75, 162, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+
+        .file-info {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e1e5e9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #764ba2;
+        }
+
+        /* File Preview Grid */
+        .file-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .file-preview {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-preview img, .file-preview video {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .file-preview .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Control Panels */
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .control-panel h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row > * {
+            flex: 1;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .result-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item img, .result-item video {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .result-item .download-btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
+
+            .file-preview-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-content {
+                padding: 20px;
+            }
+
+            .upload-area {
+                padding: 20px;
+            }
+
+            .upload-icon {
+                font-size: 2em;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hidden file inputs */
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <form id="loginForm" class="login-form">
+            <h1>Creator AI</h1>
+            <p style="margin-bottom: 30px; color: #666;">Hệ thống tạo Avatar và Video AI</p>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required 
+                       placeholder="hanhlehangelcosmetic@gmail.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Nhập mật khẩu">
+            </div>
+            
+            <button type="submit" class="btn">Đăng nhập</button>
+            
+            <div id="loginError" class="error-message"></div>
+        </form>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1>Creator AI Studio</h1>
+                <div>
+                    <span style="color: rgba(255,255,255,0.8); margin-right: 15px;">Xin chào!</span>
+                    <button id="logoutBtn" class="logout-btn">Đăng xuất</button>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="photo">📸 Chế độ Ảnh</button>
+                <button class="tab-btn" data-tab="video">🎥 Chế độ Video</button>
+            </div>
+
+            <!-- Messages -->
+            <div id="messages"></div>
+
+            <!-- Photo Mode Tab -->
+            <div id="photoTab" class="tab-content active">
+                <h2 style="color: #764ba2; margin-bottom: 30px;">Tạo Avatar từ Ảnh</h2>
+                
+                <!-- Upload Section -->
+                <div class="upload-area" id="photoUploadArea">
+                    <div class="upload-icon">📸</div>
+                    <h3>Kéo thả ảnh vào đây hoặc nhấp để chọn</h3>
+                    <p>Hỗ trợ JPG, PNG - Tối đa 10 ảnh</p>
+                    <div class="file-info">Kích thước tối đa: 10MB mỗi ảnh</div>
+                    <input type="file" id="photoInput" multiple accept="image/jpeg,image/png" class="hidden">
+                </div>
+
+                <!-- File Preview -->
+                <div id="photoPreviewGrid" class="file-preview-grid"></div>
+
+                <!-- AI Training Progress -->
+                <div id="photoTrainingProgress" class="progress-container">
+                    <h4>Đang huấn luyện AI...</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="photoProgressFill"></div>
+                    </div>
+                    <div class="progress-text" id="photoProgressText">0%</div>
+                </div>
+
+                <!-- Avatar Generation -->
+                <div class="control-panel">
+                    <h3>Tạo Avatar AI</h3>
+                    <div class="input-group">
+                        <label for="photoPrompt">Mô tả Avatar (Prompt):</label>
+                        <textarea id="photoPrompt" placeholder="Ví dụ: Một người phụ nữ trẻ với nụ cười tươi, mặc áo sơ mi trắng, phong cách chuyên nghiệp..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="photoStyle">Phong cách:</label>
+                            <select id="photoStyle">
+                                <option value="realistic">Thực tế</option>
+                                <option value="artistic">Nghệ thuật</option>
+                                <option value="cartoon">Hoạt hình</option>
+                                <option value="professional">Chuyên nghiệp</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="photoQuality">Chất lượng:</label>
+                            <select id="photoQuality">
+                                <option value="standard">Tiêu chuẩn</option>
+                                <option value="hd">HD</option>
+                                <option value="4k">4K</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="generateAvatarBtn" disabled>Tạo Avatar</button>
+                        <button class="btn btn-secondary" id="addMotionBtn" disabled>Thêm Chuyển động</button>
+                        <button class="btn btn-warning" id="upscaleBtn" disabled>Nâng cấp 4K</button>
+                    </div>
+                </div>
+
+                <!-- Video Creation -->
+                <div class="control-panel">
+                    <h3>Tạo Video từ Avatar</h3>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="photoVideoMode">Chế độ Video:</label>
+                            <select id="photoVideoMode">
+                                <option value="lipsync">Đồng bộ môi với âm thanh</option>
+                                <option value="speech">Tổng hợp giọng nói</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="photoLipsyncMode">
+                        <div class="input-group">
+                            <label for="photoAudioUpload">Tải lên file âm thanh (MP3):</label>
+                            <input type="file" id="photoAudioUpload" accept="audio/mp3">
+                            <div class="file-info">Tối đa 5 phút</div>
+                        </div>
+                    </div>
+                    
+                    <div id="photoSpeechMode" class="hidden">
+                        <div class="input-group">
+                            <label for="photoScript">Văn bản cần đọc:</label>
+                            <textarea id="photoScript" placeholder="Nhập văn bản bạn muốn avatar đọc..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label for="photoVoiceSample">Mẫu giọng nói (MP3):</label>
+                            <input type="file" id="photoVoiceSample" accept="audio/mp3">
+                            <div class="file-info">File ngắn 10-30 giây để nhân bản giọng</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="createPhotoVideoBtn" disabled>Tạo Video</button>
+                        <button class="btn btn-success" id="exportPhotoVideoBtn" disabled>Xuất Video 1080p</button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div id="photoResults" class="results-section">
+                    <h3>Kết quả</h3>
+                    <div id="photoResultsGrid" class="results-grid"></div>
+                </div>
+            </div>
+
+            <!-- Video Mode Tab -->
+            <div id="videoTab" class="tab-content">
+                <h2 style="color: #764ba2; margin-bottom: 30px;">Tạo Avatar từ Video</h2>
+                
+                <!-- Upload Section -->
+                <div class="upload-area" id="videoUploadArea">
+                    <div class="upload-icon">🎥</div>
+                    <h3>Kéo thả video vào đây hoặc nhấp để chọn</h3>
+                    <p>Hỗ trợ MP4, MOV, AVI - Video ngắn 3-5 giây</p>
+                    <div class="file-info">Kích thước tối đa: 50MB</div>
+                    <input type="file" id="videoInput" accept="video/mp4,video/mov,video/avi" class="hidden">
+                </div>
+
+                <!-- Video Preview -->
+                <div id="videoPreviewGrid" class="file-preview-grid"></div>
+
+                <!-- AI Conversion Progress -->
+                <div id="videoTrainingProgress" class="progress-container">
+                    <h4>Đang chuyển đổi video thành avatar...</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="videoProgressFill"></div>
+                    </div>
+                    <div class="progress-text" id="videoProgressText">0%</div>
+                </div>
+
+                <!-- Expression Sync -->
+                <div class="control-panel">
+                    <h3>Đồng bộ Biểu cảm và Môi</h3>
+                    <div class="input-group">
+                        <label for="videoAudioUpload">File âm thanh (MP3):</label>
+                        <input type="file" id="videoAudioUpload" accept="audio/mp3">
+                        <div class="file-info">Tối đa 5 phút</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="syncExpressionsBtn" disabled>Đồng bộ Biểu cảm</button>
+                    </div>
+                </div>
+
+                <!-- Voice Cloning -->
+                <div class="control-panel">
+                    <h3>Nhân bản Giọng nói và Tạo Nội dung</h3>
+                    <div class="input-group">
+                        <label for="videoVoiceSample">Mẫu giọng nói (MP3):</label>
+                        <input type="file" id="videoVoiceSample" accept="audio/mp3">
+                        <div class="file-info">File ngắn 10-30 giây để nhân bản giọng</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="videoScript">Văn bản cần đọc:</label>
+                        <textarea id="videoScript" placeholder="Nhập nội dung bạn muốn avatar thể hiện..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="videoEmotion">Cảm xúc:</label>
+                            <select id="videoEmotion">
+                                <option value="neutral">Bình thường</option>
+                                <option value="happy">Vui vẻ</option>
+                                <option value="serious">Nghiêm túc</option>
+                                <option value="excited">Hào hứng</option>
+                                <option value="calm">Bình tĩnh</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="videoSpeechSpeed">Tốc độ nói:</label>
+                            <select id="videoSpeechSpeed">
+                                <option value="slow">Chậm</option>
+                                <option value="normal">Bình thường</option>
+                                <option value="fast">Nhanh</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="cloneVoiceBtn" disabled>Nhân bản Giọng</button>
+                        <button class="btn btn-secondary" id="createVideoContentBtn" disabled>Tạo Nội dung</button>
+                    </div>
+                </div>
+
+                <!-- Video Export -->
+                <div class="control-panel">
+                    <h3>Xuất Video</h3>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="videoOutputFormat">Định dạng:</label>
+                            <select id="videoOutputFormat">
+                                <option value="mp4">MP4</option>
+                                <option value="mov">MOV</option>
+                                <option value="avi">AVI</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="videoOutputQuality">Chất lượng:</label>
+                            <select id="videoOutputQuality">
+                                <option value="720p">720p</option>
+                                <option value="1080p">1080p</option>
+                                <option value="4k">4K</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-success" id="exportVideoBtn" disabled>Xuất Video</button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div id="videoResults" class="results-section">
+                    <h3>Kết quả</h3>
+                    <div id="videoResultsGrid" class="results-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let uploadedPhotos = [];
+        let uploadedVideos = [];
+        let generatedAvatars = [];
+        let currentAvatarIndex = 0;
+
+        // Authentication credentials
+        const VALID_CREDENTIALS = {
+            email: 'hanhlehangelcosmetic@gmail.com',
+            password: 'Kimhanh99@'
+        };
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            initializeEventListeners();
+        });
+
+        // Check if user is already logged in
+        function checkAuthStatus() {
+            const userData = localStorage.getItem('creatorAI_user');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Initialize all event listeners
+        function initializeEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Tab navigation
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', handleTabChange);
+            });
+
+            // Photo mode event listeners
+            initializePhotoModeEvents();
+            
+            // Video mode event listeners
+            initializeVideoModeEvents();
+        }
+
+        // Initialize photo mode events
+        function initializePhotoModeEvents() {
+            const photoUploadArea = document.getElementById('photoUploadArea');
+            const photoInput = document.getElementById('photoInput');
+            
+            // Upload area events
+            photoUploadArea.addEventListener('click', () => photoInput.click());
+            photoUploadArea.addEventListener('dragover', handleDragOver);
+            photoUploadArea.addEventListener('dragleave', handleDragLeave);
+            photoUploadArea.addEventListener('drop', handlePhotoDrop);
+            
+            // File input change
+            photoInput.addEventListener('change', handlePhotoSelect);
+            
+            // Action buttons
+            document.getElementById('generateAvatarBtn').addEventListener('click', generateAvatar);
+            document.getElementById('addMotionBtn').addEventListener('click', addMotionToAvatar);
+            document.getElementById('upscaleBtn').addEventListener('click', upscaleAvatar);
+            document.getElementById('createPhotoVideoBtn').addEventListener('click', createPhotoVideo);
+            document.getElementById('exportPhotoVideoBtn').addEventListener('click', exportPhotoVideo);
+            
+            // Video mode selector
+            document.getElementById('photoVideoMode').addEventListener('change', togglePhotoVideoMode);
+        }
+
+        // Initialize video mode events
+        function initializeVideoModeEvents() {
+            const videoUploadArea = document.getElementById('videoUploadArea');
+            const videoInput = document.getElementById('videoInput');
+            
+            // Upload area events
+            videoUploadArea.addEventListener('click', () => videoInput.click());
+            videoUploadArea.addEventListener('dragover', handleDragOver);
+            videoUploadArea.addEventListener('dragleave', handleDragLeave);
+            videoUploadArea.addEventListener('drop', handleVideoDrop);
+            
+            // File input change
+            videoInput.addEventListener('change', handleVideoSelect);
+            
+            // Action buttons
+            document.getElementById('syncExpressionsBtn').addEventListener('click', syncExpressions);
+            document.getElementById('cloneVoiceBtn').addEventListener('click', cloneVoice);
+            document.getElementById('createVideoContentBtn').addEventListener('click', createVideoContent);
+            document.getElementById('exportVideoBtn').addEventListener('click', exportVideo);
+        }
+
+        // Authentication functions
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (email === VALID_CREDENTIALS.email && password === VALID_CREDENTIALS.password) {
+                currentUser = { email, loginTime: new Date().toISOString() };
+                localStorage.setItem('creatorAI_user', JSON.stringify(currentUser));
+                showDashboard();
+                showMessage('Đăng nhập thành công!', 'success');
+            } else {
+                errorDiv.textContent = 'Email hoặc mật khẩu không đúng!';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('creatorAI_user');
+            currentUser = null;
+            uploadedPhotos = [];
+            uploadedVideos = [];
+            generatedAvatars = [];
+            showLogin();
+            showMessage('Đã đăng xuất thành công!', 'info');
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        }
+
+        // Tab navigation
+        function handleTabChange(e) {
+            const tabName = e.target.dataset.tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Drag and drop handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handlePhotoDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            processPhotoFiles(files);
+        }
+
+        function handleVideoDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            processVideoFiles(files);
+        }
+
+        // File selection handlers
+        function handlePhotoSelect(e) {
+            const files = Array.from(e.target.files);
+            processPhotoFiles(files);
+        }
+
+        function handleVideoSelect(e) {
+            const files = Array.from(e.target.files);
+            processVideoFiles(files);
+        }
+
+        // File processing functions
+        function processPhotoFiles(files) {
+            const validFiles = files.filter(file => {
+                return file.type.match(/image\/(jpeg|png)/) && file.size <= 10 * 1024 * 1024;
+            });
+
+            if (uploadedPhotos.length + validFiles.length > 10) {
+                showMessage('Chỉ được tải lên tối đa 10 ảnh!', 'error');
+                return;
+            }
+
+            validFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoData = {
+                        file: file,
+                        url: e.target.result,
+                        name: file.name,
+                        size: file.size
+                    };
+                    uploadedPhotos.push(photoData);
+                    updatePhotoPreview();
+                    
+                    if (uploadedPhotos.length > 0) {
+                        startPhotoTraining();
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+
+            if (validFiles.length !== files.length) {
+                showMessage('Một số file không hợp lệ đã bị bỏ qua. Chỉ chấp nhận JPG, PNG dưới 10MB.', 'warning');
+            }
+        }
+
+        function processVideoFiles(files) {
+            const validFiles = files.filter(file => {
+                return file.type.match(/video\/(mp4|mov|quicktime|avi)/) && file.size <= 50 * 1024 * 1024;
+            });
+
+            if (uploadedVideos.length + validFiles.length > 1) {
+                showMessage('Chỉ được tải lên 1 video tại một thời điểm!', 'error');
+                return;
+            }
+
+            validFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const videoData = {
+                        file: file,
+                        url: e.target.result,
+                        name: file.name,
+                        size: file.size
+                    };
+                    uploadedVideos.push(videoData);
+                    updateVideoPreview();
+                    startVideoTraining();
+                };
+                reader.readAsDataURL(file);
+            });
+
+            if (validFiles.length !== files.length) {
+                showMessage('File không hợp lệ! Chỉ chấp nhận MP4, MOV, AVI dưới 50MB và dài 3-5 giây.', 'error');
+            }
+        }
+
+        // Preview update functions
+        function updatePhotoPreview() {
+            const grid = document.getElementById('photoPreviewGrid');
+            grid.innerHTML = '';
+            
+            uploadedPhotos.forEach((photo, index) => {
+                const preview = document.createElement('div');
+                preview.className = 'file-preview';
+                preview.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.name}">
+                    <button class="remove-btn" onclick="removePhoto(${index})">×</button>
+                `;
+                grid.appendChild(preview);
+            });
+        }
+
+        function updateVideoPreview() {
+            const grid = document.getElementById('videoPreviewGrid');
+            grid.innerHTML = '';
+            
+            uploadedVideos.forEach((video, index) => {
+                const preview = document.createElement('div');
+                preview.className = 'file-preview';
+                preview.innerHTML = `
+                    <video src="${video.url}" controls></video>
+                    <button class="remove-btn" onclick="removeVideo(${index})">×</button>
+                `;
+                grid.appendChild(preview);
+            });
+        }
+
+        // Remove file functions
+        function removePhoto(index) {
+            uploadedPhotos.splice(index, 1);
+            updatePhotoPreview();
+            
+            if (uploadedPhotos.length === 0) {
+                document.getElementById('generateAvatarBtn').disabled = true;
+                hidePhotoTraining();
+            }
+        }
+
+        function removeVideo(index) {
+            uploadedVideos.splice(index, 1);
+            updateVideoPreview();
+            
+            if (uploadedVideos.length === 0) {
+                document.getElementById('syncExpressionsBtn').disabled = true;
+                hideVideoTraining();
+            }
+        }
+
+        // AI Training simulation
+        function startPhotoTraining() {
+            const progressContainer = document.getElementById('photoTrainingProgress');
+            const progressFill = document.getElementById('photoProgressFill');
+            const progressText = document.getElementById('photoProgressText');
+            
+            progressContainer.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hidePhotoTraining();
+                        enablePhotoControls();
+                        showMessage('Huấn luyện AI hoàn tất! Bạn có thể tạo avatar ngay bây giờ.', 'success');
+                    }, 1000);
+                }
+                
+                progressFill.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }, 500);
+        }
+
+        function startVideoTraining() {
+            const progressContainer = document.getElementById('videoTrainingProgress');
+            const progressFill = document.getElementById('videoProgressFill');
+            const progressText = document.getElementById('videoProgressText');
+            
+            progressContainer.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 12;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hideVideoTraining();
+                        enableVideoControls();
+                        showMessage('Chuyển đổi video hoàn tất! Avatar đã sẵn sàng.', 'success');
+                    }, 1000);
+                }
+                
+                progressFill.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }, 600);
+        }
+
+        function hidePhotoTraining() {
+            document.getElementById('photoTrainingProgress').style.display = 'none';
+        }
+
+        function hideVideoTraining() {
+            document.getElementById('videoTrainingProgress').style.display = 'none';
+        }
+
+        function enablePhotoControls() {
+            document.getElementById('generateAvatarBtn').disabled = false;
+        }
+
+        function enableVideoControls() {
+            document.getElementById('syncExpressionsBtn').disabled = false;
+            document.getElementById('cloneVoiceBtn').disabled = false;
+        }
+
+        // Avatar generation functions
+        function generateAvatar() {
+            const prompt = document.getElementById('photoPrompt').value;
+            const style = document.getElementById('photoStyle').value;
+            const quality = document.getElementById('photoQuality').value;
+            
+            if (!prompt.trim()) {
+                showMessage('Vui lòng nhập mô tả cho avatar!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('generateAvatarBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang tạo...';
+            btn.disabled = true;
+
+            // Simulate AI generation
+            setTimeout(() => {
+                const avatar = {
+                    id: Date.now(),
+                    prompt: prompt,
+                    style: style,
+                    quality: quality,
+                    url: generateMockImageUrl('avatar'),
+                    type: 'avatar',
+                    label: 'AI Photo'
+                };
+                
+                generatedAvatars.push(avatar);
+                updatePhotoResults();
+                
+                btn.innerHTML = 'Tạo Avatar';
+                btn.disabled = false;
+                document.getElementById('addMotionBtn').disabled = false;
+                document.getElementById('upscaleBtn').disabled = false;
+                
+                showMessage('Avatar đã được tạo thành công!', 'success');
+            }, 3000);
+        }
+
+        function addMotionToAvatar() {
+            if (generatedAvatars.length === 0) {
+                showMessage('Vui lòng tạo avatar trước!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('addMotionBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang thêm chuyển động...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const motionVideo = {
+                    id: Date.now(),
+                    url: generateMockVideoUrl('motion'),
+                    type: 'motion_video',
+                    duration: '5-10 giây',
+                    label: 'Video chuyển động'
+                };
+                
+                generatedAvatars.push(motionVideo);
+                updatePhotoResults();
+                
+                btn.innerHTML = 'Thêm Chuyển động';
+                btn.disabled = false;
+                document.getElementById('createPhotoVideoBtn').disabled = false;
+                
+                showMessage('Đã thêm chuyển động vào avatar!', 'success');
+            }, 2500);
+        }
+
+        function upscaleAvatar() {
+            if (generatedAvatars.length === 0) {
+                showMessage('Vui lòng tạo avatar trước!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('upscaleBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang nâng cấp 4K...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const upscaledAvatar = {
+                    id: Date.now(),
+                    url: generateMockImageUrl('4k'),
+                    type: '4k_avatar',
+                    quality: '4K',
+                    label: 'Avatar 4K'
+                };
+                
+                generatedAvatars.push(upscaledAvatar);
+                updatePhotoResults();
+                
+                btn.innerHTML = 'Nâng cấp 4K';
+                btn.disabled = false;
+                
+                showMessage('Avatar đã được nâng cấp lên 4K!', 'success');
+            }, 4000);
+        }
+
+        function createPhotoVideo() {
+            const mode = document.getElementById('photoVideoMode').value;
+            const audioFile = document.getElementById('photoAudioUpload').files[0];
+            const script = document.getElementById('photoScript').value;
+            const voiceSample = document.getElementById('photoVoiceSample').files[0];
+
+            if (mode === 'lipsync' && !audioFile) {
+                showMessage('Vui lòng tải lên file âm thanh!', 'error');
+                return;
+            }
+
+            if (mode === 'speech' && (!script.trim() || !voiceSample)) {
+                showMessage('Vui lòng nhập văn bản và tải lên mẫu giọng nói!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('createPhotoVideoBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang tạo video...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const video = {
+                    id: Date.now(),
+                    url: generateMockVideoUrl('final'),
+                    type: 'final_video',
+                    mode: mode,
+                    duration: mode === 'lipsync' ? 'Theo file âm thanh' : 'Theo văn bản',
+                    label: mode === 'lipsync' ? 'Video đồng bộ môi' : 'Video tổng hợp giọng'
+                };
+                
+                generatedAvatars.push(video);
+                updatePhotoResults();
+                
+                btn.innerHTML = 'Tạo Video';
+                btn.disabled = false;
+                document.getElementById('exportPhotoVideoBtn').disabled = false;
+                
+                showMessage('Video đã được tạo thành công!', 'success');
+            }, 5000);
+        }
+
+        function exportPhotoVideo() {
+            const btn = document.getElementById('exportPhotoVideoBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang xuất video 1080p...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = 'Xuất Video 1080p';
+                btn.disabled = false;
+                
+                // Simulate download
+                const link = document.createElement('a');
+                link.href = generateMockVideoUrl('export');
+                link.download = 'creator-ai-video-1080p.mp4';
+                link.click();
+                
+                showMessage('Video 1080p đã được xuất thành công!', 'success');
+            }, 3000);
+        }
+
+        // Video mode functions
+        function syncExpressions() {
+            const audioFile = document.getElementById('videoAudioUpload').files[0];
+            
+            if (!audioFile) {
+                showMessage('Vui lòng tải lên file âm thanh!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('syncExpressionsBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang đồng bộ...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = 'Đồng bộ Biểu cảm';
+                btn.disabled = false;
+                document.getElementById('createVideoContentBtn').disabled = false;
+                
+                showMessage('Đồng bộ biểu cảm và môi hoàn tất!', 'success');
+            }, 3500);
+        }
+
+        function cloneVoice() {
+            const voiceSample = document.getElementById('videoVoiceSample').files[0];
+            
+            if (!voiceSample) {
+                showMessage('Vui lòng tải lên mẫu giọng nói!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('cloneVoiceBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang nhân bản giọng...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = 'Nhân bản Giọng';
+                btn.disabled = false;
+                document.getElementById('createVideoContentBtn').disabled = false;
+                
+                showMessage('Nhân bản giọng nói thành công!', 'success');
+            }, 4000);
+        }
+
+        function createVideoContent() {
+            const script = document.getElementById('videoScript').value;
+            const emotion = document.getElementById('videoEmotion').value;
+            const speechSpeed = document.getElementById('videoSpeechSpeed').value;
+            
+            if (!script.trim()) {
+                showMessage('Vui lòng nhập văn bản cần đọc!', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('createVideoContentBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang tạo nội dung...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const videoContent = {
+                    id: Date.now(),
+                    url: generateMockVideoUrl('content'),
+                    type: 'content_video',
+                    emotion: emotion,
+                    speed: speechSpeed,
+                    script: script,
+                    label: 'Video nội dung'
+                };
+                
+                updateVideoResults(videoContent);
+                
+                btn.innerHTML = 'Tạo Nội dung';
+                btn.disabled = false;
+                document.getElementById('exportVideoBtn').disabled = false;
+                
+                showMessage('Nội dung video đã được tạo thành công!', 'success');
+            }, 6000);
+        }
+
+        function exportVideo() {
+            const format = document.getElementById('videoOutputFormat').value;
+            const quality = document.getElementById('videoOutputQuality').value;
+            
+            const btn = document.getElementById('exportVideoBtn');
+            btn.innerHTML = '<span class="loading"></span> Đang xuất video...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = 'Xuất Video';
+                btn.disabled = false;
+                
+                // Simulate download
+                const link = document.createElement('a');
+                link.href = generateMockVideoUrl('final_export');
+                link.download = `creator-ai-video-${quality}.${format}`;
+                link.click();
+                
+                showMessage(`Video ${quality} đã được xuất thành công!`, 'success');
+            }, 4000);
+        }
+
+        // UI helper functions
+        function togglePhotoVideoMode() {
+            const mode = document.getElementById('photoVideoMode').value;
+            const lipsyncMode = document.getElementById('photoLipsyncMode');
+            const speechMode = document.getElementById('photoSpeechMode');
+            
+            if (mode === 'lipsync') {
+                lipsyncMode.classList.remove('hidden');
+                speechMode.classList.add('hidden');
+            } else {
+                lipsyncMode.classList.add('hidden');
+                speechMode.classList.remove('hidden');
+            }
+        }
+
+        function updatePhotoResults() {
+            const resultsSection = document.getElementById('photoResults');
+            const resultsGrid = document.getElementById('photoResultsGrid');
+            
+            resultsSection.style.display = 'block';
+            resultsGrid.innerHTML = '';
+            
+            generatedAvatars.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                const mediaElement = item.type.includes('video') ? 
+                    `<video src="${item.url}" controls></video>` : 
+                    `<img src="${item.url}" alt="${item.label}">`;
+                
+                resultItem.innerHTML = `
+                    ${mediaElement}
+                    <h4>${item.label}</h4>
+                    <p><small>${item.type === 'avatar' ? 'Phong cách: ' + item.style : 
+                                 item.duration ? 'Thời lượng: ' + item.duration : 
+                                 item.quality ? 'Chất lượng: ' + item.quality : ''}</small></p>
+                    <button class="btn btn-primary download-btn" onclick="downloadItem('${item.url}', '${item.label}')">
+                        Tải xuống
+                    </button>
+                `;
+                resultsGrid.appendChild(resultItem);
+            });
+        }
+
+        function updateVideoResults(videoContent) {
+            const resultsSection = document.getElementById('videoResults');
+            const resultsGrid = document.getElementById('videoResultsGrid');
+            
+            resultsSection.style.display = 'block';
+            
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = `
+                <video src="${videoContent.url}" controls></video>
+                <h4>${videoContent.label}</h4>
+                <p><small>Cảm xúc: ${videoContent.emotion}, Tốc độ: ${videoContent.speed}</small></p>
+                <button class="btn btn-primary download-btn" onclick="downloadItem('${videoContent.url}', '${videoContent.label}')">
+                    Tải xuống
+                </button>
+            `;
+            resultsGrid.appendChild(resultItem);
+        }
+
+        function downloadItem(url, filename) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename.replace(/\s+/g, '-').toLowerCase() + (url.includes('video') ? '.mp4' : '.jpg');
+            link.click();
+            showMessage('Đã bắt đầu tải xuống!', 'success');
+        }
+
+        function showMessage(text, type) {
+            const messagesContainer = document.getElementById('messages');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            message.style.display = 'block';
+            
+            messagesContainer.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+
+        // Mock data generators for demo
+        function generateMockImageUrl(type) {
+            const colors = ['FF6B6B', '4ECDC4', '45B7D1', '96CEB4', 'FECA57', 'FF9FF3'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            return `https://via.placeholder.com/512x512/${color}/FFFFFF?text=${type.toUpperCase()}`;
+        }
+
+        function generateMockVideoUrl(type) {
+            // In a real application, this would return actual video URLs
+            return 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAr1tZGF0AAACmwYF//+c3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE0OCByMjYwMSBhMGY0NzU4IC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNyAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTEgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDEwMyBtZT1oZXggc3VibWU9OSBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MCA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MyB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAD2WIhAAV/9cAAAABBFHmiAAsAAAALkGaI2D6aL8Qp6X9fV2Av67//8bJy//w8LNjEhAhEhAhEhBAAAAAAcZAmjNgA';
+        }
+
+        // Validate file types and sizes
+        function validateFile(file, type) {
+            const maxSizes = {
+                image: 10 * 1024 * 1024, // 10MB
+                video: 50 * 1024 * 1024, // 50MB
+                audio: 5 * 60 * 1024 * 1024 // 5 minutes worth of audio
+            };
+
+            const allowedTypes = {
+                image: ['image/jpeg', 'image/png'],
+                video: ['video/mp4', 'video/mov', 'video/quicktime', 'video/avi'],
+                audio: ['audio/mp3', 'audio/mpeg']
+            };
+
+            if (!allowedTypes[type].includes(file.type)) {
+                return { valid: false, error: 'Loại file không được hỗ trợ' };
+            }
+
+            if (file.size > maxSizes[type]) {
+                return { valid: false, error: 'File quá lớn' };
+            }
+
+            return { valid: true };
+        }
+
+        // Initialize cloud sync features (mock)
+        function initializeCloudSync() {
+            // Mock cloud synchronization
+            console.log('Cloud sync initialized');
+        }
+
+        // Initialize local ML features (mock)
+        function initializeLocalML() {
+            // Mock local machine learning capabilities
+            console.log('Local ML initialized');
+        }
+
+        // Initialize on load
+        initializeCloudSync();
+        initializeLocalML();
+    </script>
 </body>
 </html>
