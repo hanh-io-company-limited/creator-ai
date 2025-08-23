@@ -3,10 +3,1020 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Hệ thống tạo Avatar thông minh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .main-app {
+            display: none;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            color: #718096;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .upload-section {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: border-color 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: #667eea;
+        }
+
+        .upload-section.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        .file-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .file-item {
+            background: #f7fafc;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .remove-file {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            color: #718096;
+            margin-bottom: 15px;
+        }
+
+        .prompt-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f7fafc;
+            aspect-ratio: 1;
+        }
+
+        .result-item img,
+        .result-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ai-watermark {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        .download-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .processing {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #2d7d32;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <form class="login-form" id="loginForm">
+            <h2>🎨 Creator AI</h2>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Đăng nhập</button>
+            <div id="loginError" class="error" style="display: none;">
+                Email hoặc mật khẩu không đúng!
+            </div>
+        </form>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1>🎨 Creator AI - Hệ thống tạo Avatar thông minh</h1>
+                <div class="user-info">
+                    <span>Xin chào, <strong id="currentUser"></strong></span>
+                    <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('photo')">📸 Avatar từ Ảnh</button>
+                <button class="tab" onclick="switchTab('video')">🎬 Avatar từ Video</button>
+            </div>
+
+            <!-- Photo Avatar Tab -->
+            <div id="photoTab" class="tab-content active">
+                <h2>📸 Tạo Avatar từ Ảnh</h2>
+                
+                <!-- Upload Section -->
+                <div class="upload-section" id="photoUpload">
+                    <h3>📤 Tải lên ảnh cận cảnh (Tối đa 10 ảnh)</h3>
+                    <p>Kéo thả ảnh vào đây hoặc nhấn nút để chọn</p>
+                    <input type="file" id="photoInput" class="file-input" multiple accept="image/*">
+                    <button class="upload-btn" onclick="document.getElementById('photoInput').click()">
+                        Chọn ảnh
+                    </button>
+                    <div id="photoList" class="file-list"></div>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="feature-grid">
+                    <!-- Training -->
+                    <div class="feature-card">
+                        <h3>🧠 Đào tạo mô hình</h3>
+                        <p>Phân tích đặc điểm khuôn mặt từ ảnh đã tải lên</p>
+                        <button class="btn" onclick="trainModel()">Bắt đầu đào tạo</button>
+                        <div id="trainingProgress" class="progress-bar" style="display: none;">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Avatar Generation -->
+                    <div class="feature-card">
+                        <h3>✨ Tạo Avatar mới</h3>
+                        <p>Tạo ảnh đại diện từ lời nhắc văn bản (4 ảnh mỗi lần)</p>
+                        <textarea class="prompt-input" placeholder="Nhập mô tả avatar mong muốn..."></textarea>
+                        <button class="btn" onclick="generateAvatar()">Tạo Avatar</button>
+                    </div>
+
+                    <!-- Add Motion -->
+                    <div class="feature-card">
+                        <h3>🎬 Thêm chuyển động</h3>
+                        <p>Chuyển đổi ảnh thành video 5-10 giây với chuyển động</p>
+                        <button class="btn" onclick="addMotion()">Thêm chuyển động</button>
+                    </div>
+
+                    <!-- Upscale -->
+                    <div class="feature-card">
+                        <h3>📈 Nâng cấp 4K</h3>
+                        <p>Nâng cấp chất lượng hình ảnh lên độ phân giải 4K</p>
+                        <button class="btn" onclick="upscale4K()">Nâng cấp 4K</button>
+                    </div>
+
+                    <!-- Audio Sync -->
+                    <div class="feature-card">
+                        <h3>🎵 Đồng bộ âm thanh</h3>
+                        <p>Tải lên MP3 để đồng bộ biểu cảm và hát nhép</p>
+                        <input type="file" id="audioInput" accept="audio/*" style="margin-bottom: 10px;">
+                        <button class="btn" onclick="syncAudio()">Đồng bộ âm thanh</button>
+                    </div>
+
+                    <!-- Text to Speech -->
+                    <div class="feature-card">
+                        <h3>🗣️ Văn bản thành giọng nói</h3>
+                        <p>Nhập kịch bản để tạo video với đồng bộ lời nói</p>
+                        <textarea class="prompt-input" placeholder="Nhập kịch bản..."></textarea>
+                        <input type="file" id="voiceInput" accept="audio/*" style="margin-bottom: 10px;" placeholder="Giọng nói mẫu">
+                        <button class="btn" onclick="textToSpeech()">Tạo video TTS</button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div id="photoResults" class="results-grid" style="display: none;">
+                    <!-- Generated content will appear here -->
+                </div>
+            </div>
+
+            <!-- Video Avatar Tab -->
+            <div id="videoTab" class="tab-content">
+                <h2>🎬 Tạo Avatar từ Video</h2>
+                
+                <!-- Upload Section -->
+                <div class="upload-section" id="videoUpload">
+                    <h3>📤 Tải lên video ngắn (3-5 giây)</h3>
+                    <p>Kéo thả video vào đây hoặc nhấn nút để chọn</p>
+                    <input type="file" id="videoInput" class="file-input" accept="video/*">
+                    <button class="upload-btn" onclick="document.getElementById('videoInput').click()">
+                        Chọn video
+                    </button>
+                    <div id="videoList" class="file-list"></div>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="feature-grid">
+                    <!-- Video Processing -->
+                    <div class="feature-card">
+                        <h3>🤖 Xử lý AI</h3>
+                        <p>Xử lý video để tạo avatar video</p>
+                        <button class="btn" onclick="processVideo()">Xử lý video</button>
+                        <div id="videoProcessingProgress" class="progress-bar" style="display: none;">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Sync Video -->
+                    <div class="feature-card">
+                        <h3>🎵 Đồng bộ biểu cảm</h3>
+                        <p>Đồng bộ biểu cảm và hát nhép với tệp âm thanh</p>
+                        <input type="file" id="videoAudioInput" accept="audio/*" style="margin-bottom: 10px;">
+                        <button class="btn" onclick="syncVideoAudio()">Đồng bộ âm thanh</button>
+                    </div>
+
+                    <!-- Text Content -->
+                    <div class="feature-card">
+                        <h3>📝 Nội dung văn bản</h3>
+                        <p>Tạo nội dung dựa trên văn bản</p>
+                        <textarea class="prompt-input" placeholder="Nhập nội dung..."></textarea>
+                        <button class="btn" onclick="createTextContent()">Tạo nội dung</button>
+                    </div>
+
+                    <!-- Voice Sync -->
+                    <div class="feature-card">
+                        <h3>🎙️ Đồng bộ giọng nói</h3>
+                        <p>Sử dụng giọng nói tải lên để đồng bộ lời nói và cảm xúc</p>
+                        <input type="file" id="videoVoiceInput" accept="audio/*" style="margin-bottom: 10px;">
+                        <button class="btn" onclick="syncVoice()">Đồng bộ giọng nói</button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div id="videoResults" class="results-grid" style="display: none;">
+                    <!-- Generated content will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication
+        const VALID_EMAIL = 'hanhlehangelcosmetic@gmail.com';
+        const VALID_PASSWORD = 'Kimhanh99@';
+
+        let uploadedPhotos = [];
+        let uploadedVideos = [];
+        let modelTrained = false;
+        let generatedResults = [];
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (email === VALID_EMAIL && password === VALID_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                document.getElementById('currentUser').textContent = email;
+                errorDiv.style.display = 'none';
+            } else {
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        function logout() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            
+            // Reset application state
+            uploadedPhotos = [];
+            uploadedVideos = [];
+            modelTrained = false;
+            generatedResults = [];
+            updateFileList('photoList', uploadedPhotos);
+            updateFileList('videoList', uploadedVideos);
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'photo') {
+                document.querySelector('.tab:first-child').classList.add('active');
+                document.getElementById('photoTab').classList.add('active');
+            } else {
+                document.querySelector('.tab:last-child').classList.add('active');
+                document.getElementById('videoTab').classList.add('active');
+            }
+        }
+
+        // File handling
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            handlePhotoUpload(e.target.files);
+        });
+
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            handleVideoUpload(e.target.files);
+        });
+
+        // Drag and drop for photos
+        const photoUpload = document.getElementById('photoUpload');
+        photoUpload.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            photoUpload.classList.add('dragover');
+        });
+
+        photoUpload.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            photoUpload.classList.remove('dragover');
+        });
+
+        photoUpload.addEventListener('drop', function(e) {
+            e.preventDefault();
+            photoUpload.classList.remove('dragover');
+            handlePhotoUpload(e.dataTransfer.files);
+        });
+
+        // Drag and drop for videos
+        const videoUpload = document.getElementById('videoUpload');
+        videoUpload.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            videoUpload.classList.add('dragover');
+        });
+
+        videoUpload.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            videoUpload.classList.remove('dragover');
+        });
+
+        videoUpload.addEventListener('drop', function(e) {
+            e.preventDefault();
+            videoUpload.classList.remove('dragover');
+            handleVideoUpload(e.dataTransfer.files);
+        });
+
+        function handlePhotoUpload(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/') && uploadedPhotos.length < 10) {
+                    uploadedPhotos.push({
+                        name: file.name,
+                        size: file.size,
+                        file: file
+                    });
+                }
+            });
+            updateFileList('photoList', uploadedPhotos);
+        }
+
+        function handleVideoUpload(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('video/')) {
+                    uploadedVideos.push({
+                        name: file.name,
+                        size: file.size,
+                        file: file
+                    });
+                }
+            });
+            updateFileList('videoList', uploadedVideos);
+        }
+
+        function updateFileList(listId, files) {
+            const listElement = document.getElementById(listId);
+            listElement.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span>${file.name} (${formatFileSize(file.size)})</span>
+                    <button class="remove-file" onclick="removeFile('${listId}', ${index})">Xóa</button>
+                `;
+                listElement.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(listType, index) {
+            if (listType === 'photoList') {
+                uploadedPhotos.splice(index, 1);
+                updateFileList('photoList', uploadedPhotos);
+            } else {
+                uploadedVideos.splice(index, 1);
+                updateFileList('videoList', uploadedVideos);
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // AI Processing Functions
+        function trainModel() {
+            if (uploadedPhotos.length === 0) {
+                showMessage('Vui lòng tải lên ít nhất 1 ảnh trước khi đào tạo!', 'error');
+                return;
+            }
+
+            const progressBar = document.getElementById('trainingProgress');
+            progressBar.style.display = 'block';
+            
+            simulateProgress(progressBar.querySelector('.progress-fill'), 5000, () => {
+                modelTrained = true;
+                showMessage('Đào tạo mô hình hoàn thành! Bây giờ bạn có thể tạo avatar.', 'success');
+                progressBar.style.display = 'none';
+            });
+        }
+
+        function generateAvatar() {
+            if (!modelTrained) {
+                showMessage('Vui lòng đào tạo mô hình trước khi tạo avatar!', 'error');
+                return;
+            }
+
+            const prompt = document.querySelector('#photoTab .prompt-input').value;
+            if (!prompt.trim()) {
+                showMessage('Vui lòng nhập mô tả avatar!', 'error');
+                return;
+            }
+
+            showProcessing('photoResults');
+            
+            setTimeout(() => {
+                // Simulate generating 4 avatar images
+                const results = [];
+                for (let i = 0; i < 4; i++) {
+                    results.push({
+                        type: 'image',
+                        url: `https://picsum.photos/300/300?random=${Date.now() + i}`,
+                        id: Date.now() + i
+                    });
+                }
+                
+                displayResults('photoResults', results);
+                showMessage('Tạo avatar thành công! Đã tạo 4 ảnh avatar.', 'success');
+            }, 3000);
+        }
+
+        function addMotion() {
+            if (generatedResults.length === 0) {
+                showMessage('Vui lòng tạo avatar trước khi thêm chuyển động!', 'error');
+                return;
+            }
+
+            showProcessing('photoResults');
+            
+            setTimeout(() => {
+                // Simulate converting images to videos
+                const videoResults = generatedResults.map(result => ({
+                    type: 'video',
+                    url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_720x480_1mb.mp4',
+                    id: result.id + '_motion'
+                }));
+                
+                displayResults('photoResults', videoResults);
+                showMessage('Thêm chuyển động thành công! Video dài 5-10 giây đã được tạo.', 'success');
+            }, 4000);
+        }
+
+        function upscale4K() {
+            if (generatedResults.length === 0) {
+                showMessage('Vui lòng tạo avatar trước khi nâng cấp!', 'error');
+                return;
+            }
+
+            showProcessing('photoResults');
+            
+            setTimeout(() => {
+                showMessage('Nâng cấp 4K thành công! Chất lượng hình ảnh đã được cải thiện.', 'success');
+                hideProcessing('photoResults');
+            }, 6000);
+        }
+
+        function syncAudio() {
+            const audioFile = document.getElementById('audioInput').files[0];
+            if (!audioFile) {
+                showMessage('Vui lòng chọn file âm thanh MP3!', 'error');
+                return;
+            }
+
+            if (generatedResults.length === 0) {
+                showMessage('Vui lòng tạo avatar trước khi đồng bộ âm thanh!', 'error');
+                return;
+            }
+
+            showProcessing('photoResults');
+            
+            setTimeout(() => {
+                const syncedResults = [{
+                    type: 'video',
+                    url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+                    id: Date.now() + '_synced'
+                }];
+                
+                displayResults('photoResults', syncedResults);
+                showMessage('Đồng bộ âm thanh thành công! Video với hát nhép đã được tạo (1080p).', 'success');
+            }, 5000);
+        }
+
+        function textToSpeech() {
+            const script = document.querySelector('#photoTab textarea:last-of-type').value;
+            const voiceFile = document.getElementById('voiceInput').files[0];
+            
+            if (!script.trim()) {
+                showMessage('Vui lòng nhập kịch bản!', 'error');
+                return;
+            }
+
+            if (!modelTrained) {
+                showMessage('Vui lòng đào tạo mô hình trước!', 'error');
+                return;
+            }
+
+            showProcessing('photoResults');
+            
+            setTimeout(() => {
+                const ttsResults = [{
+                    type: 'video',
+                    url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
+                    id: Date.now() + '_tts'
+                }];
+                
+                displayResults('photoResults', ttsResults);
+                showMessage('Tạo video TTS thành công! Video với đồng bộ lời nói và cảm xúc đã được tạo.', 'success');
+            }, 7000);
+        }
+
+        // Video processing functions
+        function processVideo() {
+            if (uploadedVideos.length === 0) {
+                showMessage('Vui lòng tải lên video trước khi xử lý!', 'error');
+                return;
+            }
+
+            const progressBar = document.getElementById('videoProcessingProgress');
+            progressBar.style.display = 'block';
+            
+            simulateProgress(progressBar.querySelector('.progress-fill'), 6000, () => {
+                showMessage('Xử lý video thành công! Avatar video đã được tạo.', 'success');
+                progressBar.style.display = 'none';
+                
+                const videoResults = [{
+                    type: 'video',
+                    url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_720x480_2mb.mp4',
+                    id: Date.now() + '_processed'
+                }];
+                
+                displayResults('videoResults', videoResults);
+            });
+        }
+
+        function syncVideoAudio() {
+            const audioFile = document.getElementById('videoAudioInput').files[0];
+            if (!audioFile) {
+                showMessage('Vui lòng chọn file âm thanh!', 'error');
+                return;
+            }
+
+            showProcessing('videoResults');
+            
+            setTimeout(() => {
+                const syncedResults = [{
+                    type: 'video',
+                    url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_5mb.mp4',
+                    id: Date.now() + '_video_synced'
+                }];
+                
+                displayResults('videoResults', syncedResults);
+                showMessage('Đồng bộ biểu cảm thành công! Video với hát nhép đã được tạo.', 'success');
+            }, 4000);
+        }
+
+        function createTextContent() {
+            const content = document.querySelector('#videoTab .prompt-input').value;
+            if (!content.trim()) {
+                showMessage('Vui lòng nhập nội dung!', 'error');
+                return;
+            }
+
+            showProcessing('videoResults');
+            
+            setTimeout(() => {
+                const contentResults = [{
+                    type: 'video',
+                    url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+                    id: Date.now() + '_text_content'
+                }];
+                
+                displayResults('videoResults', contentResults);
+                showMessage('Tạo nội dung thành công! Video dựa trên văn bản đã được tạo.', 'success');
+            }, 5000);
+        }
+
+        function syncVoice() {
+            const voiceFile = document.getElementById('videoVoiceInput').files[0];
+            if (!voiceFile) {
+                showMessage('Vui lòng chọn file giọng nói!', 'error');
+                return;
+            }
+
+            showProcessing('videoResults');
+            
+            setTimeout(() => {
+                const voiceResults = [{
+                    type: 'video',
+                    url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4',
+                    id: Date.now() + '_voice_sync'
+                }];
+                
+                displayResults('videoResults', voiceResults);
+                showMessage('Đồng bộ giọng nói thành công! Video với lời nói và cảm xúc đã được tạo (1080p).', 'success');
+            }, 6000);
+        }
+
+        // Utility functions
+        function simulateProgress(progressElement, duration, callback) {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(callback, 500);
+                }
+                progressElement.style.width = progress + '%';
+            }, duration / 20);
+        }
+
+        function showProcessing(resultsId) {
+            const resultsElement = document.getElementById(resultsId);
+            resultsElement.style.display = 'block';
+            resultsElement.innerHTML = `
+                <div class="processing">
+                    <div class="spinner"></div>
+                    <p>Đang xử lý AI... Vui lòng đợi</p>
+                </div>
+            `;
+        }
+
+        function hideProcessing(resultsId) {
+            const resultsElement = document.getElementById(resultsId);
+            resultsElement.innerHTML = '';
+            resultsElement.style.display = 'none';
+        }
+
+        function displayResults(resultsId, results) {
+            const resultsElement = document.getElementById(resultsId);
+            resultsElement.style.display = 'block';
+            resultsElement.innerHTML = '';
+
+            if (resultsId === 'photoResults') {
+                generatedResults = results;
+            }
+
+            results.forEach(result => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                if (result.type === 'image') {
+                    resultItem.innerHTML = `
+                        <img src="${result.url}" alt="Generated Avatar">
+                        <div class="ai-watermark">AI Photo</div>
+                        <button class="download-btn" onclick="downloadResult('${result.url}', '${result.id}')">📥</button>
+                    `;
+                } else {
+                    resultItem.innerHTML = `
+                        <video src="${result.url}" controls></video>
+                        <div class="ai-watermark">AI Video</div>
+                        <button class="download-btn" onclick="downloadResult('${result.url}', '${result.id}')">📥</button>
+                    `;
+                }
+                
+                resultsElement.appendChild(resultItem);
+            });
+        }
+
+        function downloadResult(url, id) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `creator_ai_${id}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showMessage('Bắt đầu tải xuống!', 'success');
+        }
+
+        function showMessage(message, type) {
+            // Remove existing messages
+            document.querySelectorAll('.error, .success').forEach(el => {
+                if (!el.id.includes('login')) {
+                    el.remove();
+                }
+            });
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type;
+            messageDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    </script>
 </body>
 </html>
