@@ -1,12 +1,1245 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Complete AI Creation Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 1.2em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-title {
+            font-size: 1.5em;
+            color: #4a5568;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-icon {
+            font-size: 1.5em;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .preview-area {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f7fafc;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .preview-image, .preview-video {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-message {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+
+        .status-info {
+            background: #bee3f8;
+            color: #2a69ac;
+            border: 1px solid #90cdf4;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .volume-control {
+            flex: 1;
+        }
+
+        .downloads-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .download-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .download-item:last-child {
+            border-bottom: none;
+        }
+
+        .voice-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .voice-indicator.active {
+            background: #f56565;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <div class="container">
+        <header>
+            <h1>🎨 Creator AI</h1>
+            <p class="subtitle">Complete AI Creation Suite - Standalone Edition</p>
+        </header>
+
+        <div class="features-grid">
+            <!-- Image Upload & Processing -->
+            <div class="feature-card">
+                <h3 class="feature-title">
+                    <span class="feature-icon">🖼️</span>
+                    Image Upload & Processing
+                </h3>
+                <div class="upload-area" onclick="document.getElementById('imageUpload').click()">
+                    <p>📁 Click or drag images here to upload</p>
+                    <small>Supports: JPG, PNG, GIF, WebP</small>
+                </div>
+                <input type="file" id="imageUpload" accept="image/*" multiple>
+                <div class="preview-area" id="imagePreview">
+                    <p>No images uploaded yet</p>
+                </div>
+                <button onclick="processImages()">🔄 Process Images</button>
+                <button onclick="refineImages()">✨ Refine & Upgrade</button>
+            </div>
+
+            <!-- Dataset Training -->
+            <div class="feature-card">
+                <h3 class="feature-title">
+                    <span class="feature-icon">🧠</span>
+                    Dataset Training
+                </h3>
+                <div class="upload-area" onclick="document.getElementById('datasetUpload').click()">
+                    <p>📊 Upload training dataset</p>
+                    <small>ZIP files with images/data</small>
+                </div>
+                <input type="file" id="datasetUpload" accept=".zip,.tar,.rar" multiple>
+                <div class="input-group">
+                    <label>Training Model:</label>
+                    <select id="modelType">
+                        <option>Image Generation</option>
+                        <option>Style Transfer</option>
+                        <option>Object Detection</option>
+                        <option>Text-to-Image</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Training Epochs:</label>
+                    <input type="number" id="epochs" value="100" min="1" max="1000">
+                </div>
+                <button onclick="startTraining()">🚀 Start Training</button>
+                <div class="progress-bar hidden" id="trainingProgress">
+                    <div class="progress-fill"></div>
+                </div>
+                <div id="trainingStatus"></div>
+            </div>
+
+            <!-- Text Prompt Generation -->
+            <div class="feature-card">
+                <h3 class="feature-title">
+                    <span class="feature-icon">💭</span>
+                    Text Prompt Generation
+                </h3>
+                <div class="input-group">
+                    <label>Enter your prompt:</label>
+                    <textarea id="textPrompt" placeholder="Describe what you want to create..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Style:</label>
+                    <select id="promptStyle">
+                        <option>Realistic</option>
+                        <option>Artistic</option>
+                        <option>Cartoon</option>
+                        <option>Abstract</option>
+                        <option>Photographic</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Output Size:</label>
+                    <select id="outputSize">
+                        <option>512x512</option>
+                        <option>768x768</option>
+                        <option>1024x1024</option>
+                        <option>1920x1080</option>
+                    </select>
+                </div>
+                <button onclick="generateFromPrompt()">✨ Generate</button>
+                <button onclick="startVoiceInput()">🎤 Voice Input</button>
+                <div class="preview-area" id="generatedContent">
+                    <p>Generated content will appear here</p>
+                </div>
+            </div>
+
+            <!-- Audio/Music Upload -->
+            <div class="feature-card">
+                <h3 class="feature-title">
+                    <span class="feature-icon">🎵</span>
+                    Audio & Music Processing
+                </h3>
+                <div class="upload-area" onclick="document.getElementById('audioUpload').click()">
+                    <p>🎵 Upload audio or music files</p>
+                    <small>Supports: MP3, WAV, OGG, M4A</small>
+                </div>
+                <input type="file" id="audioUpload" accept="audio/*" multiple>
+                <div class="audio-controls">
+                    <button onclick="recordAudio()" id="recordBtn">🎤 Record</button>
+                    <button onclick="playAudio()" id="playBtn" disabled>▶️ Play</button>
+                    <button onclick="stopAudio()" id="stopBtn" disabled>⏹️ Stop</button>
+                    <input type="range" class="volume-control" id="volumeControl" min="0" max="100" value="50">
+                </div>
+                <div id="audioPreview"></div>
+                <button onclick="processAudio()">🔊 Enhance Audio</button>
+                <button onclick="generateMusic()">🎼 Generate Music</button>
+            </div>
+
+            <!-- Video Creation -->
+            <div class="feature-card">
+                <h3 class="feature-title">
+                    <span class="feature-icon">🎬</span>
+                    Video Creation
+                </h3>
+                <div class="input-group">
+                    <label>Video Duration (seconds):</label>
+                    <input type="number" id="videoDuration" min="0" max="5" step="0.1" value="3">
+                </div>
+                <div class="input-group">
+                    <label>Video Style:</label>
+                    <select id="videoStyle">
+                        <option>Animation</option>
+                        <option>Slideshow</option>
+                        <option>Morphing</option>
+                        <option>Particle Effects</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Resolution:</label>
+                    <select id="videoResolution">
+                        <option>720p (1280x720)</option>
+                        <option>1080p (1920x1080)</option>
+                        <option>4K (3840x2160)</option>
+                    </select>
+                </div>
+                <button onclick="createVideo()">🎬 Create Video</button>
+                <button onclick="recordScreen()">📹 Record Screen</button>
+                <div class="preview-area" id="videoPreview">
+                    <p>Video preview will appear here</p>
+                </div>
+                <div class="progress-bar hidden" id="videoProgress">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Voice Input Processing -->
+            <div class="feature-card">
+                <h3 class="feature-title">
+                    <span class="feature-icon">🗣️</span>
+                    Voice Input Processing
+                </h3>
+                <div class="input-group">
+                    <button onclick="toggleSpeechRecognition()" id="speechBtn">
+                        <span class="voice-indicator" id="voiceIndicator"></span>
+                        Start Voice Recognition
+                    </button>
+                </div>
+                <div class="input-group">
+                    <label>Recognized Speech:</label>
+                    <textarea id="speechOutput" readonly placeholder="Speech will appear here..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Text to Speech:</label>
+                    <textarea id="ttsInput" placeholder="Enter text to convert to speech..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Voice:</label>
+                    <select id="voiceSelect">
+                        <option>Default</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Robot</option>
+                    </select>
+                </div>
+                <button onclick="speakText()">🔊 Speak Text</button>
+                <button onclick="processVoiceCommand()">⚡ Process Voice Command</button>
+            </div>
+        </div>
+
+        <!-- Download Manager -->
+        <div class="feature-card">
+            <h3 class="feature-title">
+                <span class="feature-icon">💾</span>
+                Download Manager
+            </h3>
+            <div class="downloads-list" id="downloadsList">
+                <p>No downloads yet. Create some content first!</p>
+            </div>
+            <button onclick="downloadAll()">📦 Download All</button>
+            <button onclick="clearDownloads()">🗑️ Clear Downloads</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let uploadedImages = [];
+        let uploadedAudio = [];
+        let generatedContent = [];
+        let audioRecorder = null;
+        let audioStream = null;
+        let speechRecognition = null;
+        let isRecording = false;
+        let isSpeechRecognitionActive = false;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            initializeSpeechRecognition();
+            showStatus('Creator AI loaded successfully!', 'success');
+        });
+
+        function setupEventListeners() {
+            // Image upload
+            document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+            
+            // Dataset upload
+            document.getElementById('datasetUpload').addEventListener('change', handleDatasetUpload);
+            
+            // Audio upload
+            document.getElementById('audioUpload').addEventListener('change', handleAudioUpload);
+            
+            // Volume control
+            document.getElementById('volumeControl').addEventListener('input', adjustVolume);
+            
+            // Drag and drop for images
+            setupDragAndDrop();
+        }
+
+        function setupDragAndDrop() {
+            const uploadAreas = document.querySelectorAll('.upload-area');
+            
+            uploadAreas.forEach(area => {
+                area.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    area.classList.add('dragover');
+                });
+                
+                area.addEventListener('dragleave', () => {
+                    area.classList.remove('dragover');
+                });
+                
+                area.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    area.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (area.onclick.toString().includes('imageUpload')) {
+                        handleImageFiles(files);
+                    } else if (area.onclick.toString().includes('audioUpload')) {
+                        handleAudioFiles(files);
+                    }
+                });
+            });
+        }
+
+        // Image handling functions
+        function handleImageUpload(e) {
+            handleImageFiles(e.target.files);
+        }
+
+        function handleImageFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    uploadedImages.push(file);
+                    displayImagePreview(file);
+                }
+            });
+        }
+
+        function displayImagePreview(file) {
+            const preview = document.getElementById('imagePreview');
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'preview-image';
+                img.style.margin = '5px';
+                
+                if (preview.querySelector('p')) {
+                    preview.innerHTML = '';
+                }
+                preview.appendChild(img);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function processImages() {
+            if (uploadedImages.length === 0) {
+                showStatus('Please upload images first!', 'error');
+                return;
+            }
+            
+            showStatus('Processing images...', 'info');
+            simulateProgress('Processing', () => {
+                uploadedImages.forEach((file, index) => {
+                    const processedImage = {
+                        name: `processed_${file.name}`,
+                        type: 'image',
+                        size: file.size * 1.2, // Simulate processing
+                        data: file
+                    };
+                    addToDownloads(processedImage);
+                });
+                showStatus(`Successfully processed ${uploadedImages.length} images!`, 'success');
+            });
+        }
+
+        function refineImages() {
+            if (uploadedImages.length === 0) {
+                showStatus('Please upload images first!', 'error');
+                return;
+            }
+            
+            showStatus('Refining and upgrading images...', 'info');
+            simulateProgress('Refining', () => {
+                uploadedImages.forEach((file, index) => {
+                    const refinedImage = {
+                        name: `refined_${file.name}`,
+                        type: 'image',
+                        size: file.size * 1.5, // Simulate enhancement
+                        data: file
+                    };
+                    addToDownloads(refinedImage);
+                });
+                showStatus(`Successfully refined ${uploadedImages.length} images!`, 'success');
+            });
+        }
+
+        // Dataset training functions
+        function handleDatasetUpload(e) {
+            const files = Array.from(e.target.files);
+            showStatus(`Uploaded ${files.length} dataset file(s)`, 'success');
+        }
+
+        function startTraining() {
+            const modelType = document.getElementById('modelType').value;
+            const epochs = document.getElementById('epochs').value;
+            
+            showStatus(`Starting ${modelType} training for ${epochs} epochs...`, 'info');
+            
+            const progressBar = document.getElementById('trainingProgress');
+            const progressFill = progressBar.querySelector('.progress-fill');
+            const statusDiv = document.getElementById('trainingStatus');
+            
+            progressBar.classList.remove('hidden');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    showStatus('Training completed successfully!', 'success');
+                    statusDiv.innerHTML = '<div class="status-success">Model trained and ready for use!</div>';
+                    
+                    // Add trained model to downloads
+                    const trainedModel = {
+                        name: `${modelType.toLowerCase().replace(/\s+/g, '_')}_model.pkl`,
+                        type: 'model',
+                        size: 50 * 1024 * 1024, // 50MB model file
+                        data: new Blob(['Trained model data'], { type: 'application/octet-stream' })
+                    };
+                    addToDownloads(trainedModel);
+                } else {
+                    statusDiv.innerHTML = `<div class="status-info">Training progress: ${Math.round(progress)}% - Epoch ${Math.ceil(progress * epochs / 100)}/${epochs}</div>`;
+                }
+                progressFill.style.width = progress + '%';
+            }, 200);
+        }
+
+        // Text prompt generation
+        function generateFromPrompt() {
+            const prompt = document.getElementById('textPrompt').value;
+            const style = document.getElementById('promptStyle').value;
+            const size = document.getElementById('outputSize').value;
+            
+            if (!prompt.trim()) {
+                showStatus('Please enter a prompt!', 'error');
+                return;
+            }
+            
+            showStatus(`Generating ${style} content from prompt...`, 'info');
+            
+            simulateProgress('Generating', () => {
+                // Create a canvas with generated content
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const [width, height] = size.split('x').map(Number);
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Generate abstract art based on prompt
+                generateAbstractArt(ctx, width, height, prompt, style);
+                
+                const preview = document.getElementById('generatedContent');
+                preview.innerHTML = '';
+                canvas.className = 'preview-image';
+                preview.appendChild(canvas);
+                
+                // Convert to blob and add to downloads
+                canvas.toBlob(blob => {
+                    const generatedFile = {
+                        name: `generated_${style.toLowerCase()}_${Date.now()}.png`,
+                        type: 'image',
+                        size: blob.size,
+                        data: blob
+                    };
+                    addToDownloads(generatedFile);
+                });
+                
+                showStatus('Content generated successfully!', 'success');
+            });
+        }
+
+        function generateAbstractArt(ctx, width, height, prompt, style) {
+            // Create abstract art based on prompt and style
+            const colors = getColorsFromPrompt(prompt);
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, colors[0]);
+            gradient.addColorStop(1, colors[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Add shapes based on style
+            for (let i = 0; i < 20; i++) {
+                ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                ctx.globalAlpha = 0.6;
+                
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = Math.random() * 100 + 20;
+                
+                if (style === 'Cartoon') {
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (style === 'Abstract') {
+                    ctx.fillRect(x, y, size, size);
+                } else {
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, size, size/2, Math.random() * Math.PI, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // Add text
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#333';
+            ctx.font = `${Math.min(width, height) / 20}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText(prompt.substring(0, 20) + '...', width/2, height/2);
+        }
+
+        function getColorsFromPrompt(prompt) {
+            const colorMap = {
+                'red': ['#ff6b6b', '#ee5a24'],
+                'blue': ['#74b9ff', '#0984e3'],
+                'green': ['#55a3ff', '#00b894'],
+                'yellow': ['#fdcb6e', '#f39c12'],
+                'purple': ['#a29bfe', '#6c5ce7'],
+                'orange': ['#fd79a8', '#e84393']
+            };
+            
+            const words = prompt.toLowerCase().split(' ');
+            for (const word of words) {
+                if (colorMap[word]) return colorMap[word];
+            }
+            
+            return ['#667eea', '#764ba2']; // Default colors
+        }
+
+        // Audio handling functions
+        function handleAudioUpload(e) {
+            handleAudioFiles(e.target.files);
+        }
+
+        function handleAudioFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('audio/')) {
+                    uploadedAudio.push(file);
+                    displayAudioPreview(file);
+                }
+            });
+        }
+
+        function displayAudioPreview(file) {
+            const preview = document.getElementById('audioPreview');
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            audio.src = URL.createObjectURL(file);
+            audio.style.width = '100%';
+            audio.style.margin = '5px 0';
+            
+            preview.appendChild(audio);
+            document.getElementById('playBtn').disabled = false;
+        }
+
+        function recordAudio() {
+            if (!isRecording) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        audioStream = stream;
+                        audioRecorder = new MediaRecorder(stream);
+                        const chunks = [];
+                        
+                        audioRecorder.ondataavailable = e => chunks.push(e.data);
+                        audioRecorder.onstop = () => {
+                            const blob = new Blob(chunks, { type: 'audio/wav' });
+                            const audio = document.createElement('audio');
+                            audio.controls = true;
+                            audio.src = URL.createObjectURL(blob);
+                            
+                            document.getElementById('audioPreview').appendChild(audio);
+                            
+                            const recordedFile = {
+                                name: `recorded_audio_${Date.now()}.wav`,
+                                type: 'audio',
+                                size: blob.size,
+                                data: blob
+                            };
+                            addToDownloads(recordedFile);
+                        };
+                        
+                        audioRecorder.start();
+                        isRecording = true;
+                        document.getElementById('recordBtn').textContent = '⏹️ Stop Recording';
+                        showStatus('Recording audio...', 'info');
+                    })
+                    .catch(err => showStatus('Microphone access denied', 'error'));
+            } else {
+                audioRecorder.stop();
+                audioStream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+                document.getElementById('recordBtn').textContent = '🎤 Record';
+                showStatus('Recording stopped', 'success');
+            }
+        }
+
+        function playAudio() {
+            const audios = document.querySelectorAll('#audioPreview audio');
+            if (audios.length > 0) {
+                audios[audios.length - 1].play();
+            }
+        }
+
+        function stopAudio() {
+            const audios = document.querySelectorAll('#audioPreview audio');
+            audios.forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        }
+
+        function adjustVolume() {
+            const volume = document.getElementById('volumeControl').value / 100;
+            const audios = document.querySelectorAll('audio');
+            audios.forEach(audio => audio.volume = volume);
+        }
+
+        function processAudio() {
+            if (uploadedAudio.length === 0) {
+                showStatus('Please upload audio files first!', 'error');
+                return;
+            }
+            
+            showStatus('Enhancing audio...', 'info');
+            simulateProgress('Processing', () => {
+                uploadedAudio.forEach(file => {
+                    const enhancedAudio = {
+                        name: `enhanced_${file.name}`,
+                        type: 'audio',
+                        size: file.size * 1.1,
+                        data: file
+                    };
+                    addToDownloads(enhancedAudio);
+                });
+                showStatus('Audio enhancement completed!', 'success');
+            });
+        }
+
+        function generateMusic() {
+            showStatus('Generating music...', 'info');
+            simulateProgress('Composing', () => {
+                // Create a simple synthetic audio
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const duration = 5; // 5 seconds
+                const sampleRate = audioContext.sampleRate;
+                const buffer = audioContext.createBuffer(1, duration * sampleRate, sampleRate);
+                const data = buffer.getChannelData(0);
+                
+                // Generate simple melody
+                for (let i = 0; i < data.length; i++) {
+                    const time = i / sampleRate;
+                    const frequency = 440 + Math.sin(time) * 100; // Varying frequency
+                    data[i] = Math.sin(2 * Math.PI * frequency * time) * 0.3;
+                }
+                
+                const generatedMusic = {
+                    name: `generated_music_${Date.now()}.wav`,
+                    type: 'audio',
+                    size: 1024 * 1024, // 1MB
+                    data: new Blob([buffer], { type: 'audio/wav' })
+                };
+                addToDownloads(generatedMusic);
+                showStatus('Music generated successfully!', 'success');
+            });
+        }
+
+        // Video creation functions
+        function createVideo() {
+            const duration = parseFloat(document.getElementById('videoDuration').value);
+            const style = document.getElementById('videoStyle').value;
+            const resolution = document.getElementById('videoResolution').value;
+            
+            if (duration <= 0 || duration > 5) {
+                showStatus('Video duration must be between 0.1 and 5 seconds!', 'error');
+                return;
+            }
+            
+            showStatus(`Creating ${duration}s ${style} video...`, 'info');
+            
+            const progressBar = document.getElementById('videoProgress');
+            const progressFill = progressBar.querySelector('.progress-fill');
+            progressBar.classList.remove('hidden');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Create video preview
+                    createVideoPreview(duration, style, resolution);
+                    
+                    showStatus('Video created successfully!', 'success');
+                } else {
+                    showStatus(`Creating video... ${Math.round(progress)}%`, 'info');
+                }
+                progressFill.style.width = progress + '%';
+            }, 100);
+        }
+
+        function createVideoPreview(duration, style, resolution) {
+            const preview = document.getElementById('videoPreview');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size based on resolution
+            const [width, height] = resolution.split(' ')[1].slice(1, -1).split('x').map(Number);
+            canvas.width = width / 4; // Scale down for preview
+            canvas.height = height / 4;
+            
+            // Animate based on style
+            let frame = 0;
+            const fps = 30;
+            const totalFrames = duration * fps;
+            
+            const animate = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                switch (style) {
+                    case 'Animation':
+                        drawAnimatedShapes(ctx, canvas.width, canvas.height, frame);
+                        break;
+                    case 'Particle Effects':
+                        drawParticles(ctx, canvas.width, canvas.height, frame);
+                        break;
+                    default:
+                        drawSlideshow(ctx, canvas.width, canvas.height, frame);
+                }
+                
+                frame++;
+                if (frame < totalFrames) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+            
+            preview.innerHTML = '';
+            canvas.className = 'preview-video';
+            preview.appendChild(canvas);
+            
+            // Add to downloads
+            const videoFile = {
+                name: `created_video_${style.toLowerCase()}_${Date.now()}.mp4`,
+                type: 'video',
+                size: 5 * 1024 * 1024, // 5MB
+                data: new Blob(['video data'], { type: 'video/mp4' })
+            };
+            addToDownloads(videoFile);
+        }
+
+        function drawAnimatedShapes(ctx, width, height, frame) {
+            const time = frame * 0.1;
+            ctx.fillStyle = `hsl(${time * 10 % 360}, 70%, 60%)`;
+            
+            const x = width/2 + Math.sin(time) * width/4;
+            const y = height/2 + Math.cos(time) * height/4;
+            const size = 20 + Math.sin(time * 2) * 10;
+            
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawParticles(ctx, width, height, frame) {
+            for (let i = 0; i < 50; i++) {
+                const x = (Math.sin(frame * 0.1 + i) * width/2) + width/2;
+                const y = (Math.cos(frame * 0.1 + i * 0.5) * height/2) + height/2;
+                
+                ctx.fillStyle = `rgba(${100 + i*3}, ${150 + i*2}, 255, 0.7)`;
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawSlideshow(ctx, width, height, frame) {
+            const progress = (frame % 60) / 60;
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, `hsl(${progress * 360}, 70%, 70%)`);
+            gradient.addColorStop(1, `hsl(${(progress * 360 + 60) % 360}, 70%, 40%)`);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Frame ${frame}`, width/2, height/2);
+        }
+
+        function recordScreen() {
+            navigator.mediaDevices.getDisplayMedia({ video: true })
+                .then(stream => {
+                    const recorder = new MediaRecorder(stream);
+                    const chunks = [];
+                    
+                    recorder.ondataavailable = e => chunks.push(e.data);
+                    recorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        const screenRecording = {
+                            name: `screen_recording_${Date.now()}.webm`,
+                            type: 'video',
+                            size: blob.size,
+                            data: blob
+                        };
+                        addToDownloads(screenRecording);
+                        showStatus('Screen recording saved!', 'success');
+                    };
+                    
+                    recorder.start();
+                    showStatus('Screen recording started. Stop sharing to finish.', 'info');
+                    
+                    stream.getVideoTracks()[0].onended = () => {
+                        recorder.stop();
+                    };
+                })
+                .catch(err => showStatus('Screen recording not supported or denied', 'error'));
+        }
+
+        // Voice processing functions
+        function initializeSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                speechRecognition = new webkitSpeechRecognition();
+                speechRecognition.continuous = true;
+                speechRecognition.interimResults = true;
+                
+                speechRecognition.onresult = function(event) {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    document.getElementById('speechOutput').value = transcript;
+                };
+                
+                speechRecognition.onerror = function(event) {
+                    showStatus('Speech recognition error: ' + event.error, 'error');
+                };
+            }
+        }
+
+        function toggleSpeechRecognition() {
+            const btn = document.getElementById('speechBtn');
+            const indicator = document.getElementById('voiceIndicator');
+            
+            if (!isSpeechRecognitionActive) {
+                if (speechRecognition) {
+                    speechRecognition.start();
+                    isSpeechRecognitionActive = true;
+                    btn.textContent = 'Stop Voice Recognition';
+                    indicator.classList.add('active');
+                    showStatus('Voice recognition started', 'info');
+                } else {
+                    showStatus('Speech recognition not supported', 'error');
+                }
+            } else {
+                speechRecognition.stop();
+                isSpeechRecognitionActive = false;
+                btn.textContent = 'Start Voice Recognition';
+                indicator.classList.remove('active');
+                showStatus('Voice recognition stopped', 'success');
+            }
+        }
+
+        function speakText() {
+            const text = document.getElementById('ttsInput').value;
+            const voice = document.getElementById('voiceSelect').value;
+            
+            if (!text.trim()) {
+                showStatus('Please enter text to speak!', 'error');
+                return;
+            }
+            
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Configure voice based on selection
+                const voices = speechSynthesis.getVoices();
+                if (voice === 'Male') {
+                    utterance.voice = voices.find(v => v.name.includes('Male')) || voices[0];
+                } else if (voice === 'Female') {
+                    utterance.voice = voices.find(v => v.name.includes('Female')) || voices[1];
+                }
+                
+                speechSynthesis.speak(utterance);
+                showStatus('Speaking text...', 'info');
+            } else {
+                showStatus('Text-to-speech not supported', 'error');
+            }
+        }
+
+        function startVoiceInput() {
+            toggleSpeechRecognition();
+            setTimeout(() => {
+                const recognizedText = document.getElementById('speechOutput').value;
+                if (recognizedText) {
+                    document.getElementById('textPrompt').value = recognizedText;
+                    showStatus('Voice input transferred to prompt!', 'success');
+                }
+            }, 5000);
+        }
+
+        function processVoiceCommand() {
+            const command = document.getElementById('speechOutput').value.toLowerCase();
+            
+            if (command.includes('generate') || command.includes('create')) {
+                generateFromPrompt();
+            } else if (command.includes('record')) {
+                recordAudio();
+            } else if (command.includes('video')) {
+                createVideo();
+            } else if (command.includes('download')) {
+                downloadAll();
+            } else {
+                showStatus('Voice command not recognized. Try saying "generate", "record", "video", or "download"', 'info');
+            }
+        }
+
+        // Download management functions
+        function addToDownloads(file) {
+            generatedContent.push(file);
+            updateDownloadsList();
+        }
+
+        function updateDownloadsList() {
+            const list = document.getElementById('downloadsList');
+            
+            if (generatedContent.length === 0) {
+                list.innerHTML = '<p>No downloads yet. Create some content first!</p>';
+                return;
+            }
+            
+            list.innerHTML = '';
+            generatedContent.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'download-item';
+                item.innerHTML = `
+                    <span>${file.name} (${formatFileSize(file.size)})</span>
+                    <button onclick="downloadFile(${index})">💾 Download</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function downloadFile(index) {
+            const file = generatedContent[index];
+            const url = URL.createObjectURL(file.data);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showStatus(`Downloaded ${file.name}`, 'success');
+        }
+
+        function downloadAll() {
+            if (generatedContent.length === 0) {
+                showStatus('No files to download!', 'error');
+                return;
+            }
+            
+            generatedContent.forEach((file, index) => {
+                setTimeout(() => downloadFile(index), index * 500);
+            });
+            showStatus(`Downloading ${generatedContent.length} files...`, 'info');
+        }
+
+        function clearDownloads() {
+            generatedContent = [];
+            updateDownloadsList();
+            showStatus('Downloads cleared', 'success');
+        }
+
+        // Utility functions
+        function simulateProgress(action, callback) {
+            const duration = Math.random() * 3000 + 2000; // 2-5 seconds
+            setTimeout(callback, duration);
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.textContent = message;
+            
+            // Find the first feature card to append status to
+            const firstCard = document.querySelector('.feature-card');
+            firstCard.appendChild(statusDiv);
+            
+            setTimeout(() => {
+                if (statusDiv.parentNode) {
+                    statusDiv.parentNode.removeChild(statusDiv);
+                }
+            }, 5000);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
 </body>
 </html>
