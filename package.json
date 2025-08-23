@@ -1,0 +1,37 @@
+{
+  "name": "creator-ai",
+  "version": "1.0.0",
+  "description": "AI-powered avatar and video creation system",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": ["ai", "avatar", "video", "creator", "stable-diffusion", "wav2lip"],
+  "author": "Hanh IO Company Limited",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.4",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "dotenv": "^16.3.1",
+    "axios": "^1.5.0",
+    "uuid": "^9.0.0",
+    "joi": "^17.9.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/multer": "^1.4.7",
+    "@types/cors": "^2.8.13",
+    "@types/uuid": "^9.0.2",
+    "@types/node": "^20.5.0",
+    "typescript": "^5.1.6",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "jest": "^29.6.2",
+    "@types/jest": "^29.5.3"
+  }
+}
