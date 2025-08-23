@@ -1,0 +1,60 @@
+{
+  "name": "creator-ai",
+  "version": "1.0.0",
+  "description": "AI-powered video content creation tool for offline use",
+  "main": "src/main.js",
+  "homepage": "https://github.com/hanh-io-company-limited/creator-ai",
+  "author": "Hanh IO Company Limited",
+  "license": "CC-BY-ND-4.0",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:all": "electron-builder --win --linux --mac",
+    "dist": "npm run build:win",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [
+    "ai",
+    "video",
+    "content-creation",
+    "machine-learning",
+    "desktop",
+    "offline"
+  ],
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^27.1.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.hanh-io.creator-ai",
+    "productName": "Creator AI",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.png",
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-Setup.${ext}",
+      "forceCodeSigning": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Creator AI"
+    }
+  }
+}
