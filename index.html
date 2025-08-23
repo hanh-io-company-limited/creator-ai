@@ -1,12 +1,148 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Advanced Video Creator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">Creator AI</h1>
+            <p class="subtitle">Advanced Video Creation Platform</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Video Upload Section -->
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="videoInput" accept="video/*" hidden>
+                    <div class="upload-placeholder">
+                        <div class="upload-icon">📹</div>
+                        <h3>Upload Your Video</h3>
+                        <p>Support for videos up to 5 minutes duration</p>
+                        <button class="upload-btn" onclick="document.getElementById('videoInput').click()">
+                            Choose Video File
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Video Preview -->
+                <div class="video-preview" id="videoPreview" style="display: none;">
+                    <video id="previewVideo" controls></video>
+                    <div class="video-info">
+                        <span id="videoDuration">Duration: --:--</span>
+                        <span id="videoResolution">Resolution: --</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Controls Section -->
+            <section class="controls-section" id="controlsSection" style="display: none;">
+                <!-- Duration Controls -->
+                <div class="control-group">
+                    <h3>Video Duration</h3>
+                    <div class="duration-controls">
+                        <label for="maxDuration">Maximum Duration:</label>
+                        <select id="maxDuration">
+                            <option value="5">5 seconds</option>
+                            <option value="15">15 seconds</option>
+                            <option value="30">30 seconds</option>
+                            <option value="60">1 minute</option>
+                            <option value="120">2 minutes</option>
+                            <option value="300" selected>5 minutes</option>
+                        </select>
+                    </div>
+                    <div class="trim-controls">
+                        <label for="startTime">Start Time:</label>
+                        <input type="range" id="startTime" min="0" max="100" value="0">
+                        <span id="startTimeDisplay">00:00</span>
+                        
+                        <label for="endTime">End Time:</label>
+                        <input type="range" id="endTime" min="0" max="100" value="100">
+                        <span id="endTimeDisplay">00:00</span>
+                    </div>
+                </div>
+
+                <!-- Aspect Ratio Controls -->
+                <div class="control-group">
+                    <h3>Aspect Ratio</h3>
+                    <div class="aspect-ratio-selector">
+                        <div class="ratio-option active" data-ratio="16:9" onclick="selectAspectRatio('16:9')">
+                            <div class="ratio-preview ratio-16-9"></div>
+                            <span>YouTube (16:9)</span>
+                        </div>
+                        <div class="ratio-option" data-ratio="9:16" onclick="selectAspectRatio('9:16')">
+                            <div class="ratio-preview ratio-9-16"></div>
+                            <span>TikTok (9:16)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Cropping Preview -->
+                    <div class="crop-preview">
+                        <h4>Preview with Selected Aspect Ratio</h4>
+                        <div class="crop-container" id="cropContainer">
+                            <canvas id="cropCanvas"></canvas>
+                            <div class="crop-overlay" id="cropOverlay"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Processing Options -->
+                <div class="control-group">
+                    <h3>AI Processing Features</h3>
+                    <div class="ai-features">
+                        <label class="feature-toggle">
+                            <input type="checkbox" id="expressionSync" checked>
+                            <span>Expression Synchronization</span>
+                        </label>
+                        <label class="feature-toggle">
+                            <input type="checkbox" id="lipSync" checked>
+                            <span>Lip Synchronization</span>
+                        </label>
+                        <label class="feature-toggle">
+                            <input type="checkbox" id="voiceCloning">
+                            <span>Voice Cloning</span>
+                        </label>
+                        <label class="feature-toggle">
+                            <input type="checkbox" id="emotionSync" checked>
+                            <span>Emotion Synchronization</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Processing Controls -->
+                <div class="control-group">
+                    <h3>Processing</h3>
+                    <div class="processing-controls">
+                        <button class="process-btn" id="processBtn" onclick="processVideo()">
+                            Process Video
+                        </button>
+                        <div class="progress-container" id="progressContainer" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <span class="progress-text" id="progressText">Processing... 0%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Output Section -->
+            <section class="output-section" id="outputSection" style="display: none;">
+                <h3>Processed Video</h3>
+                <div class="output-preview">
+                    <canvas id="outputCanvas"></canvas>
+                    <div class="output-controls">
+                        <button class="download-btn" onclick="downloadVideo()">Download Video</button>
+                        <button class="restart-btn" onclick="resetInterface()">Create New Video</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

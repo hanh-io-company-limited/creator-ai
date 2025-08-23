@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator AI Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .demo-container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        .demo-video { width: 400px; height: 225px; background: linear-gradient(45deg, #667eea, #764ba2); margin: 20px auto; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+        .aspect-controls { display: flex; gap: 20px; justify-content: center; margin: 20px 0; }
+        .ratio-btn { padding: 15px 25px; border: 2px solid #667eea; background: white; color: #667eea; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; }
+        .ratio-btn.active { background: #667eea; color: white; }
+        .ratio-btn:hover { transform: translateY(-2px); }
+        .demo-info { background: #f8f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .feature-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .feature-item { background: #f0f4ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 style="text-align: center; color: #333; margin-bottom: 10px;">Creator AI - Feature Demo</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">Demonstrating 5-minute video support and aspect ratio options</p>
+        
+        <div class="demo-info">
+            <h3>🎥 Five-Minute Video Support</h3>
+            <p>Extended video creation duration from 3-5 seconds to <strong>5 minutes (300 seconds)</strong></p>
+            <ul>
+                <li>✅ Duration validation and controls</li>
+                <li>✅ Compatible with AI processing workflows</li>
+                <li>✅ Progress indicators for longer processing times</li>
+                <li>✅ Trim controls for precise timing</li>
+            </ul>
+        </div>
+
+        <div class="demo-info">
+            <h3>📱 Aspect Ratio Options</h3>
+            <p>Switch between predefined aspect ratios with automatic cropping:</p>
+            
+            <div class="aspect-controls">
+                <button class="ratio-btn active" onclick="switchAspectRatio('16:9', this)">YouTube (16:9)</button>
+                <button class="ratio-btn" onclick="switchAspectRatio('9:16', this)">TikTok (9:16)</button>
+            </div>
+            
+            <div class="demo-video" id="demoVideo">
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; margin-bottom: 10px;">📹</div>
+                    <div>Video Preview</div>
+                    <div style="font-size: 14px; margin-top: 5px;" id="ratioDisplay">16:9 (YouTube)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-info">
+            <h3>🤖 AI Processing Features</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Expression Sync</strong><br>
+                    <small>Facial expression synchronization</small>
+                </div>
+                <div class="feature-item">
+                    <strong>Lip Sync</strong><br>
+                    <small>Audio-visual lip synchronization</small>
+                </div>
+                <div class="feature-item">
+                    <strong>Voice Cloning</strong><br>
+                    <small>AI-powered voice replication</small>
+                </div>
+                <div class="feature-item">
+                    <strong>Emotion Sync</strong><br>
+                    <small>Emotional state matching</small>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" style="display: inline-block; padding: 15px 30px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; text-decoration: none; border-radius: 25px; font-weight: bold;">
+                Try Full Creator AI Interface
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function switchAspectRatio(ratio, button) {
+            // Update button states
+            document.querySelectorAll('.ratio-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Update video preview
+            const video = document.getElementById('demoVideo');
+            const ratioDisplay = document.getElementById('ratioDisplay');
+            
+            if (ratio === '16:9') {
+                video.style.width = '400px';
+                video.style.height = '225px';
+                ratioDisplay.textContent = '16:9 (YouTube)';
+            } else if (ratio === '9:16') {
+                video.style.width = '225px';
+                video.style.height = '400px';
+                ratioDisplay.textContent = '9:16 (TikTok)';
+            }
+            
+            // Add transition effect
+            video.style.transition = 'width 0.5s ease, height 0.5s ease';
+        }
+    </script>
+</body>
+</html>
