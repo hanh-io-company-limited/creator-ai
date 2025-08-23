@@ -3,10 +3,938 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
+    <title>Creator AI - Hệ thống tạo nội dung AI</title>
+    
+    <!-- Embedded CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .nav-button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: left;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-button.active {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .content-area {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            min-height: 200px;
+        }
+
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f7fafc;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .chat-message.user {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-message.ai {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .settings-group {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .settings-group h4 {
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .content-area {
+                order: 1;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chào mừng đến với Creator AI</h1>
-    <p>Đây là một giao diện cơ bản để hiển thị trên GitHub Pages.</p>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">AI</div>
+            <h1>Creator AI</h1>
+            <p>Hệ thống tạo nội dung thông minh với công nghệ AI tiên tiến</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar Navigation -->
+            <div class="sidebar">
+                <h3>Chức năng</h3>
+                <button class="nav-button active" onclick="showTab('text-generator', this)">
+                    📝 Tạo văn bản
+                </button>
+                <button class="nav-button" onclick="showTab('image-generator', this)">
+                    🎨 Tạo hình ảnh
+                </button>
+                <button class="nav-button" onclick="showTab('video-creator', this)">
+                    🎬 Tạo video
+                </button>
+                <button class="nav-button" onclick="showTab('chat-ai', this)">
+                    💬 Chat với AI
+                </button>
+                <button class="nav-button" onclick="showTab('settings', this)">
+                    ⚙️ Cài đặt
+                </button>
+                <button class="nav-button" onclick="showTab('about', this)">
+                    ℹ️ Giới thiệu
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Text Generator Tab -->
+                <div id="text-generator" class="tab-content active">
+                    <h2>🔤 Tạo văn bản với AI</h2>
+                    <div class="form-group">
+                        <label for="text-prompt">Mô tả nội dung bạn muốn tạo:</label>
+                        <textarea id="text-prompt" class="form-control" placeholder="Ví dụ: Viết một bài blog về lợi ích của trí tuệ nhân tạo trong giáo dục..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="text-style">Phong cách viết:</label>
+                        <select id="text-style" class="form-control">
+                            <option value="formal">Trang trọng</option>
+                            <option value="casual">Thân thiện</option>
+                            <option value="creative">Sáng tạo</option>
+                            <option value="technical">Kỹ thuật</option>
+                            <option value="marketing">Tiếp thị</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="text-length">Độ dài:</label>
+                        <select id="text-length" class="form-control">
+                            <option value="short">Ngắn (100-200 từ)</option>
+                            <option value="medium">Trung bình (300-500 từ)</option>
+                            <option value="long">Dài (600-1000 từ)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="generateText()">Tạo văn bản</button>
+                    
+                    <div class="loading" id="text-loading">
+                        <div class="spinner"></div>
+                        <p>Đang tạo nội dung...</p>
+                    </div>
+                    
+                    <div class="output-area" id="text-output" style="display: none;">
+                        <h4>Kết quả:</h4>
+                        <div id="text-result"></div>
+                    </div>
+                </div>
+
+                <!-- Image Generator Tab -->
+                <div id="image-generator" class="tab-content">
+                    <h2>🎨 Tạo hình ảnh với AI</h2>
+                    <div class="form-group">
+                        <label for="image-prompt">Mô tả hình ảnh bạn muốn tạo:</label>
+                        <textarea id="image-prompt" class="form-control" placeholder="Ví dụ: Một cảnh hoàng hôn trên biển với những con chim bay..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="image-style">Phong cách:</label>
+                        <select id="image-style" class="form-control">
+                            <option value="realistic">Thực tế</option>
+                            <option value="artistic">Nghệ thuật</option>
+                            <option value="cartoon">Hoạt hình</option>
+                            <option value="abstract">Trừu tượng</option>
+                            <option value="vintage">Cổ điển</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="image-size">Kích thước:</label>
+                        <select id="image-size" class="form-control">
+                            <option value="square">Vuông (512x512)</option>
+                            <option value="landscape">Ngang (768x512)</option>
+                            <option value="portrait">Dọc (512x768)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="generateImage()">Tạo hình ảnh</button>
+                    
+                    <div class="loading" id="image-loading">
+                        <div class="spinner"></div>
+                        <p>Đang tạo hình ảnh...</p>
+                    </div>
+                    
+                    <div class="output-area" id="image-output" style="display: none;">
+                        <h4>Kết quả:</h4>
+                        <div id="image-result"></div>
+                    </div>
+                </div>
+
+                <!-- Video Creator Tab -->
+                <div id="video-creator" class="tab-content">
+                    <h2>🎬 Tạo video với AI</h2>
+                    <div class="form-group">
+                        <label for="video-prompt">Mô tả video bạn muốn tạo:</label>
+                        <textarea id="video-prompt" class="form-control" placeholder="Ví dụ: Video giới thiệu sản phẩm với hiệu ứng chuyển động mượt mà..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-duration">Thời lượng:</label>
+                        <select id="video-duration" class="form-control">
+                            <option value="short">Ngắn (15-30 giây)</option>
+                            <option value="medium">Trung bình (30-60 giây)</option>
+                            <option value="long">Dài (1-2 phút)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-quality">Chất lượng:</label>
+                        <select id="video-quality" class="form-control">
+                            <option value="hd">HD (720p)</option>
+                            <option value="fhd">Full HD (1080p)</option>
+                            <option value="4k">4K (2160p)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="generateVideo()">Tạo video</button>
+                    
+                    <div class="loading" id="video-loading">
+                        <div class="spinner"></div>
+                        <p>Đang tạo video...</p>
+                    </div>
+                    
+                    <div class="output-area" id="video-output" style="display: none;">
+                        <h4>Kết quả:</h4>
+                        <div id="video-result"></div>
+                    </div>
+                </div>
+
+                <!-- Chat AI Tab -->
+                <div id="chat-ai" class="tab-content">
+                    <h2>💬 Chat với AI Assistant</h2>
+                    <div class="chat-container" id="chat-container">
+                        <div class="chat-message ai">
+                            <strong>AI Assistant:</strong> Xin chào! Tôi là trợ lý AI của bạn. Hãy hỏi tôi bất cứ điều gì bạn muốn biết!
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" class="form-control chat-input" placeholder="Nhập tin nhắn của bạn..." onkeypress="handleChatKeyPress(event)">
+                        <button class="btn" onclick="sendMessage()">Gửi</button>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settings" class="tab-content">
+                    <h2>⚙️ Cài đặt hệ thống</h2>
+                    
+                    <div class="settings-group">
+                        <h4>Cài đặt AI</h4>
+                        <div class="form-group">
+                            <label for="ai-model">Mô hình AI:</label>
+                            <select id="ai-model" class="form-control">
+                                <option value="gpt-4">GPT-4 (Chính xác cao)</option>
+                                <option value="gpt-3.5">GPT-3.5 (Nhanh)</option>
+                                <option value="claude">Claude (Sáng tạo)</option>
+                                <option value="palm">PaLM (Đa ngôn ngữ)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="creativity">Mức độ sáng tạo:</label>
+                            <input type="range" id="creativity" class="form-control" min="0" max="100" value="70">
+                            <small>Thấp (Chính xác) ← → Cao (Sáng tạo)</small>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h4>Cài đặt giao diện</h4>
+                        <div class="form-group">
+                            <label for="theme">Giao diện:</label>
+                            <select id="theme" class="form-control" onchange="changeTheme()">
+                                <option value="light">Sáng</option>
+                                <option value="dark">Tối</option>
+                                <option value="auto">Tự động</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="language">Ngôn ngữ:</label>
+                            <select id="language" class="form-control">
+                                <option value="vi">Tiếng Việt</option>
+                                <option value="en">English</option>
+                                <option value="zh">中文</option>
+                                <option value="ja">日本語</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h4>Cài đặt nâng cao</h4>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="auto-save"> Tự động lưu kết quả
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="analytics"> Cho phép thu thập dữ liệu phân tích
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="saveSettings()">Lưu cài đặt</button>
+                </div>
+
+                <!-- About Tab -->
+                <div id="about" class="tab-content">
+                    <h2>ℹ️ Giới thiệu Creator AI</h2>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔤</div>
+                            <h3>Tạo văn bản</h3>
+                            <p>Tạo nội dung văn bản chất lượng cao với nhiều phong cách khác nhau</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎨</div>
+                            <h3>Tạo hình ảnh</h3>
+                            <p>Sáng tạo hình ảnh độc đáo từ mô tả văn bản với AI tiên tiến</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎬</div>
+                            <h3>Tạo video</h3>
+                            <p>Sản xuất video chuyên nghiệp với hiệu ứng và chuyển động mượt mà</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💬</div>
+                            <h3>Chat AI</h3>
+                            <p>Trò chuyện thông minh với AI assistant để hỗ trợ công việc</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px; padding: 20px; background: #f7fafc; border-radius: 8px;">
+                        <h3>Về Creator AI</h3>
+                        <p style="margin-bottom: 15px;">
+                            Creator AI là hệ thống tạo nội dung thông minh được phát triển bởi Hanh IO Company Limited. 
+                            Sử dụng công nghệ AI tiên tiến nhất để hỗ trợ người dùng tạo ra nội dung chất lượng cao một cách nhanh chóng và hiệu quả.
+                        </p>
+                        <p style="margin-bottom: 15px;">
+                            <strong>Phiên bản:</strong> 1.0.0<br>
+                            <strong>Cập nhật:</strong> Tháng 8, 2024<br>
+                            <strong>Giấy phép:</strong> Creative Commons Attribution-NoDerivatives 4.0 International
+                        </p>
+                        <p>
+                            <strong>Lưu ý:</strong> Đây là file HTML độc lập, có thể hoạt động offline và không cần kết nối internet 
+                            (trừ khi sử dụng các API AI thực tế).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        // Global variables
+        let currentTab = 'text-generator';
+        let settings = {
+            aiModel: 'gpt-4',
+            creativity: 70,
+            theme: 'light',
+            language: 'vi',
+            autoSave: false,
+            analytics: false
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            showTab('text-generator');
+        });
+
+        // Tab management
+        function showTab(tabId, buttonElement) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all nav buttons
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to corresponding nav button
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+            
+            currentTab = tabId;
+        }
+
+        // Text generation
+        async function generateText() {
+            const prompt = document.getElementById('text-prompt').value;
+            const style = document.getElementById('text-style').value;
+            const length = document.getElementById('text-length').value;
+            
+            if (!prompt.trim()) {
+                alert('Vui lòng nhập mô tả nội dung!');
+                return;
+            }
+            
+            showLoading('text-loading');
+            hideOutput('text-output');
+            
+            // Simulate AI text generation
+            setTimeout(() => {
+                const generatedText = simulateTextGeneration(prompt, style, length);
+                displayTextResult(generatedText);
+                hideLoading('text-loading');
+                showOutput('text-output');
+            }, 2000);
+        }
+
+        function simulateTextGeneration(prompt, style, length) {
+            const samples = {
+                formal: "Dựa trên yêu cầu của bạn, tôi xin trình bày nội dung sau đây một cách trang trọng và chuyên nghiệp. " + prompt + " được phân tích kỹ lưỡng với các khía cạnh khoa học và thực tiễn.",
+                casual: "Chào bạn! Về chủ đề " + prompt + " mà bạn quan tâm, mình muốn chia sẻ những điều thú vị và hữu ích. Hy vọng thông tin này sẽ giúp bạn hiểu rõ hơn!",
+                creative: "Hãy tưởng tượng " + prompt + " như một câu chuyện đầy màu sắc và cảm xúc. Mỗi chi tiết đều có ý nghĩa riêng, tạo nên bức tranh tổng thể đầy sáng tạo.",
+                technical: "Từ góc độ kỹ thuật, " + prompt + " có thể được phân tích thông qua các thông số và chỉ số cụ thể. Quy trình này được thực hiện theo các bước logic và khoa học.",
+                marketing: "Khám phá sức mạnh của " + prompt + "! Đây là giải pháp hoàn hảo cho nhu cầu của bạn với những lợi ích vượt trội và hiệu quả đã được chứng minh."
+            };
+            
+            let baseText = samples[style] || samples.formal;
+            
+            // Extend based on length
+            if (length === 'medium' || length === 'long') {
+                baseText += "\n\nNgoài ra, chúng ta cần xem xét các yếu tố liên quan khác để có cái nhìn toàn diện về vấn đề này. Các nghiên cứu gần đây đã chỉ ra những khía cạnh mới mẻ và thú vị.";
+            }
+            
+            if (length === 'long') {
+                baseText += "\n\nKết luận, đây là một chủ đề đáng quan tâm với nhiều tiềm năng phát triển trong tương lai. Việc áp dụng đúng cách sẽ mang lại những kết quả tích cực và bền vững.";
+            }
+            
+            return baseText;
+        }
+
+        // Image generation
+        async function generateImage() {
+            const prompt = document.getElementById('image-prompt').value;
+            const style = document.getElementById('image-style').value;
+            const size = document.getElementById('image-size').value;
+            
+            if (!prompt.trim()) {
+                alert('Vui lòng nhập mô tả hình ảnh!');
+                return;
+            }
+            
+            showLoading('image-loading');
+            hideOutput('image-output');
+            
+            // Simulate AI image generation
+            setTimeout(() => {
+                const imageResult = simulateImageGeneration(prompt, style, size);
+                displayImageResult(imageResult);
+                hideLoading('image-loading');
+                showOutput('image-output');
+            }, 3000);
+        }
+
+        function simulateImageGeneration(prompt, style, size) {
+            // Create a placeholder image with text
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set dimensions based on size
+            const dimensions = {
+                square: { width: 400, height: 400 },
+                landscape: { width: 600, height: 400 },
+                portrait: { width: 400, height: 600 }
+            };
+            
+            const dim = dimensions[size] || dimensions.square;
+            canvas.width = dim.width;
+            canvas.height = dim.height;
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, dim.width, dim.height);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, dim.width, dim.height);
+            
+            // Add text
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Hình ảnh được tạo bởi AI', dim.width/2, dim.height/2 - 20);
+            ctx.font = '14px Arial';
+            ctx.fillText(`Phong cách: ${style}`, dim.width/2, dim.height/2 + 10);
+            ctx.fillText(`Prompt: ${prompt.substring(0, 30)}...`, dim.width/2, dim.height/2 + 30);
+            
+            return canvas.toDataURL();
+        }
+
+        // Video generation
+        async function generateVideo() {
+            const prompt = document.getElementById('video-prompt').value;
+            const duration = document.getElementById('video-duration').value;
+            const quality = document.getElementById('video-quality').value;
+            
+            if (!prompt.trim()) {
+                alert('Vui lòng nhập mô tả video!');
+                return;
+            }
+            
+            showLoading('video-loading');
+            hideOutput('video-output');
+            
+            // Simulate AI video generation
+            setTimeout(() => {
+                const videoResult = simulateVideoGeneration(prompt, duration, quality);
+                displayVideoResult(videoResult);
+                hideLoading('video-loading');
+                showOutput('video-output');
+            }, 5000);
+        }
+
+        function simulateVideoGeneration(prompt, duration, quality) {
+            return {
+                prompt: prompt,
+                duration: duration,
+                quality: quality,
+                thumbnail: generateVideoThumbnail(prompt)
+            };
+        }
+
+        function generateVideoThumbnail(prompt) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 480;
+            canvas.height = 270;
+            
+            // Create video-like background
+            const gradient = ctx.createLinearGradient(0, 0, 480, 270);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(0.5, '#4ecdc4');
+            gradient.addColorStop(1, '#45b7d1');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 480, 270);
+            
+            // Add play button
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            ctx.arc(240, 135, 30, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.moveTo(230, 120);
+            ctx.lineTo(230, 150);
+            ctx.lineTo(255, 135);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Add text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Video được tạo bởi AI', 240, 200);
+            ctx.font = '12px Arial';
+            ctx.fillText(prompt.substring(0, 40) + '...', 240, 220);
+            
+            return canvas.toDataURL();
+        }
+
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addChatMessage('user', message);
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addChatMessage('ai', response);
+            }, 1000);
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function addChatMessage(type, message) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type}`;
+            
+            if (type === 'user') {
+                messageDiv.innerHTML = `<strong>Bạn:</strong> ${message}`;
+            } else {
+                messageDiv.innerHTML = `<strong>AI Assistant:</strong> ${message}`;
+            }
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function generateAIResponse(message) {
+            const responses = [
+                "Cảm ơn bạn đã hỏi! Tôi hiểu bạn quan tâm về " + message + ". Đây là một chủ đề thú vị và tôi sẵn sàng hỗ trợ bạn tìm hiểu thêm.",
+                "Theo như tôi hiểu, " + message + " có nhiều khía cạnh đáng khám phá. Bạn có muốn tôi giải thích chi tiết hơn về điểm nào không?",
+                "Đó là một câu hỏi hay! Về " + message + ", tôi có thể chia sẻ một số thông tin hữu ích. Bạn có cần thêm thông tin gì khác không?",
+                "Tôi rất vui được thảo luận về " + message + " với bạn. Đây là một chủ đề mà tôi có khá nhiều kiến thức để chia sẻ."
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        // Settings management
+        function saveSettings() {
+            settings.aiModel = document.getElementById('ai-model').value;
+            settings.creativity = document.getElementById('creativity').value;
+            settings.theme = document.getElementById('theme').value;
+            settings.language = document.getElementById('language').value;
+            settings.autoSave = document.getElementById('auto-save').checked;
+            settings.analytics = document.getElementById('analytics').checked;
+            
+            localStorage.setItem('creatorAISettings', JSON.stringify(settings));
+            alert('Cài đặt đã được lưu thành công!');
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('creatorAISettings');
+            if (saved) {
+                settings = JSON.parse(saved);
+                
+                document.getElementById('ai-model').value = settings.aiModel;
+                document.getElementById('creativity').value = settings.creativity;
+                document.getElementById('theme').value = settings.theme;
+                document.getElementById('language').value = settings.language;
+                document.getElementById('auto-save').checked = settings.autoSave;
+                document.getElementById('analytics').checked = settings.analytics;
+            }
+        }
+
+        function changeTheme() {
+            const theme = document.getElementById('theme').value;
+            // Theme changing would be implemented here
+            console.log('Theme changed to:', theme);
+        }
+
+        // Utility functions
+        function showLoading(loadingId) {
+            document.getElementById(loadingId).classList.add('show');
+        }
+
+        function hideLoading(loadingId) {
+            document.getElementById(loadingId).classList.remove('show');
+        }
+
+        function showOutput(outputId) {
+            document.getElementById(outputId).style.display = 'block';
+        }
+
+        function hideOutput(outputId) {
+            document.getElementById(outputId).style.display = 'none';
+        }
+
+        function displayTextResult(text) {
+            document.getElementById('text-result').innerHTML = `<p style="white-space: pre-wrap;">${text}</p>`;
+        }
+
+        function displayImageResult(imageData) {
+            document.getElementById('image-result').innerHTML = `
+                <img src="${imageData}" alt="Generated Image" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <p style="margin-top: 10px; color: #666;">Hình ảnh đã được tạo thành công!</p>
+            `;
+        }
+
+        function displayVideoResult(videoData) {
+            document.getElementById('video-result').innerHTML = `
+                <div style="text-align: center;">
+                    <img src="${videoData.thumbnail}" alt="Video Thumbnail" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 10px; color: #666;">
+                        Video được tạo thành công!<br>
+                        Thời lượng: ${videoData.duration} | Chất lượng: ${videoData.quality}
+                    </p>
+                </div>
+            `;
+        }
+
+        // Export functions for global access
+        window.showTab = showTab;
+        window.generateText = generateText;
+        window.generateImage = generateImage;
+        window.generateVideo = generateVideo;
+        window.sendMessage = sendMessage;
+        window.handleChatKeyPress = handleChatKeyPress;
+        window.saveSettings = saveSettings;
+        window.changeTheme = changeTheme;
+    </script>
 </body>
 </html>
