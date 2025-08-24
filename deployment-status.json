@@ -1,0 +1,17 @@
+{
+  "status": "ready",
+  "domain": "hanh-io-company-limitedorg.org",
+  "server_ip": "150.95.109.182",
+  "timestamp": "2025-08-22T21:15:16Z",
+  "components": {
+    "frontend": "ready",
+    "backend": "ready",
+    "ai_models": "ready",
+    "ssl_tls": "ready",
+    "monitoring": "ready",
+    "security": "ready"
+  },
+  "deployment_method": "docker_compose",
+  "ssl_provider": "letsencrypt",
+  "files_created": 13
+}

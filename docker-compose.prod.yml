@@ -1,0 +1,153 @@
+# Production Docker Compose Configuration
+
+services:
+  # Nginx reverse proxy with SSL termination
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: creator-ai-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ssl/certs:/etc/ssl/certs:ro
+      - ./ssl/private:/etc/ssl/private:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - backend
+    networks:
+      - creator-ai-network
+    environment:
+      - TZ=UTC
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Backend API service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend.prod
+    container_name: creator-ai-backend
+    restart: unless-stopped
+    expose:
+      - "3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - AI_MODELS_URL=http://ai-models:8000
+      - UPLOAD_DIR=/app/uploads
+      - MAX_FILE_SIZE=104857600
+      - MAX_FILES_PER_SESSION=10
+      - LOG_LEVEL=info
+      - LOG_FILE=/app/logs/app.log
+    volumes:
+      - uploads_data:/app/uploads
+      - backend_logs:/app/logs
+    depends_on:
+      - ai-models
+    networks:
+      - creator-ai-network
+    healthcheck:
+      test: ["CMD", "node", "dist/healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # AI Models service
+  ai-models:
+    build:
+      context: ./ai-models
+      dockerfile: Dockerfile.prod
+    container_name: creator-ai-ai-models
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    volumes:
+      - ai_models_data:/app/models
+      - uploads_data:/app/uploads
+      - ai_logs:/app/logs
+    networks:
+      - creator-ai-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+
+  # Log aggregator (optional)
+  logrotate:
+    image: blacklabelops/logrotate:latest
+    container_name: creator-ai-logrotate
+    restart: unless-stopped
+    volumes:
+      - nginx_logs:/var/log/nginx
+      - backend_logs:/var/log/backend
+      - ai_logs:/var/log/ai-models
+      - ./logrotate.conf:/etc/logrotate.d/creator-ai:ro
+    environment:
+      - LOGS_DIRECTORIES=/var/log/nginx /var/log/backend /var/log/ai-models
+    networks:
+      - creator-ai-network
+
+# Named volumes for data persistence
+volumes:
+  uploads_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/creator-ai/uploads
+  
+  ai_models_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/creator-ai/models
+  
+  nginx_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/creator-ai/logs/nginx
+  
+  backend_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/creator-ai/logs/backend
+  
+  ai_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/creator-ai/logs/ai-models
+
+# Custom network
+networks:
+  creator-ai-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
