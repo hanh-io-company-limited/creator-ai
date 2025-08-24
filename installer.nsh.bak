@@ -1,0 +1,77 @@
+; Creator AI Windows Installer Script
+; This script is included by electron-builder for NSIS installer customization
+
+!macro preInit
+  ; Set installation directory default
+  SetRegView 64
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "DisplayName" "Creator AI"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "Publisher" "Hanh IO Company Limited"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "DisplayIcon" "$INSTDIR\Creator AI.exe"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "UninstallString" "$INSTDIR\Uninstall Creator AI.exe"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "HelpLink" "https://github.com/hanh-io-company-limited/creator-ai"
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "NoModify" 1
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "NoRepair" 1
+!macroend
+
+Section "Install"
+  ; Create application data directory
+  CreateDirectory "$APPDATA\Creator AI"
+  CreateDirectory "$APPDATA\Creator AI\models"
+  CreateDirectory "$APPDATA\Creator AI\projects"
+  CreateDirectory "$APPDATA\Creator AI\output"
+  
+  ; Create Documents folder for user projects
+  CreateDirectory "$DOCUMENTS\Creator AI Projects"
+  
+  ; Copy sample files if they exist
+  IfFileExists "${BUILD_RESOURCES_DIR}\installer-readme.txt" 0 +2
+  File /oname=$APPDATA\Creator AI\README.txt "${BUILD_RESOURCES_DIR}\installer-readme.txt"
+SectionEnd
+
+Section "Uninstall"
+  ; Ask user if they want to keep their data
+  MessageBox MB_YESNO|MB_ICONQUESTION "Do you want to keep your Creator AI projects and models?" IDYES KeepData
+  
+  ; Remove application data if user chooses not to keep it
+  RMDir /r "$APPDATA\Creator AI"
+  RMDir /r "$DOCUMENTS\Creator AI Projects"
+  
+  KeepData:
+  ; Always remove registry entries
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}"
+  DeleteRegKey HKCU "Software\Creator AI"
+SectionEnd
+
+Function .onInit
+  ; Check for minimum Windows version (Windows 10)
+  ${If} ${AtMostWin8.1}
+    MessageBox MB_OK|MB_ICONSTOP "Creator AI requires Windows 10 or later."
+    Quit
+  ${EndIf}
+  
+  ; Check for previous installation
+  ReadRegStr $R0 HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}" "UninstallString"
+  StrCmp $R0 "" done
+  
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "Creator AI is already installed. Do you want to uninstall the previous version?" IDOK uninst
+  Abort
+  
+  uninst:
+    ClearErrors
+    ExecWait '$R0 _?=$INSTDIR'
+    IfErrors no_remove_uninstaller done
+    no_remove_uninstaller:
+  
+  done:
+FunctionEnd
+
+Function .onInstSuccess
+  ; Show completion message with option to launch
+  MessageBox MB_YESNO|MB_ICONINFORMATION "Creator AI has been installed successfully. Would you like to launch it now?" IDNO NoLaunch
+  
+  ; Launch the application
+  Exec '"$INSTDIR\Creator AI.exe"'
+  
+  NoLaunch:
+FunctionEnd

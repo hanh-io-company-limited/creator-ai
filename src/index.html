@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator AI - Video Content Creation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <img src="../assets/logo.png" alt="Creator AI" height="32">
+                <h1>Creator AI</h1>
+            </div>
+            <div class="status-bar">
+                <span id="status">Ready</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav">
+                    <button class="nav-btn active" data-tab="dashboard">
+                        <span class="icon">🏠</span>
+                        Dashboard
+                    </button>
+                    <button class="nav-btn" data-tab="train">
+                        <span class="icon">🧠</span>
+                        Train Model
+                    </button>
+                    <button class="nav-btn" data-tab="generate">
+                        <span class="icon">🎬</span>
+                        Generate Video
+                    </button>
+                    <button class="nav-btn" data-tab="library">
+                        <span class="icon">📚</span>
+                        Model Library
+                    </button>
+                    <button class="nav-btn" data-tab="settings">
+                        <span class="icon">⚙️</span>
+                        Settings
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <section class="content">
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-content active">
+                    <h2>Welcome to Creator AI</h2>
+                    <p>Create AI-powered video content offline with complete control over your intellectual property.</p>
+                    
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <h3>Quick Start</h3>
+                            <p>Get started with AI video generation</p>
+                            <button class="btn-primary" onclick="switchTab('generate')">Generate Video</button>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>Train Custom Model</h3>
+                            <p>Train your own AI model with your data</p>
+                            <button class="btn-primary" onclick="switchTab('train')">Start Training</button>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>Recent Projects</h3>
+                            <ul id="recent-projects">
+                                <li>No recent projects</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>System Status</h3>
+                            <div class="status-grid">
+                                <div>GPU: <span id="gpu-status">Checking...</span></div>
+                                <div>Memory: <span id="memory-status">Checking...</span></div>
+                                <div>Models: <span id="models-count">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Train Model Tab -->
+                <div id="train" class="tab-content">
+                    <h2>Train AI Model</h2>
+                    <form id="training-form" class="form">
+                        <div class="form-group">
+                            <label for="model-name">Model Name:</label>
+                            <input type="text" id="model-name" placeholder="Enter model name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="training-data">Training Data:</label>
+                            <div class="file-input">
+                                <button type="button" id="select-data">Select Training Data</button>
+                                <span id="data-path">No data selected</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="model-type">Model Type:</label>
+                            <select id="model-type">
+                                <option value="text-to-video">Text to Video</option>
+                                <option value="image-to-video">Image to Video</option>
+                                <option value="style-transfer">Style Transfer</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="epochs">Training Epochs:</label>
+                            <input type="number" id="epochs" value="100" min="1" max="1000">
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Start Training</button>
+                    </form>
+                    
+                    <div id="training-progress" class="progress-section" style="display: none;">
+                        <h3>Training Progress</h3>
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <div id="training-stats">
+                            <div>Epoch: <span id="current-epoch">0</span>/<span id="total-epochs">0</span></div>
+                            <div>Loss: <span id="current-loss">0.0</span></div>
+                            <div>Time Remaining: <span id="time-remaining">--</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generate Video Tab -->
+                <div id="generate" class="tab-content">
+                    <h2>Generate Video</h2>
+                    <form id="generation-form" class="form">
+                        <div class="form-group">
+                            <label for="selected-model">Select Model:</label>
+                            <select id="selected-model">
+                                <option value="">No models available</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="prompt">Video Prompt:</label>
+                            <textarea id="prompt" placeholder="Describe the video you want to generate..." rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="duration">Duration (seconds):</label>
+                            <input type="number" id="duration" value="5" min="1" max="30">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="resolution">Resolution:</label>
+                            <select id="resolution">
+                                <option value="512x512">512x512</option>
+                                <option value="1024x1024">1024x1024</option>
+                                <option value="1920x1080">1920x1080 (HD)</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Generate Video</button>
+                    </form>
+                    
+                    <div id="generation-progress" class="progress-section" style="display: none;">
+                        <h3>Generating Video</h3>
+                        <div class="progress-bar">
+                            <div id="gen-progress-fill" class="progress-fill"></div>
+                        </div>
+                        <div id="generation-status">Initializing...</div>
+                    </div>
+                    
+                    <div id="video-preview" class="preview-section" style="display: none;">
+                        <h3>Generated Video</h3>
+                        <video id="preview-video" controls width="100%"></video>
+                        <div class="preview-actions">
+                            <button class="btn-secondary" id="save-video">Save Video</button>
+                            <button class="btn-secondary" id="regenerate">Regenerate</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Library Tab -->
+                <div id="library" class="tab-content">
+                    <h2>Model Library</h2>
+                    <div class="library-controls">
+                        <button class="btn-primary" id="import-model">Import Model</button>
+                        <button class="btn-secondary" id="refresh-library">Refresh</button>
+                    </div>
+                    
+                    <div id="models-grid" class="models-grid">
+                        <!-- Models will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settings" class="tab-content">
+                    <h2>Settings</h2>
+                    <form class="form">
+                        <div class="form-group">
+                            <label for="gpu-acceleration">GPU Acceleration:</label>
+                            <input type="checkbox" id="gpu-acceleration" checked>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="output-directory">Default Output Directory:</label>
+                            <div class="file-input">
+                                <button type="button" id="select-output-dir">Select Directory</button>
+                                <span id="output-dir-path">Documents/Creator AI</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="max-memory">Max Memory Usage (GB):</label>
+                            <input type="number" id="max-memory" value="4" min="1" max="32">
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Save Settings</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="renderer.js"></script>
+    <script src="ai-engine.js"></script>
+</body>
+</html>
