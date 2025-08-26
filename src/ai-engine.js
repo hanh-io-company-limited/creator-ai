@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2025 CÔNG TY TNHH HANH.IO. All rights reserved.
+ */
+
 // AI Engine for Creator AI (Lightweight Mock Version)
 // This module provides AI simulation for demonstration purposes
 

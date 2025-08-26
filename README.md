@@ -2,6 +2,14 @@
 
 ![Creator AI Logo](assets/logo.png)
 
+## 🏢 Ownership & Copyright
+
+**Creator AI** is owned and maintained by **Hanh.IO Company Limited** (CÔNG TY TNHH HANH.IO).
+
+Copyright © 2025 CÔNG TY TNHH HANH.IO. All rights reserved.
+
+## 📖 About
+
 Creator AI is a standalone desktop application that empowers content creators to generate AI-powered videos offline, ensuring complete control over their creative intellectual property. The application allows users to train custom models and generate high-quality video content without relying on external platforms or cloud services.
 
 ## 🌟 Features

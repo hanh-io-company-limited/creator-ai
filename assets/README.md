@@ -1,5 +1,7 @@
 # Creator AI Assets
 
+**Copyright © 2025 CÔNG TY TNHH HANH.IO. All rights reserved.**
+
 This directory contains application assets including:
 
 - `icon.png` - Application icon (512x512 PNG)

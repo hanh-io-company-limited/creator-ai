@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2025 CÔNG TY TNHH HANH.IO. All rights reserved.
+ */
+
 // Creator AI Renderer Process
 const { ipcRenderer } = require('electron');
 const Store = require('electron-store');
