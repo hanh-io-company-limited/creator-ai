@@ -186,13 +186,27 @@
                 <!-- Model Library Tab -->
                 <div id="library" class="tab-content">
                     <h2>Model Library</h2>
-                    <div class="library-controls">
-                        <button class="btn-primary" id="import-model">Import Model</button>
-                        <button class="btn-secondary" id="refresh-library">Refresh</button>
+                    
+                    <!-- Open-Source Models Section -->
+                    <div class="library-section">
+                        <h3>Open-Source AI Models</h3>
+                        <p>Download and manage open-source models for local AI processing. No external dependencies required.</p>
+                        <div id="available-models" class="available-models">
+                            <!-- Available models will be populated here -->
+                        </div>
                     </div>
                     
-                    <div id="models-grid" class="models-grid">
-                        <!-- Models will be populated here -->
+                    <!-- User Models Section -->
+                    <div class="library-section">
+                        <h3>Your Models</h3>
+                        <div class="library-controls">
+                            <button class="btn-primary" id="import-model">Import Model</button>
+                            <button class="btn-secondary" id="refresh-library">Refresh</button>
+                        </div>
+                        
+                        <div id="models-grid" class="models-grid">
+                            <!-- Models will be populated here -->
+                        </div>
                     </div>
                 </div>
 
