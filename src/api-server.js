@@ -9,8 +9,9 @@ const path = require('path');
 const fs = require('fs').promises;
 const { v4: uuidv4 } = require('uuid');
 
-// Import the real AI engine
+// Import the real AI engine and Audio engine
 const RealAIEngine = require('./ai-engine-real');
+const AudioEngine = require('./audio-engine');
 
 class CreatorAIServer {
     constructor(port = 3000, wsPort = 8080) {
@@ -18,6 +19,7 @@ class CreatorAIServer {
         this.wsPort = wsPort;
         this.app = express();
         this.aiEngine = new RealAIEngine();
+        this.audioEngine = new AudioEngine();
         this.activeJobs = new Map();
         this.setupMiddleware();
         this.setupRoutes();
@@ -422,7 +424,7 @@ class CreatorAIServer {
     }
 
     setupAudioRoutes() {
-        // Process audio file
+        // Process audio file with effects
         this.app.post('/api/audio/process', this.upload.single('audioFile'), async (req, res) => {
             try {
                 const { effects } = req.body;
@@ -435,9 +437,10 @@ class CreatorAIServer {
                     });
                 }
                 
-                const result = await this.aiEngine.processAudio(
+                const result = await this.audioEngine.processAudio(
                     audioFile.path,
-                    JSON.parse(effects || '[]')
+                    JSON.parse(effects || '[]'),
+                    JSON.parse(req.body.options || '{}')
                 );
                 
                 res.json({
@@ -452,10 +455,10 @@ class CreatorAIServer {
             }
         });
 
-        // Generate audio from text
+        // Generate audio from text (Text-to-Speech)
         this.app.post('/api/audio/text-to-speech', async (req, res) => {
             try {
-                const { text, voice } = req.body;
+                const { text, voice, options } = req.body;
                 
                 if (!text) {
                     return res.status(400).json({
@@ -464,11 +467,181 @@ class CreatorAIServer {
                     });
                 }
                 
-                const result = await this.aiEngine.generateAudioFromText(text, voice);
+                const result = await this.audioEngine.generateAudioFromText(text, {
+                    voice: voice || 'default',
+                    ...options
+                });
                 
                 res.json({
                     success: true,
                     data: result
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+        });
+
+        // Generate background music
+        this.app.post('/api/audio/generate-music', async (req, res) => {
+            try {
+                const { prompt, options } = req.body;
+                
+                if (!prompt) {
+                    return res.status(400).json({
+                        success: false,
+                        error: 'Music prompt is required'
+                    });
+                }
+                
+                const result = await this.audioEngine.generateBackgroundMusic(prompt, options || {});
+                
+                res.json({
+                    success: true,
+                    data: result
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+        });
+
+        // Analyze audio file
+        this.app.post('/api/audio/analyze', this.upload.single('audioFile'), async (req, res) => {
+            try {
+                const audioFile = req.file;
+                
+                if (!audioFile) {
+                    return res.status(400).json({
+                        success: false,
+                        error: 'Audio file is required'
+                    });
+                }
+                
+                const result = await this.audioEngine.analyzeAudio(audioFile.path);
+                
+                res.json({
+                    success: true,
+                    data: result
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+        });
+
+        // Detect beats in audio
+        this.app.post('/api/audio/detect-beats', this.upload.single('audioFile'), async (req, res) => {
+            try {
+                const audioFile = req.file;
+                
+                if (!audioFile) {
+                    return res.status(400).json({
+                        success: false,
+                        error: 'Audio file is required'
+                    });
+                }
+                
+                const result = await this.audioEngine.detectBeats(audioFile.path);
+                
+                res.json({
+                    success: true,
+                    data: result
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+        });
+
+        // Mix multiple audio tracks
+        this.app.post('/api/audio/mix', this.upload.array('audioTracks'), async (req, res) => {
+            try {
+                const audioFiles = req.files;
+                const { options } = req.body;
+                
+                if (!audioFiles || audioFiles.length === 0) {
+                    return res.status(400).json({
+                        success: false,
+                        error: 'At least one audio track is required'
+                    });
+                }
+                
+                const tracks = audioFiles.map(file => ({
+                    path: file.path,
+                    name: file.originalname,
+                    volume: 1.0,
+                    pan: 0.0,
+                    duration: 30 // Mock duration
+                }));
+                
+                const result = await this.audioEngine.mixAudio(tracks, JSON.parse(options || '{}'));
+                
+                res.json({
+                    success: true,
+                    data: result
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+        });
+
+        // Convert audio format
+        this.app.post('/api/audio/convert', this.upload.single('audioFile'), async (req, res) => {
+            try {
+                const audioFile = req.file;
+                const { outputFormat, options } = req.body;
+                
+                if (!audioFile) {
+                    return res.status(400).json({
+                        success: false,
+                        error: 'Audio file is required'
+                    });
+                }
+                
+                if (!outputFormat) {
+                    return res.status(400).json({
+                        success: false,
+                        error: 'Output format is required'
+                    });
+                }
+                
+                const result = await this.audioEngine.convertAudio(
+                    audioFile.path,
+                    outputFormat,
+                    JSON.parse(options || '{}')
+                );
+                
+                res.json({
+                    success: true,
+                    data: result
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    error: error.message
+                });
+            }
+        });
+
+        // Get supported audio formats
+        this.app.get('/api/audio/formats', (req, res) => {
+            try {
+                const formats = this.audioEngine.getAudioFormats();
+                res.json({
+                    success: true,
+                    data: formats
                 });
             } catch (error) {
                 res.status(500).json({
@@ -688,8 +861,9 @@ class CreatorAIServer {
 
     async start() {
         try {
-            // Initialize AI engine
+            // Initialize AI engine and Audio engine
             await this.aiEngine.initialize();
+            await this.audioEngine.initialize();
             
             // Start HTTP server
             this.server = this.app.listen(this.port, () => {

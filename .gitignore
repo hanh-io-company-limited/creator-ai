@@ -124,10 +124,25 @@ models/
 *.onnx
 *.tflite
 
-# User data
+# User data and generated content
 projects/
 output/
+uploads/
 training_data/
+
+# Audio processing temporary files
+*.wav
+*.mp3
+*.m4a
+*.flac
+!example.wav
+
+# Video processing temporary files
+*.mp4
+*.avi
+*.mov
+*.mkv
+!example.mp4
 
 # Security
 *.pem

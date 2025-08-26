@@ -36,6 +36,14 @@
                         <span class="icon">🎬</span>
                         Generate Video
                     </button>
+                    <button class="nav-btn" data-tab="audio">
+                        <span class="icon">🎵</span>
+                        Audio Studio
+                    </button>
+                    <button class="nav-btn" data-tab="music">
+                        <span class="icon">🎼</span>
+                        Music Creator
+                    </button>
                     <button class="nav-btn" data-tab="library">
                         <span class="icon">📚</span>
                         Model Library
@@ -183,7 +191,217 @@
                     </div>
                 </div>
 
-                <!-- Model Library Tab -->
+                <!-- Audio Studio Tab -->
+                <div id="audio" class="tab-content">
+                    <h2>Audio Studio</h2>
+                    <div class="audio-studio">
+                        <div class="audio-section">
+                            <h3>Text-to-Speech</h3>
+                            <form id="tts-form" class="form">
+                                <div class="form-group">
+                                    <label for="tts-text">Text to Convert:</label>
+                                    <textarea id="tts-text" placeholder="Enter text to convert to speech..." rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="voice-selection">Voice:</label>
+                                    <select id="voice-selection">
+                                        <option value="default">Default</option>
+                                        <option value="narrator">Narrator</option>
+                                        <option value="casual">Casual</option>
+                                        <option value="professional">Professional</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="speech-tempo">Tempo:</label>
+                                    <input type="range" id="speech-tempo" min="80" max="160" value="120">
+                                    <span id="tempo-value">120 BPM</span>
+                                </div>
+                                <button type="submit" class="btn-primary">Generate Speech</button>
+                            </form>
+                        </div>
+
+                        <div class="audio-section">
+                            <h3>Audio Processing</h3>
+                            <form id="audio-process-form" class="form">
+                                <div class="form-group">
+                                    <label for="audio-file">Audio File:</label>
+                                    <div class="file-input">
+                                        <button type="button" id="select-audio">Select Audio File</button>
+                                        <span id="audio-file-path">No file selected</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Audio Effects:</label>
+                                    <div class="effects-grid">
+                                        <label><input type="checkbox" id="effect-reverb"> Reverb</label>
+                                        <label><input type="checkbox" id="effect-delay"> Delay</label>
+                                        <label><input type="checkbox" id="effect-chorus"> Chorus</label>
+                                        <label><input type="checkbox" id="effect-distortion"> Distortion</label>
+                                        <label><input type="checkbox" id="effect-normalize"> Normalize</label>
+                                        <label><input type="checkbox" id="effect-compress"> Compress</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Process Audio</button>
+                            </form>
+                        </div>
+
+                        <div class="audio-section">
+                            <h3>Audio Analysis</h3>
+                            <form id="audio-analysis-form" class="form">
+                                <div class="form-group">
+                                    <label for="analysis-file">Audio File to Analyze:</label>
+                                    <div class="file-input">
+                                        <button type="button" id="select-analysis-audio">Select Audio File</button>
+                                        <span id="analysis-file-path">No file selected</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Analyze Audio</button>
+                            </form>
+                            
+                            <div id="analysis-results" class="analysis-results" style="display: none;">
+                                <h4>Analysis Results</h4>
+                                <div id="analysis-data"></div>
+                            </div>
+                        </div>
+
+                        <div id="audio-preview" class="preview-section" style="display: none;">
+                            <h3>Audio Preview</h3>
+                            <audio id="preview-audio" controls style="width: 100%;"></audio>
+                            <div class="preview-actions">
+                                <button class="btn-secondary" id="save-audio">Save Audio</button>
+                                <button class="btn-secondary" id="download-audio">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Music Creator Tab -->
+                <div id="music" class="tab-content">
+                    <h2>Music Creator</h2>
+                    <div class="music-studio">
+                        <div class="music-section">
+                            <h3>Generate Background Music</h3>
+                            <form id="music-form" class="form">
+                                <div class="form-group">
+                                    <label for="music-prompt">Music Description:</label>
+                                    <textarea id="music-prompt" placeholder="Describe the music you want to create..." rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="music-genre">Genre:</label>
+                                    <select id="music-genre">
+                                        <option value="ambient">Ambient</option>
+                                        <option value="classical">Classical</option>
+                                        <option value="electronic">Electronic</option>
+                                        <option value="jazz">Jazz</option>
+                                        <option value="rock">Rock</option>
+                                        <option value="pop">Pop</option>
+                                        <option value="cinematic">Cinematic</option>
+                                        <option value="lo-fi">Lo-fi</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="music-mood">Mood:</label>
+                                    <select id="music-mood">
+                                        <option value="calm">Calm</option>
+                                        <option value="energetic">Energetic</option>
+                                        <option value="happy">Happy</option>
+                                        <option value="melancholic">Melancholic</option>
+                                        <option value="mysterious">Mysterious</option>
+                                        <option value="epic">Epic</option>
+                                        <option value="romantic">Romantic</option>
+                                        <option value="suspenseful">Suspenseful</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="music-duration">Duration (seconds):</label>
+                                    <input type="number" id="music-duration" value="30" min="10" max="300">
+                                </div>
+                                <div class="form-group">
+                                    <label for="music-tempo">Tempo (BPM):</label>
+                                    <input type="range" id="music-tempo" min="60" max="180" value="120">
+                                    <span id="music-tempo-value">120 BPM</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="music-key">Key:</label>
+                                    <select id="music-key">
+                                        <option value="C">C Major</option>
+                                        <option value="C#">C# Major</option>
+                                        <option value="D">D Major</option>
+                                        <option value="D#">D# Major</option>
+                                        <option value="E">E Major</option>
+                                        <option value="F">F Major</option>
+                                        <option value="F#">F# Major</option>
+                                        <option value="G">G Major</option>
+                                        <option value="G#">G# Major</option>
+                                        <option value="A">A Major</option>
+                                        <option value="A#">A# Major</option>
+                                        <option value="B">B Major</option>
+                                        <option value="Cm">C Minor</option>
+                                        <option value="Am">A Minor</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Instruments:</label>
+                                    <div class="instruments-grid">
+                                        <label><input type="checkbox" id="inst-piano" checked> Piano</label>
+                                        <label><input type="checkbox" id="inst-strings"> Strings</label>
+                                        <label><input type="checkbox" id="inst-guitar"> Guitar</label>
+                                        <label><input type="checkbox" id="inst-drums"> Drums</label>
+                                        <label><input type="checkbox" id="inst-bass"> Bass</label>
+                                        <label><input type="checkbox" id="inst-synth"> Synthesizer</label>
+                                        <label><input type="checkbox" id="inst-violin"> Violin</label>
+                                        <label><input type="checkbox" id="inst-flute"> Flute</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Generate Music</button>
+                            </form>
+                        </div>
+
+                        <div class="music-section">
+                            <h3>Audio Mixing</h3>
+                            <form id="mixing-form" class="form">
+                                <div class="form-group">
+                                    <label for="mix-tracks">Audio Tracks:</label>
+                                    <div class="file-input">
+                                        <button type="button" id="select-mix-tracks">Select Multiple Tracks</button>
+                                        <span id="mix-tracks-info">No tracks selected</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="master-volume">Master Volume:</label>
+                                    <input type="range" id="master-volume" min="0" max="2" step="0.1" value="1">
+                                    <span id="master-volume-value">100%</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Mix Options:</label>
+                                    <div class="mix-options">
+                                        <label><input type="checkbox" id="mix-compression"> Compression</label>
+                                        <label><input type="checkbox" id="mix-limiting"> Limiting</label>
+                                        <label><input type="checkbox" id="mix-eq"> EQ</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Mix Tracks</button>
+                            </form>
+                        </div>
+
+                        <div id="music-progress" class="progress-section" style="display: none;">
+                            <h3>Generating Music</h3>
+                            <div class="progress-bar">
+                                <div id="music-progress-fill" class="progress-fill"></div>
+                            </div>
+                            <div id="music-status">Initializing...</div>
+                        </div>
+
+                        <div id="music-preview" class="preview-section" style="display: none;">
+                            <h3>Generated Music</h3>
+                            <audio id="preview-music" controls style="width: 100%;"></audio>
+                            <div class="preview-actions">
+                                <button class="btn-secondary" id="save-music">Save Music</button>
+                                <button class="btn-secondary" id="regenerate-music">Regenerate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="library" class="tab-content">
                     <h2>Model Library</h2>
                     <div class="library-controls">

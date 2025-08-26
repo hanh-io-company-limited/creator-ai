@@ -1,14 +1,8 @@
 # Creator AI Dockerfile
-FROM node:18-bullseye
+FROM node:18-alpine
 
-# Install system dependencies for AI processing
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    ffmpeg \
-    libvips-dev \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# Install basic dependencies
+RUN apk add --no-cache curl
 
 # Set working directory
 WORKDIR /app

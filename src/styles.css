@@ -341,7 +341,121 @@ h3 {
     margin-top: 16px;
 }
 
-/* Model Library */
+/* Audio Studio and Music Creator */
+.audio-studio,
+.music-studio {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.audio-section,
+.music-section {
+    background: var(--surface);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.audio-section h3,
+.music-section h3 {
+    margin-bottom: 16px;
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+.effects-grid,
+.instruments-grid,
+.mix-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.effects-grid label,
+.instruments-grid label,
+.mix-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.effects-grid input[type="checkbox"],
+.instruments-grid input[type="checkbox"],
+.mix-options input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.analysis-results {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--background);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.analysis-results h4 {
+    margin-bottom: 12px;
+    color: var(--primary-color);
+}
+
+#analysis-data {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Range input styling */
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    outline: none;
+    margin: 8px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Audio controls */
+audio {
+    margin: 16px 0;
+    border-radius: 8px;
+}
+
+/* Responsive design for audio/music sections */
+@media (max-width: 768px) {
+    .audio-studio,
+    .music-studio {
+        grid-template-columns: 1fr;
+    }
+    
+    .effects-grid,
+    .instruments-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+}
 .library-controls {
     display: flex;
     gap: 12px;
