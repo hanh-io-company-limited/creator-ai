@@ -180,13 +180,14 @@ We welcome contributions to Creator AI! Please see our [Contributing Guidelines]
 
 ## 📄 License
 
-This project is licensed under the Creative Commons Attribution-NoDerivatives 4.0 International License (CC BY-ND 4.0). See the [LICENSE](LICENSE) file for details.
+This software is proprietary and exclusively owned by Hanh IO Company Limited. All rights, including authorship and ownership, exclusively belong to Hanh IO Company Limited. See the [LICENSE](LICENSE) file for complete terms.
 
-### What this means:
-- ✅ **Share**: Copy and redistribute the material in any medium or format
-- ✅ **Commercial Use**: Use for commercial purposes
-- ❌ **No Derivatives**: Cannot modify, transform, or build upon the material
-- 📝 **Attribution Required**: Must give appropriate credit
+### Important Notice:
+- 🚫 **No Distribution**: Unauthorized copying or distribution is strictly prohibited
+- 🚫 **No Modification**: Creating derivative works or modifications is forbidden  
+- 🚫 **No Commercial Use**: Commercial use requires explicit written permission
+- ⚖️ **Exclusive Ownership**: Hanh IO Company Limited is the sole author and owner
+- 📧 **Licensing Inquiries**: Contact legal@hanh-io.com for permission requests
 
 ## 🆘 Support
 
