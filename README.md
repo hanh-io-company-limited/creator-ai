@@ -1,10 +1,34 @@
-# Creator AI - Offline AI Video Content Creation
+# Creator AI - Open-Source AI Video Content Creation
 
 ![Creator AI Logo](assets/logo.png)
 
-Creator AI is a standalone desktop application that empowers content creators to generate AI-powered videos offline, ensuring complete control over their creative intellectual property. The application allows users to train custom models and generate high-quality video content without relying on external platforms or cloud services.
+Creator AI is a standalone desktop application that empowers content creators to generate AI-powered videos using **completely open-source models**, ensuring complete control over their creative intellectual property. The application uses state-of-the-art open-source AI models like GPT-J, GPT-NeoX, and Hugging Face Transformers for fully offline video content generation without any external dependencies.
 
 ## 🌟 Features
+
+### 🔓 **100% Open-Source AI Models**
+- **No External Dependencies**: Completely offline operation using open-source models
+- **Local Model Training**: Train custom models with your own data
+- **Hugging Face Integration**: Access to thousands of open-source models
+- **TensorFlow.js Backend**: Browser-native AI processing
+
+### 🎬 **Advanced Video Generation**
+- **Text-to-Video**: Generate videos from text descriptions using open-source diffusion models
+- **Image-to-Video**: Transform static images into dynamic videos
+- **Custom Model Training**: Create specialized models for your content style
+- **Real-time Preview**: See your content as it's being generated
+
+### 🛠️ **Professional Tools**
+- **Model Management**: Download, organize, and manage open-source AI models
+- **Batch Processing**: Generate multiple videos with different prompts
+- **Project Management**: Save and organize your creative projects
+- **Export Options**: Multiple video formats and quality settings
+
+### 🔐 **Privacy & Security**
+- **Fully Offline**: No data ever leaves your device
+- **Open-Source Models**: Transparent, auditable AI processing
+- **Local Storage**: All models and data stored on your machine
+- **No Telemetry**: Zero usage tracking or data collection
 
 - **Offline AI Video Generation**: Create videos entirely offline without internet dependency
 - **Custom Model Training**: Train your own AI models with your proprietary data
@@ -22,14 +46,15 @@ Creator AI is a standalone desktop application that empowers content creators to
 
 ### Minimum Requirements
 - **Operating System**: Windows 10 (64-bit) or later
-- **RAM**: 8 GB (16 GB recommended for better performance)
-- **Storage**: 2 GB free space (additional space needed for models and output)
+- **RAM**: 8 GB (16 GB recommended for larger models)
+- **Storage**: 5 GB free space (additional space needed for open-source models and output)
 - **Graphics**: DirectX 11 compatible graphics card
+- **Internet**: Only required for initial model downloads (optional)
 
 ### Recommended Requirements
-- **RAM**: 16 GB or more
+- **RAM**: 16 GB or more for optimal performance
 - **Graphics**: Dedicated GPU with 4GB+ VRAM for faster processing
-- **Storage**: SSD with 10+ GB free space
+- **Storage**: SSD with 20+ GB free space for model storage
 - **CPU**: Multi-core processor (Intel i7 or AMD Ryzen 7 equivalent)
 
 ## 🚀 Installation
@@ -40,6 +65,12 @@ Creator AI is a standalone desktop application that empowers content creators to
 2. Run the installer with administrator privileges
 3. Follow the installation wizard
 4. Launch Creator AI from the Start Menu or Desktop shortcut
+5. **First-Time Setup**: 
+   - Go to Model Library tab
+   - Download your preferred open-source models (GPT-2, DistilGPT-2, etc.)
+   - Start creating videos with 100% open-source AI!
+
+> **Note**: Internet connection is only required for initial model downloads. Once downloaded, Creator AI operates completely offline with no external dependencies.
 
 ### Manual Installation
 
@@ -207,10 +238,14 @@ This project is licensed under the Creative Commons Attribution-NoDerivatives 4.
 
 ## 🙏 Acknowledgments
 
-- TensorFlow.js team for the AI framework
-- Electron team for the desktop application platform
-- Open source community for various dependencies and tools
-- Beta testers and early adopters for valuable feedback
+- **Hugging Face** for the transformers library and open-source model ecosystem
+- **TensorFlow.js team** for the browser-native AI framework
+- **OpenAI** for pioneering the GPT architecture (open-source implementations)
+- **EleutherAI** for GPT-J and GPT-NeoX open-source models
+- **Stability AI** for open-source diffusion models
+- **Electron team** for the desktop application platform
+- **Open source community** for various dependencies and tools
+- **Beta testers and early adopters** for valuable feedback on open-source AI integration
 
 ## 🚧 Roadmap
 

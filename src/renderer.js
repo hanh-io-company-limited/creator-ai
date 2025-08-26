@@ -10,6 +10,8 @@ let currentProject = null;
 let loadedModels = [];
 let isTraining = false;
 let isGenerating = false;
+let isDownloadingModel = false;
+let availableOpenSourceModels = {};
 
 // DOM elements
 const navButtons = document.querySelectorAll('.nav-btn');
@@ -26,12 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-    console.log('Creator AI initialized');
-    updateStatus('Ready');
+    console.log('Creator AI initialized with Open-Source AI models');
+    updateStatus('Ready - Open-Source AI Engine loaded');
     
     // Load recent projects
     const recentProjects = store.get('recentProjects', []);
     updateRecentProjects(recentProjects);
+    
+    // Load available open-source models
+    loadAvailableModels();
 }
 
 function setupEventListeners() {
@@ -460,7 +465,173 @@ function updateRecentProjects(projects) {
     ).join('');
 }
 
+// Open-Source Model Management Functions
+async function loadAvailableModels() {
+    try {
+        if (window.aiEngine && window.aiEngine.getAvailableModels) {
+            availableOpenSourceModels = window.aiEngine.getAvailableModels();
+            updateAvailableModelsUI();
+        }
+    } catch (error) {
+        console.error('Failed to load available models:', error);
+    }
+}
+
+function updateAvailableModelsUI() {
+    const container = document.getElementById('available-models');
+    if (!container) return;
+    
+    let html = '<h3>Available Open-Source Models</h3>';
+    
+    for (const [category, models] of Object.entries(availableOpenSourceModels)) {
+        html += `<h4>${category.replace('-', ' ').toUpperCase()}</h4>`;
+        html += '<div class="model-grid">';
+        
+        for (const [modelName, modelId] of Object.entries(models)) {
+            const isDownloaded = store.get(`downloadedModels.${modelId}`, false);
+            const status = isDownloaded ? 'Downloaded' : 'Available';
+            const actionButton = isDownloaded ? 
+                `<button onclick="loadOpenSourceModel('${modelName}', '${category}')" class="btn-primary">Load</button>` :
+                `<button onclick="downloadOpenSourceModel('${modelName}', '${category}')" class="btn-secondary">Download</button>`;
+            
+            html += `
+                <div class="model-card">
+                    <h5>${modelName}</h5>
+                    <p>Category: ${category}</p>
+                    <p>Status: ${status}</p>
+                    ${actionButton}
+                </div>
+            `;
+        }
+        html += '</div>';
+    }
+    
+    container.innerHTML = html;
+}
+
+async function downloadOpenSourceModel(modelName, category) {
+    if (isDownloadingModel) {
+        updateStatus('Another model is already downloading', 'warning');
+        return;
+    }
+    
+    try {
+        isDownloadingModel = true;
+        updateStatus(`Downloading ${modelName}...`, 'info');
+        
+        if (window.aiEngine && window.aiEngine.downloadModel) {
+            const result = await window.aiEngine.downloadModel(modelName, category);
+            
+            // Mark as downloaded
+            store.set(`downloadedModels.${result.id}`, true);
+            
+            // Add to downloaded models list
+            const downloadedModels = store.get('downloadedModels', []);
+            downloadedModels.push({
+                name: modelName,
+                id: result.id,
+                category: category,
+                downloadedAt: Date.now(),
+                path: result.path
+            });
+            store.set('downloadedModels', downloadedModels);
+            
+            updateStatus(`Model ${modelName} downloaded successfully`, 'success');
+            updateAvailableModelsUI();
+            loadModels(); // Refresh models list
+        }
+    } catch (error) {
+        console.error('Failed to download model:', error);
+        updateStatus(`Failed to download ${modelName}: ${error.message}`, 'error');
+    } finally {
+        isDownloadingModel = false;
+    }
+}
+
+async function loadOpenSourceModel(modelName, category) {
+    try {
+        updateStatus(`Loading ${modelName}...`, 'info');
+        
+        const modelId = availableOpenSourceModels[category][modelName];
+        const success = await window.aiEngine.loadModel(modelName, `${modelName}_${Date.now()}`);
+        
+        if (success) {
+            updateStatus(`Model ${modelName} loaded successfully`, 'success');
+            loadModels(); // Refresh models list
+        } else {
+            updateStatus(`Failed to load ${modelName}`, 'error');
+        }
+    } catch (error) {
+        console.error('Failed to load open-source model:', error);
+        updateStatus(`Failed to load ${modelName}: ${error.message}`, 'error');
+    }
+}
+
+// Enhanced training for open-source models
+async function startTraining(config) {
+    if (isTraining) return;
+    
+    try {
+        isTraining = true;
+        updateStatus('Starting model training with open-source approach...', 'info');
+        
+        // Show training progress
+        document.getElementById('training-progress').style.display = 'block';
+        
+        // Create or get model for training
+        let model;
+        if (config.type === 'text-to-video') {
+            model = await window.aiEngine.createTextToVideoModel(config);
+        } else {
+            model = await window.aiEngine.createImageToVideoModel(config);
+        }
+        
+        // Start training with progress callback
+        const trainedModel = await window.aiEngine.trainModel(model, config.trainingData, config, (progress) => {
+            document.getElementById('epoch-info').textContent = `Epoch ${progress.epoch}/${progress.totalEpochs}`;
+            document.getElementById('loss-value').textContent = progress.loss.toFixed(4);
+            document.getElementById('accuracy-value').textContent = (progress.accuracy * 100).toFixed(2) + '%';
+            document.getElementById('progress-bar').style.width = progress.progress + '%';
+            
+            const remainingEpochs = progress.totalEpochs - progress.epoch;
+            const avgTimePerEpoch = 3; // Estimate 3 seconds per epoch
+            const remainingTime = remainingEpochs * avgTimePerEpoch;
+            document.getElementById('time-remaining').textContent = `${remainingTime}s`;
+        });
+
+        // Save trained model
+        const newModel = {
+            id: Date.now().toString(),
+            name: config.name,
+            type: config.type,
+            size: `~${Math.floor(trainedModel.parameters / 1000000)}M parameters`,
+            created: Date.now(),
+            path: `models/${config.name}.json`,
+            parameters: trainedModel.parameters,
+            accuracy: trainedModel.finalAccuracy,
+            trained: true,
+            openSource: true
+        };
+
+        const models = store.get('models', []);
+        models.push(newModel);
+        store.set('models', models);
+
+        loadModels();
+        updateStatus('Open-source model trained successfully', 'success');
+        
+    } catch (error) {
+        console.error('Training failed:', error);
+        updateStatus('Training failed: ' + error.message, 'error');
+    } finally {
+        isTraining = false;
+        document.getElementById('training-progress').style.display = 'none';
+    }
+}
+
 // Make functions globally available
 window.switchTab = switchTab;
 window.useModel = useModel;
 window.deleteModel = deleteModel;
+window.downloadOpenSourceModel = downloadOpenSourceModel;
+window.loadOpenSourceModel = loadOpenSourceModel;

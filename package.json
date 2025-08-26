@@ -7,8 +7,8 @@
   "author": "Hanh IO Company Limited",
   "license": "CC-BY-ND-4.0",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --dev",
+    "start": "electron . --no-sandbox",
+    "dev": "electron . --dev --no-sandbox",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
     "build:all": "electron-builder --win --linux --mac",
@@ -24,7 +24,10 @@
     "offline"
   ],
   "dependencies": {
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "@tensorflow/tfjs": "^4.15.0",
+    "@xenova/transformers": "^2.9.0",
+    "jimp": "^0.22.10"
   },
   "devDependencies": {
     "electron": "^27.1.0",
