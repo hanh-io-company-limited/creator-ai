@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  creator-ai-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: creator-ai-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+    volumes:
+      - creator-ai-models:/app/models
+      - creator-ai-data:/app/training_data
+      - creator-ai-output:/app/output
+      - creator-ai-uploads:/app/uploads
+      - creator-ai-logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '4'
+        reservations:
+          memory: 2G
+          cpus: '1'
+
+  creator-ai-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.app
+    container_name: creator-ai-app
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://creator-ai-api:3000
+    depends_on:
+      - creator-ai-api
+    restart: unless-stopped
+    volumes:
+      - creator-ai-app-data:/app/data
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2'
+
+  # Optional: Redis for caching and task queues
+  redis:
+    image: redis:7-alpine
+    container_name: creator-ai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - creator-ai-redis:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Optional: Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: creator-ai-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - creator-ai-prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+
+volumes:
+  creator-ai-models:
+    driver: local
+  creator-ai-data:
+    driver: local
+  creator-ai-output:
+    driver: local
+  creator-ai-uploads:
+    driver: local
+  creator-ai-logs:
+    driver: local
+  creator-ai-app-data:
+    driver: local
+  creator-ai-redis:
+    driver: local
+  creator-ai-prometheus:
+    driver: local
+
+networks:
+  default:
+    name: creator-ai-network
