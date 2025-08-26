@@ -1,15 +1,6 @@
 # Creator AI - Multi-stage Docker Build
 # Stage 1: Build dependencies and prepare environment
-FROM node:18-bullseye-slim AS builder
-
-# Install system dependencies needed for Electron
-RUN apt-get update && apt-get install -y \
-    python3 \
-    make \
-    g++ \
-    git \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+FROM node:18-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -24,21 +15,18 @@ RUN npm ci --only=production && npm cache clean --force
 COPY . .
 
 # Stage 2: Runtime environment for Electron app
-FROM node:18-bullseye-slim AS runtime
+FROM node:18-alpine AS runtime
 
-# Install runtime dependencies for Electron
-RUN apt-get update && apt-get install -y \
+# Install runtime dependencies for Electron (minimal set)
+RUN apk add --no-cache \
     xvfb \
-    x11vnc \
-    fluxbox \
-    wget \
-    wmctrl \
+    chromium \
     curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    bash \
+    && rm -rf /var/cache/apk/*
 
 # Create non-root user for security
-RUN groupadd -r app && useradd -r -g app app
+RUN addgroup -g 1000 app && adduser -u 1000 -G app -s /bin/sh -D app
 
 # Set working directory
 WORKDIR /app
@@ -48,18 +36,16 @@ COPY --from=builder --chown=app:app /app ./
 
 # Set display environment variable for X11
 ENV DISPLAY=:99
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROMIUM_FLAGS="--no-sandbox --headless --disable-gpu --disable-dev-shm-usage"
 
 # Create startup script
 RUN echo '#!/bin/bash\n\
 set -e\n\
 \n\
 # Start Xvfb (virtual display)\n\
-Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset &\n\
+Xvfb :99 -screen 0 1024x768x24 -ac &\n\
 XVFB_PID=$!\n\
-\n\
-# Start window manager\n\
-fluxbox -display :99 &\n\
-FLUXBOX_PID=$!\n\
 \n\
 # Wait for X server to start\n\
 sleep 2\n\
@@ -67,7 +53,7 @@ sleep 2\n\
 # Function to cleanup processes on exit\n\
 cleanup() {\n\
     echo "Cleaning up..."\n\
-    kill $XVFB_PID $FLUXBOX_PID 2>/dev/null || true\n\
+    kill $XVFB_PID 2>/dev/null || true\n\
     exit 0\n\
 }\n\
 \n\
@@ -76,6 +62,7 @@ trap cleanup SIGTERM SIGINT\n\
 \n\
 # Start the Electron application\n\
 echo "Starting Creator AI..."\n\
+export HEADLESS=true\n\
 npm start &\n\
 APP_PID=$!\n\
 \n\
@@ -88,7 +75,7 @@ RUN chmod +x /app/start.sh && chown app:app /app/start.sh
 # Switch to non-root user
 USER app
 
-# Expose port for potential web interface
+# Expose port for web interface
 EXPOSE 3000
 
 # Health check

@@ -21,6 +21,9 @@
     "deploy:dev": "./scripts/deploy.sh development",
     "deploy:staging": "./scripts/deploy.sh staging",
     "deploy:prod": "./scripts/deploy.sh production",
+    "test": "./scripts/test.sh",
+    "test:quick": "./scripts/test.sh --quick",
+    "test:integration": "./scripts/integration-test.sh",
     "health-check": "curl -f http://localhost:3000/health || exit 1"
   },
   "keywords": [
