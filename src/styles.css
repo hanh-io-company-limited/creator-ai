@@ -427,3 +427,224 @@ h3 {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-color);
 }
+
+/* Open-Source Model Management Styles */
+.library-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.library-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.library-section p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.available-models {
+    margin-top: 1rem;
+}
+
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.model-card {
+    padding: 1rem;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.model-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.model-card h5 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.model-card h4 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+}
+
+.model-card p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.model-card button {
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    width: 100%;
+}
+
+.model-card button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #475569;
+    transform: translateY(-1px);
+}
+
+/* Status indicators for models */
+.model-status {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-downloaded {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-available {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.status-downloading {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-loading {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+/* Enhanced form styles for open-source models */
+.model-config {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.model-info {
+    background: var(--background);
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.model-info h4 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.model-param {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.model-param span:first-child {
+    color: var(--text-secondary);
+}
+
+.model-param span:last-child {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Category headers in model library */
+.model-category {
+    margin-bottom: 1rem;
+}
+
+.model-category h4 {
+    color: var(--primary-color);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+/* Progress indicators for downloads */
+.download-progress {
+    margin-top: 0.5rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+/* Badge for open-source models */
+.open-source-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #10b981;
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+}

@@ -10,6 +10,8 @@ let currentProject = null;
 let loadedModels = [];
 let isTraining = false;
 let isGenerating = false;
+let isDownloadingModel = false;
+let availableOpenSourceModels = {};
 
 // DOM elements
 const navButtons = document.querySelectorAll('.nav-btn');
@@ -26,12 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-    console.log('Creator AI initialized');
-    updateStatus('Ready');
+    console.log('Creator AI initialized with Open-Source AI Engine');
+    updateStatus('Ready - Open-Source AI Engine loaded');
     
     // Load recent projects
     const recentProjects = store.get('recentProjects', []);
     updateRecentProjects(recentProjects);
+    
+    // Load available open-source models
+    loadAvailableModels();
 }
 
 function setupEventListeners() {
@@ -151,21 +156,36 @@ function updateModelsGrid(models) {
     const grid = document.getElementById('models-grid');
     
     if (models.length === 0) {
-        grid.innerHTML = '<p>No models available. Import or train a model to get started.</p>';
+        grid.innerHTML = '<p>No models available. Import a model or download open-source models to get started.</p>';
         return;
     }
 
     grid.innerHTML = models.map(model => `
         <div class="model-card">
+            ${model.openSource ? '<div class="open-source-badge">OPEN-SOURCE</div>' : ''}
             <h4>${model.name}</h4>
             <div class="model-info">
-                Type: ${model.type}<br>
-                Size: ${model.size || 'Unknown'}<br>
-                Created: ${new Date(model.created).toLocaleDateString()}
+                <div class="model-param">
+                    <span>Type:</span>
+                    <span>${model.type || 'Unknown'}</span>
+                </div>
+                <div class="model-param">
+                    <span>Size:</span>
+                    <span>${model.size || 'Unknown'}</span>
+                </div>
+                <div class="model-param">
+                    <span>Created:</span>
+                    <span>${new Date(model.created).toLocaleDateString()}</span>
+                </div>
+                ${model.category ? `
+                <div class="model-param">
+                    <span>Category:</span>
+                    <span>${model.category}</span>
+                </div>` : ''}
             </div>
             <div class="model-actions">
-                <button class="use-model" onclick="useModel('${model.id}')">Use</button>
-                <button class="delete-model" onclick="deleteModel('${model.id}')">Delete</button>
+                <button class="btn-primary" onclick="useModel('${model.id}')">Use Model</button>
+                <button class="btn-secondary" onclick="deleteModel('${model.id}')">Delete</button>
             </div>
         </div>
     `).join('');
@@ -210,37 +230,56 @@ async function handleTrainingSubmit(event) {
 }
 
 async function startTraining(config) {
+    if (isTraining) return;
+    
     try {
         isTraining = true;
-        updateStatus('Training started', 'info');
+        updateStatus('Starting model training with open-source approach...', 'info');
         
-        // Show progress section
+        // Show training progress
         document.getElementById('training-progress').style.display = 'block';
-        document.getElementById('total-epochs').textContent = config.epochs;
         
-        // Simulate training process
-        for (let epoch = 1; epoch <= config.epochs; epoch++) {
-            await new Promise(resolve => setTimeout(resolve, 100)); // Simulate training time
-            
-            const progress = (epoch / config.epochs) * 100;
-            const loss = Math.max(0.01, 1.0 - (epoch / config.epochs) * 0.9 + Math.random() * 0.1);
-            
-            document.getElementById('current-epoch').textContent = epoch;
-            document.getElementById('progress-fill').style.width = `${progress}%`;
-            document.getElementById('current-loss').textContent = loss.toFixed(4);
-            
-            const remainingTime = Math.ceil((config.epochs - epoch) * 0.1);
-            document.getElementById('time-remaining').textContent = `${remainingTime}s`;
+        // Create or get model for training
+        let model;
+        if (config.type === 'text-to-video') {
+            model = await window.aiEngine.createTextToVideoModel(config);
+        } else {
+            model = await window.aiEngine.createImageToVideoModel(config);
         }
+        
+        // Start training with progress callback
+        const trainedModel = await window.aiEngine.trainModel(model, config.trainingData, config, (progress) => {
+            document.getElementById('current-epoch').textContent = progress.epoch;
+            document.getElementById('total-epochs').textContent = progress.totalEpochs;
+            document.getElementById('current-loss').textContent = progress.loss.toFixed(4);
+            document.getElementById('progress-fill').style.width = progress.progress + '%';
+            
+            if (progress.accuracy) {
+                const accuracyElement = document.getElementById('current-accuracy');
+                if (accuracyElement) {
+                    accuracyElement.textContent = (progress.accuracy * 100).toFixed(1) + '%';
+                }
+            }
+            
+            const remainingEpochs = progress.totalEpochs - progress.epoch;
+            const avgTimePerEpoch = 3; // Estimate 3 seconds per epoch for open-source training
+            const remainingTime = remainingEpochs * avgTimePerEpoch;
+            document.getElementById('time-remaining').textContent = `${remainingTime}s`;
+        });
 
         // Save trained model
         const newModel = {
             id: Date.now().toString(),
             name: config.name,
             type: config.type,
-            size: '~50MB',
+            size: `~${Math.floor(trainedModel.parameters / 1000000)}M parameters`,
             created: Date.now(),
-            path: `models/${config.name}.json`
+            path: `models/${config.name}.json`,
+            parameters: trainedModel.parameters,
+            accuracy: trainedModel.finalAccuracy,
+            trained: true,
+            openSource: true,
+            architecture: trainedModel.architecture || 'transformer'
         };
 
         const models = store.get('models', []);
@@ -248,11 +287,11 @@ async function startTraining(config) {
         store.set('models', models);
 
         loadModels();
-        updateStatus('Model trained successfully', 'success');
+        updateStatus('Open-source model trained successfully', 'success');
         
     } catch (error) {
         console.error('Training failed:', error);
-        updateStatus('Training failed', 'error');
+        updateStatus('Training failed: ' + error.message, 'error');
     } finally {
         isTraining = false;
         document.getElementById('training-progress').style.display = 'none';
@@ -464,3 +503,132 @@ function updateRecentProjects(projects) {
 window.switchTab = switchTab;
 window.useModel = useModel;
 window.deleteModel = deleteModel;
+window.downloadOpenSourceModel = downloadOpenSourceModel;
+window.loadOpenSourceModel = loadOpenSourceModel;
+
+// Open-Source Model Management Functions
+async function loadAvailableModels() {
+    try {
+        if (window.aiEngine && window.aiEngine.getAvailableModels) {
+            availableOpenSourceModels = window.aiEngine.getAvailableModels();
+            updateAvailableModelsUI();
+        }
+    } catch (error) {
+        console.error('Failed to load available models:', error);
+    }
+}
+
+function updateAvailableModelsUI() {
+    const container = document.getElementById('available-models');
+    if (!container) return;
+    
+    let html = '';
+    
+    for (const [category, models] of Object.entries(availableOpenSourceModels)) {
+        html += `<div class="model-category">`;
+        html += `<h4>${category.replace('-', ' ').toUpperCase()}</h4>`;
+        html += '<div class="model-grid">';
+        
+        for (const [modelName, modelId] of Object.entries(models)) {
+            const isDownloaded = store.get(`downloadedModels.${modelId}`, false);
+            const status = isDownloaded ? 'Downloaded' : 'Available';
+            const statusClass = isDownloaded ? 'status-downloaded' : 'status-available';
+            const actionButton = isDownloaded ? 
+                `<button onclick="loadOpenSourceModel('${modelName}', '${category}')" class="btn-primary">Load Model</button>` :
+                `<button onclick="downloadOpenSourceModel('${modelName}', '${category}')" class="btn-secondary">Download</button>`;
+            
+            html += `
+                <div class="model-card">
+                    <div class="open-source-badge">OPEN-SOURCE</div>
+                    <h5>${modelName}</h5>
+                    <p><strong>Category:</strong> ${category}</p>
+                    <p><strong>Model ID:</strong> ${modelId}</p>
+                    <p><strong>Status:</strong> <span class="model-status ${statusClass}">${status}</span></p>
+                    ${actionButton}
+                </div>
+            `;
+        }
+        html += '</div></div>';
+    }
+    
+    if (html === '') {
+        html = '<p>Loading open-source models... Please wait.</p>';
+    }
+    
+    container.innerHTML = html;
+}
+
+async function downloadOpenSourceModel(modelName, category) {
+    if (isDownloadingModel) {
+        updateStatus('Another model is already downloading', 'warning');
+        return;
+    }
+    
+    try {
+        isDownloadingModel = true;
+        updateStatus(`Downloading open-source model ${modelName}...`, 'info');
+        
+        if (window.aiEngine && window.aiEngine.downloadModel) {
+            const result = await window.aiEngine.downloadModel(modelName, category);
+            
+            // Mark as downloaded
+            store.set(`downloadedModels.${result.id}`, true);
+            
+            // Add to downloaded models list
+            const downloadedModels = store.get('downloadedModelsList', []);
+            downloadedModels.push({
+                name: modelName,
+                id: result.id,
+                category: category,
+                downloadedAt: Date.now(),
+                path: result.path,
+                openSource: true
+            });
+            store.set('downloadedModelsList', downloadedModels);
+            
+            updateStatus(`Open-source model ${modelName} downloaded successfully`, 'success');
+            updateAvailableModelsUI();
+            loadModels(); // Refresh models list
+        }
+    } catch (error) {
+        console.error('Failed to download model:', error);
+        updateStatus(`Failed to download ${modelName}: ${error.message}`, 'error');
+    } finally {
+        isDownloadingModel = false;
+    }
+}
+
+async function loadOpenSourceModel(modelName, category) {
+    try {
+        updateStatus(`Loading open-source model ${modelName}...`, 'info');
+        
+        const modelId = availableOpenSourceModels[category][modelName];
+        const success = await window.aiEngine.loadModel(modelName, `${modelName}_${Date.now()}`);
+        
+        if (success) {
+            // Add to active models list
+            const newModel = {
+                id: `${modelName}_${Date.now()}`,
+                name: modelName,
+                type: category,
+                size: '~125M parameters',
+                created: Date.now(),
+                path: `models/${modelId.replace('/', '_')}`,
+                openSource: true,
+                category: category
+            };
+
+            const models = store.get('models', []);
+            models.push(newModel);
+            store.set('models', models);
+            
+            updateStatus(`Open-source model ${modelName} loaded successfully`, 'success');
+            loadModels(); // Refresh models list
+        } else {
+            updateStatus(`Failed to load ${modelName}`, 'error');
+        }
+    } catch (error) {
+        console.error('Failed to load open-source model:', error);
+        updateStatus(`Failed to load ${modelName}: ${error.message}`, 'error');
+    }
+}
