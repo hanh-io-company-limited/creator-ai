@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const CreatorAIServer = require('./api-server');
 
 // Enable live reload for Electron in development
 if (process.env.NODE_ENV === 'development') {
@@ -11,6 +12,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 let mainWindow;
+let apiServer;
 
 function createWindow() {
   // Create the browser window
@@ -45,6 +47,20 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+}
+
+async function startAPIServer() {
+  try {
+    apiServer = new CreatorAIServer(3000, 8080);
+    const success = await apiServer.start();
+    if (success) {
+      console.log('Internal API server started successfully');
+    } else {
+      console.error('Failed to start internal API server');
+    }
+  } catch (error) {
+    console.error('Error starting API server:', error);
+  }
 }
 
 // Create application menu
@@ -160,7 +176,8 @@ function createMenu() {
 }
 
 // App event handlers
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await startAPIServer();
   createWindow();
   createMenu();
 
@@ -171,9 +188,21 @@ app.whenReady().then(() => {
   });
 });
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
+  // Stop API server when app closes
+  if (apiServer) {
+    await apiServer.stop();
+  }
+  
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+app.on('before-quit', async () => {
+  // Ensure API server is stopped before quitting
+  if (apiServer) {
+    await apiServer.stop();
   }
 });
 
