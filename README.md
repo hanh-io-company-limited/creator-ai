@@ -6,31 +6,112 @@ Creator AI is a standalone desktop application that empowers content creators to
 
 ## 🌟 Features
 
-- **Offline AI Video Generation**: Create videos entirely offline without internet dependency
-- **Custom Model Training**: Train your own AI models with your proprietary data
-- **Multiple Generation Types**:
-  - Text-to-Video: Generate videos from text prompts
-  - Image-to-Video: Transform static images into dynamic videos
-  - Style Transfer: Apply artistic styles to video content
-- **Intellectual Property Protection**: Keep your data and models completely private
-- **Professional Interface**: Intuitive desktop application built with Electron
-- **Batch Processing**: Generate multiple videos efficiently
-- **Project Management**: Save and organize your creative projects
-- **Cross-Platform**: Available for Windows, macOS, and Linux
+- **🎵 Music-Focused AI Generation**: Create audio content from text descriptions optimized for music creators
+- **🧠 Real Machine Learning**: Powered by TensorFlow.js with customizable neural networks
+- **🔄 Model Training**: Train your own AI models with your proprietary music data
+- **📡 Internal API**: Comprehensive REST API for all AI operations and model management
+- **🎛️ Audio Processing**: Advanced audio analysis, classification, and transformation
+- **💾 Complete Offline Operation**: No internet dependency, all processing happens locally
+- **🔒 Privacy-First**: Your data and models remain completely private and secure
+- **🎯 Personalization**: Adaptive learning with user-specific datasets and preferences
+- **⚡ High Performance**: Optimized for low latency and high throughput processing
+- **🚀 Production Ready**: Comprehensive testing, monitoring, and deployment automation
+- **📦 Multi-Platform**: Windows, macOS, and Linux support with Docker/Kubernetes deployment
+- **🎨 Extensible Architecture**: Plugin-ready system for custom models and features
 
 ## 📋 System Requirements
 
 ### Minimum Requirements
-- **Operating System**: Windows 10 (64-bit) or later
+- **Operating System**: Windows 10 (64-bit), macOS 10.15+, or Linux (Ubuntu 20.04+)
 - **RAM**: 8 GB (16 GB recommended for better performance)
-- **Storage**: 2 GB free space (additional space needed for models and output)
-- **Graphics**: DirectX 11 compatible graphics card
+- **Storage**: 50 GB free space (additional space needed for models and data)
+- **CPU**: 4 cores (Intel i5 or AMD Ryzen 5 equivalent)
+- **Node.js**: 18.0.0 or later
 
 ### Recommended Requirements
 - **RAM**: 16 GB or more
-- **Graphics**: Dedicated GPU with 4GB+ VRAM for faster processing
-- **Storage**: SSD with 10+ GB free space
+- **Graphics**: Dedicated GPU with 4GB+ VRAM for faster processing (optional)
+- **Storage**: SSD with 200+ GB free space
 - **CPU**: Multi-core processor (Intel i7 or AMD Ryzen 7 equivalent)
+- **Network**: Stable internet for initial setup
+
+## 🚀 Quick Start
+
+### Option 1: Automated Setup (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/hanh-io-company-limited/creator-ai.git
+cd creator-ai
+
+# Install dependencies
+npm install
+
+# Deploy the complete system locally
+npm run deploy:local
+
+# Or run a live demonstration
+npm run demo
+```
+
+### Option 2: Manual Setup
+
+```bash
+# 1. Start the AI API server
+npm run api
+
+# 2. In another terminal, start the desktop app
+npm start
+
+# 3. Or access the web interface at http://localhost:3000
+```
+
+### Option 3: Docker Deployment
+
+```bash
+# Quick Docker setup
+cd docker
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+## 🎯 Core Capabilities
+
+### 🎵 Text-to-Audio Generation
+```javascript
+// Generate music from text descriptions
+const audio = await aiEngine.generateAudio(modelId, 
+  "peaceful piano melody with soft reverb", 
+  { duration: 30, sampleRate: 44100 }
+);
+```
+
+### 🔊 Audio Processing & Analysis
+```javascript
+// Analyze musical characteristics
+const analysis = await aiEngine.analyzeAudio(audioData);
+// Returns: tempo, key, mood, energy, danceability, etc.
+
+// Process audio with ML models
+const result = await aiEngine.processAudio(modelId, audioData);
+```
+
+### 🧠 Custom Model Training
+```javascript
+// Train personalized models with your data
+const model = await aiEngine.createTextToAudioModel(config);
+await aiEngine.trainModel(model, trainingData, config, progressCallback);
+```
+
+### 📡 Internal API Access
+```bash
+# All functionality available via REST API
+curl -X POST http://localhost:3000/api/ml/models/create \
+  -H "Content-Type: application/json" \
+  -d '{"type": "text-to-audio", "config": {...}}'
+```
 
 ## 🚀 Installation
 
