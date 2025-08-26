@@ -1,5 +1,7 @@
 # Building Creator AI
 
+**Copyright © 2025 CÔNG TY TNHH HANH.IO. All rights reserved.**
+
 This document explains how to build the Creator AI application and create Windows installers.
 
 ## Prerequisites

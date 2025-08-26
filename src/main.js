@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2025 CÔNG TY TNHH HANH.IO. All rights reserved.
+ */
+
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
