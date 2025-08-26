@@ -1,16 +1,83 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
+const url = require('url');
 
 // Enable live reload for Electron in development
 if (process.env.NODE_ENV === 'development') {
-  require('electron-reload')(__dirname, {
-    electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron'),
-    hardResetMethod: 'exit'
-  });
+  try {
+    require('electron-reload')(__dirname, {
+      electron: path.join(__dirname, '..', 'node_modules', '.bin', 'electron'),
+      hardResetMethod: 'exit'
+    });
+  } catch (err) {
+    console.log('Electron reload not available:', err.message);
+  }
 }
 
 let mainWindow;
+let healthServer;
+
+// Create health check server for Docker deployment
+function createHealthServer() {
+  const PORT = process.env.PORT || 3000;
+  
+  healthServer = http.createServer((req, res) => {
+    const parsedUrl = url.parse(req.url, true);
+    
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+      res.writeHead(200);
+      res.end();
+      return;
+    }
+    
+    if (parsedUrl.pathname === '/health') {
+      // Health check endpoint
+      const healthStatus = {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0',
+        environment: process.env.NODE_ENV || 'development',
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        electronReady: app.isReady()
+      };
+      
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(healthStatus, null, 2));
+    } else if (parsedUrl.pathname === '/api/status') {
+      // Application status endpoint
+      const appStatus = {
+        electron: {
+          ready: app.isReady(),
+          windows: BrowserWindow.getAllWindows().length
+        },
+        system: {
+          platform: process.platform,
+          arch: process.arch,
+          nodeVersion: process.version
+        }
+      };
+      
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(appStatus, null, 2));
+    } else {
+      // 404 for other routes
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('Not Found');
+    }
+  });
+  
+  healthServer.listen(PORT, () => {
+    console.log(`Health check server running on port ${PORT}`);
+  });
+}
 
 function createWindow() {
   // Create the browser window
@@ -33,7 +100,9 @@ function createWindow() {
 
   // Show window when ready to prevent visual flash
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
+    if (!process.env.HEADLESS) {
+      mainWindow.show();
+    }
   });
 
   // Open DevTools in development
@@ -163,6 +232,7 @@ function createMenu() {
 app.whenReady().then(() => {
   createWindow();
   createMenu();
+  createHealthServer();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -174,6 +244,12 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+app.on('before-quit', () => {
+  if (healthServer) {
+    healthServer.close();
   }
 });
 
