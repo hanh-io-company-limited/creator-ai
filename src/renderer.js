@@ -1,15 +1,21 @@
-// Creator AI Renderer Process
+// Creator AI Renderer Process - Enhanced with Real AI Integration
 const { ipcRenderer } = require('electron');
 const Store = require('electron-store');
 
 // Initialize application store
 const store = new Store();
 
+// API configuration
+const API_BASE = 'http://localhost:3000/api';
+const WS_URL = 'ws://localhost:8080';
+
 // Application state
 let currentProject = null;
 let loadedModels = [];
 let isTraining = false;
 let isGenerating = false;
+let websocket = null;
+let currentJobId = null;
 
 // DOM elements
 const navButtons = document.querySelectorAll('.nav-btn');
@@ -23,15 +29,32 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     checkSystemStatus();
     loadModels();
+    connectWebSocket();
 });
 
 function initializeApp() {
     console.log('Creator AI initialized');
-    updateStatus('Ready');
+    updateStatus('Initializing AI engine...');
     
     // Load recent projects
     const recentProjects = store.get('recentProjects', []);
     updateRecentProjects(recentProjects);
+    
+    // Check API health
+    checkAPIHealth();
+}
+
+async function checkAPIHealth() {
+    try {
+        const response = await apiRequest('/health');
+        if (response.status === 'healthy') {
+            updateStatus('AI engine ready', 'success');
+        }
+    } catch (error) {
+        updateStatus('AI engine starting...', 'warning');
+        // Retry after delay
+        setTimeout(checkAPIHealth, 2000);
+    }
 }
 
 function setupEventListeners() {
@@ -134,13 +157,13 @@ async function checkGPUStatus() {
 // Model management
 async function loadModels() {
     try {
-        const models = store.get('models', []);
-        loadedModels = models;
+        const response = await apiRequest('/models');
+        loadedModels = response.data || [];
         
-        updateModelsGrid(models);
-        updateModelSelect(models);
+        updateModelsGrid(loadedModels);
+        updateModelSelect(loadedModels);
         
-        document.getElementById('models-count').textContent = models.length;
+        document.getElementById('models-count').textContent = loadedModels.length;
     } catch (error) {
         console.error('Failed to load models:', error);
         updateStatus('Failed to load models', 'error');
@@ -212,18 +235,112 @@ async function handleTrainingSubmit(event) {
 async function startTraining(config) {
     try {
         isTraining = true;
-        updateStatus('Training started', 'info');
+        updateStatus('Starting training...', 'info');
         
         // Show progress section
         document.getElementById('training-progress').style.display = 'block';
         document.getElementById('total-epochs').textContent = config.epochs;
         
-        // Simulate training process
-        for (let epoch = 1; epoch <= config.epochs; epoch++) {
-            await new Promise(resolve => setTimeout(resolve, 100)); // Simulate training time
-            
-            const progress = (epoch / config.epochs) * 100;
-            const loss = Math.max(0.01, 1.0 - (epoch / config.epochs) * 0.9 + Math.random() * 0.1);
+        // First create the model
+        const createResponse = await apiRequest('/training/create-model', {
+            method: 'POST',
+            body: JSON.stringify({
+                type: config.type,
+                config: {
+                    name: config.name,
+                    epochs: config.epochs,
+                    batchSize: 32,
+                    learningRate: 0.001
+                }
+            })
+        });
+        
+        if (!createResponse.success) {
+            throw new Error('Failed to create model');
+        }
+        
+        // Get training data file
+        const dataFile = await getTrainingDataFile();
+        if (!dataFile) {
+            throw new Error('Training data not selected');
+        }
+        
+        // Start training via API
+        const trainingResponse = await uploadFile('/training/start', [dataFile], {
+            modelId: Date.now().toString(),
+            config: JSON.stringify({
+                epochs: config.epochs,
+                batchSize: 32,
+                learningRate: 0.001
+            })
+        });
+        
+        if (!trainingResponse.success) {
+            throw new Error('Failed to start training');
+        }
+        
+        currentJobId = trainingResponse.data.jobId;
+        
+        // Subscribe to updates via WebSocket
+        if (websocket && websocket.readyState === WebSocket.OPEN) {
+            websocket.send(JSON.stringify({
+                type: 'subscribe',
+                jobId: currentJobId
+            }));
+        }
+        
+        updateStatus('Training in progress...', 'info');
+        
+    } catch (error) {
+        console.error('Training failed:', error);
+        updateStatus('Training failed: ' + error.message, 'error');
+        isTraining = false;
+        document.getElementById('training-progress').style.display = 'none';
+    }
+}
+
+function updateTrainingProgress(jobData) {
+    const { progress, epoch, totalEpochs, loss, accuracy } = jobData;
+    
+    // Update progress bar
+    document.getElementById('progress-fill').style.width = `${progress}%`;
+    
+    // Update stats
+    if (epoch) document.getElementById('current-epoch').textContent = epoch;
+    if (totalEpochs) document.getElementById('total-epochs').textContent = totalEpochs;
+    if (loss) document.getElementById('current-loss').textContent = loss.toFixed(4);
+    
+    // Calculate remaining time estimate
+    const elapsedTime = Date.now() - (jobData.startTime || Date.now());
+    const remainingTime = Math.round((elapsedTime / progress) * (100 - progress) / 1000);
+    if (remainingTime > 0) {
+        document.getElementById('time-remaining').textContent = `${remainingTime}s`;
+    }
+}
+
+function handleTrainingComplete(jobData) {
+    isTraining = false;
+    currentJobId = null;
+    document.getElementById('training-progress').style.display = 'none';
+    
+    updateStatus('Model trained successfully', 'success');
+    
+    // Refresh models list
+    loadModels();
+}
+
+async function getTrainingDataFile() {
+    // This would typically come from a file input
+    // For now, create a placeholder file
+    const dataPath = document.getElementById('data-path').textContent;
+    if (dataPath === 'No data selected') {
+        return null;
+    }
+    
+    // In a real implementation, this would read the actual file
+    const blob = new Blob(['training data placeholder'], { type: 'application/octet-stream' });
+    return new File([blob], 'training_data.bin');
+}
             
             document.getElementById('current-epoch').textContent = epoch;
             document.getElementById('progress-fill').style.width = `${progress}%`;
