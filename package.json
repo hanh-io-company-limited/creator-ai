@@ -11,6 +11,7 @@
     "dev": "electron . --dev",
     "api": "node src/api/server.js",
     "dev-api": "nodemon src/api/server.js",
+    "demo": "node scripts/demo.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
