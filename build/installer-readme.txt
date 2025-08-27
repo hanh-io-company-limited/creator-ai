@@ -2,6 +2,8 @@ Welcome to Creator AI!
 
 This application allows you to create AI-powered video content offline, giving you complete control over your creative intellectual property.
 
+IMPORTANT: This software is proprietary and confidential property of Hanh IO Company Limited. All rights reserved.
+
 Getting Started:
 1. Launch Creator AI from your Start Menu or Desktop
 2. Start by training a custom model or importing a pre-trained model
@@ -22,7 +24,12 @@ System Requirements:
 - DirectX 11 compatible graphics card (recommended)
 
 Support:
-Visit our GitHub repository for documentation and support:
-https://github.com/hanh-io-company-limited/creator-ai
+For authorized support and documentation:
+Email: support@hanh-io.com
 
+CONFIDENTIALITY NOTICE:
+This software contains proprietary algorithms and trade secrets of Hanh IO Company Limited. 
+Unauthorized copying, distribution, or reverse engineering is strictly prohibited.
+
+© 2024 Hanh IO Company Limited - All Rights Reserved
 Thank you for using Creator AI!

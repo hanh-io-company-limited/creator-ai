@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "AI-powered video content creation tool for offline use",
   "main": "src/main.js",
-  "homepage": "https://github.com/hanh-io-company-limited/creator-ai",
+  "homepage": "https://hanh-io.com",
   "author": "Hanh IO Company Limited",
-  "license": "CC-BY-ND-4.0",
+  "license": "PROPRIETARY",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
