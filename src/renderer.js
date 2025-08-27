@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-    console.log('Creator AI initialized');
-    updateStatus('Ready');
+    console.log('Creator AI của Hanh IO đã được khởi tạo');
+    updateStatus('Sẵn sàng');
     
     // Load recent projects
     const recentProjects = store.get('recentProjects', []);

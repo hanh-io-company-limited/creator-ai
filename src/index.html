@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI - Video Content Creation</title>
+    <title>Creator AI - Hanh IO Company Limited</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
                 <h1>Creator AI</h1>
             </div>
             <div class="status-bar">
-                <span id="status">Ready</span>
+                <span id="status">Sẵn sàng</span>
             </div>
         </header>
 
@@ -51,35 +51,35 @@
             <section class="content">
                 <!-- Dashboard Tab -->
                 <div id="dashboard" class="tab-content active">
-                    <h2>Welcome to Creator AI</h2>
-                    <p>Create AI-powered video content offline with complete control over your intellectual property.</p>
+                    <h2>Chào mừng đến với Creator AI</h2>
+                    <p>Tạo nội dung video bằng AI hoàn toàn offline với quyền kiểm soát hoàn toàn đối với tài sản trí tuệ của bạn.</p>
                     
                     <div class="dashboard-grid">
                         <div class="card">
-                            <h3>Quick Start</h3>
-                            <p>Get started with AI video generation</p>
-                            <button class="btn-primary" onclick="switchTab('generate')">Generate Video</button>
+                            <h3>Bắt đầu nhanh</h3>
+                            <p>Bắt đầu với việc tạo video AI</p>
+                            <button class="btn-primary" onclick="switchTab('generate')">Tạo Video</button>
                         </div>
                         
                         <div class="card">
-                            <h3>Train Custom Model</h3>
-                            <p>Train your own AI model with your data</p>
-                            <button class="btn-primary" onclick="switchTab('train')">Start Training</button>
+                            <h3>Huấn luyện mô hình tùy chỉnh</h3>
+                            <p>Huấn luyện mô hình AI riêng với dữ liệu của bạn</p>
+                            <button class="btn-primary" onclick="switchTab('train')">Bắt đầu huấn luyện</button>
                         </div>
                         
                         <div class="card">
-                            <h3>Recent Projects</h3>
+                            <h3>Dự án gần đây</h3>
                             <ul id="recent-projects">
-                                <li>No recent projects</li>
+                                <li>Chưa có dự án gần đây</li>
                             </ul>
                         </div>
                         
                         <div class="card">
-                            <h3>System Status</h3>
+                            <h3>Trạng thái hệ thống</h3>
                             <div class="status-grid">
-                                <div>GPU: <span id="gpu-status">Checking...</span></div>
-                                <div>Memory: <span id="memory-status">Checking...</span></div>
-                                <div>Models: <span id="models-count">0</span></div>
+                                <div>GPU: <span id="gpu-status">Đang kiểm tra...</span></div>
+                                <div>Bộ nhớ: <span id="memory-status">Đang kiểm tra...</span></div>
+                                <div>Mô hình: <span id="models-count">0</span></div>
                             </div>
                         </div>
                     </div>
@@ -87,47 +87,47 @@
 
                 <!-- Train Model Tab -->
                 <div id="train" class="tab-content">
-                    <h2>Train AI Model</h2>
+                    <h2>Huấn luyện mô hình AI</h2>
                     <form id="training-form" class="form">
                         <div class="form-group">
-                            <label for="model-name">Model Name:</label>
-                            <input type="text" id="model-name" placeholder="Enter model name" required>
+                            <label for="model-name">Tên mô hình:</label>
+                            <input type="text" id="model-name" placeholder="Nhập tên mô hình" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="training-data">Training Data:</label>
+                            <label for="training-data">Dữ liệu huấn luyện:</label>
                             <div class="file-input">
-                                <button type="button" id="select-data">Select Training Data</button>
-                                <span id="data-path">No data selected</span>
+                                <button type="button" id="select-data">Chọn dữ liệu huấn luyện</button>
+                                <span id="data-path">Chưa chọn dữ liệu</span>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="model-type">Model Type:</label>
+                            <label for="model-type">Loại mô hình:</label>
                             <select id="model-type">
-                                <option value="text-to-video">Text to Video</option>
-                                <option value="image-to-video">Image to Video</option>
-                                <option value="style-transfer">Style Transfer</option>
+                                <option value="text-to-video">Văn bản sang Video</option>
+                                <option value="image-to-video">Hình ảnh sang Video</option>
+                                <option value="style-transfer">Chuyển đổi phong cách</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
-                            <label for="epochs">Training Epochs:</label>
+                            <label for="epochs">Số epoch huấn luyện:</label>
                             <input type="number" id="epochs" value="100" min="1" max="1000">
                         </div>
                         
-                        <button type="submit" class="btn-primary">Start Training</button>
+                        <button type="submit" class="btn-primary">Bắt đầu huấn luyện</button>
                     </form>
                     
                     <div id="training-progress" class="progress-section" style="display: none;">
-                        <h3>Training Progress</h3>
+                        <h3>Tiến trình huấn luyện</h3>
                         <div class="progress-bar">
                             <div id="progress-fill" class="progress-fill"></div>
                         </div>
                         <div id="training-stats">
                             <div>Epoch: <span id="current-epoch">0</span>/<span id="total-epochs">0</span></div>
-                            <div>Loss: <span id="current-loss">0.0</span></div>
-                            <div>Time Remaining: <span id="time-remaining">--</span></div>
+                            <div>Tổn thất: <span id="current-loss">0.0</span></div>
+                            <div>Thời gian còn lại: <span id="time-remaining">--</span></div>
                         </div>
                     </div>
                 </div>
