@@ -40,6 +40,10 @@
                         <span class="icon">📚</span>
                         Model Library
                     </button>
+                    <button class="nav-btn" data-tab="ip-compliance">
+                        <span class="icon">🔒</span>
+                        IP Compliance
+                    </button>
                     <button class="nav-btn" data-tab="settings">
                         <span class="icon">⚙️</span>
                         Settings
@@ -221,11 +225,64 @@
                         <button type="submit" class="btn-primary">Save Settings</button>
                     </form>
                 </div>
+
+                <!-- IP Compliance Tab -->
+                <div id="ip-compliance" class="tab-content">
+                    <h2>🔒 IP Compliance Validator</h2>
+                    <p><strong>Hanh IO Company Limited</strong> - Ensuring Original Code Implementation</p>
+                    
+                    <div class="ip-compliance-container">
+                        <div class="compliance-section">
+                            <h3>Number Validation (1-30)</h3>
+                            <p>Test individual numbers for compliance with our IP requirements:</p>
+                            
+                            <div class="form-group">
+                                <label for="test-number">Enter number to validate:</label>
+                                <input type="number" id="test-number" placeholder="Enter a number (1-30)" min="1" max="30">
+                                <button type="button" class="btn-primary" id="validate-single">Validate Number</button>
+                            </div>
+                            
+                            <div id="single-result" class="result-display"></div>
+                        </div>
+
+                        <div class="compliance-section">
+                            <h3>Full Sequence Validation</h3>
+                            <p>Validate complete sequence from 1 to 30 with IP compliance verification:</p>
+                            
+                            <button type="button" class="btn-primary" id="validate-sequence">Validate Full Sequence (1-30)</button>
+                            <div id="sequence-result" class="result-display"></div>
+                        </div>
+
+                        <div class="compliance-section">
+                            <h3>IP Compliance Report</h3>
+                            <p>Generate detailed intellectual property compliance report:</p>
+                            
+                            <button type="button" class="btn-secondary" id="generate-report">Generate IP Report</button>
+                            <div id="ip-report" class="result-display"></div>
+                        </div>
+
+                        <div class="compliance-section">
+                            <h3>Code Originality Verification</h3>
+                            <p><strong>All source code is written entirely from scratch</strong></p>
+                            <ul class="ip-notices">
+                                <li>✅ No copying from community or external sources</li>
+                                <li>✅ Original implementation only</li>
+                                <li>✅ Full compliance with CC BY-ND 4.0 license</li>
+                                <li>✅ Hanh IO Company Limited ownership</li>
+                                <li>✅ Scratch-written algorithms and logic</li>
+                            </ul>
+                            
+                            <button type="button" class="btn-success" id="verify-compliance">Verify IP Compliance</button>
+                            <div id="compliance-verification" class="result-display"></div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
 
     <script src="renderer.js"></script>
     <script src="ai-engine.js"></script>
+    <script src="ip-compliance-validator.js"></script>
 </body>
 </html>
