@@ -123,11 +123,11 @@ async function checkSystemStatus() {
 
 async function checkGPUStatus() {
     try {
-        // This would integrate with TensorFlow.js or similar
-        // For now, return a placeholder
-        return 'Available';
+        // Tích hợp với hệ thống AI Hanh IO
+        // Hiện tại trả về giá trị mặc định
+        return 'Có sẵn';
     } catch (error) {
-        return 'Not Available';
+        return 'Không có sẵn';
     }
 }
 
@@ -143,7 +143,7 @@ async function loadModels() {
         document.getElementById('models-count').textContent = models.length;
     } catch (error) {
         console.error('Failed to load models:', error);
-        updateStatus('Failed to load models', 'error');
+        updateStatus('Không thể tải mô hình', 'error');
     }
 }
 
@@ -151,7 +151,7 @@ function updateModelsGrid(models) {
     const grid = document.getElementById('models-grid');
     
     if (models.length === 0) {
-        grid.innerHTML = '<p>No models available. Import or train a model to get started.</p>';
+        grid.innerHTML = '<p>Không có mô hình nào. Nhập hoặc huấn luyện mô hình để bắt đầu.</p>';
         return;
     }
 
@@ -159,13 +159,13 @@ function updateModelsGrid(models) {
         <div class="model-card">
             <h4>${model.name}</h4>
             <div class="model-info">
-                Type: ${model.type}<br>
-                Size: ${model.size || 'Unknown'}<br>
-                Created: ${new Date(model.created).toLocaleDateString()}
+                Loại: ${model.type}<br>
+                Kích thước: ${model.size || 'Không rõ'}<br>
+                Tạo: ${new Date(model.created).toLocaleDateString()}
             </div>
             <div class="model-actions">
-                <button class="use-model" onclick="useModel('${model.id}')">Use</button>
-                <button class="delete-model" onclick="deleteModel('${model.id}')">Delete</button>
+                <button class="use-model" onclick="useModel('${model.id}')">Sử dụng</button>
+                <button class="delete-model" onclick="deleteModel('${model.id}')">Xóa</button>
             </div>
         </div>
     `).join('');
@@ -175,7 +175,7 @@ function updateModelSelect(models) {
     const select = document.getElementById('selected-model');
     
     if (models.length === 0) {
-        select.innerHTML = '<option value="">No models available</option>';
+        select.innerHTML = '<option value="">Không có mô hình nào</option>';
         return;
     }
 
@@ -189,7 +189,7 @@ async function handleTrainingSubmit(event) {
     event.preventDefault();
     
     if (isTraining) {
-        updateStatus('Training already in progress', 'warning');
+        updateStatus('Quá trình huấn luyện đang diễn ra', 'warning');
         return;
     }
 
@@ -201,8 +201,8 @@ async function handleTrainingSubmit(event) {
         dataPath: document.getElementById('data-path').textContent
     };
 
-    if (!trainingConfig.name || trainingConfig.dataPath === 'No data selected') {
-        updateStatus('Please fill all required fields', 'error');
+    if (!trainingConfig.name || trainingConfig.dataPath === 'Chưa chọn dữ liệu') {
+        updateStatus('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
         return;
     }
 
@@ -212,7 +212,7 @@ async function handleTrainingSubmit(event) {
 async function startTraining(config) {
     try {
         isTraining = true;
-        updateStatus('Training started', 'info');
+        updateStatus('Bắt đầu huấn luyện', 'info');
         
         // Show progress section
         document.getElementById('training-progress').style.display = 'block';
@@ -248,11 +248,11 @@ async function startTraining(config) {
         store.set('models', models);
 
         loadModels();
-        updateStatus('Model trained successfully', 'success');
+        updateStatus('Mô hình đã được huấn luyện thành công', 'success');
         
     } catch (error) {
         console.error('Training failed:', error);
-        updateStatus('Training failed', 'error');
+        updateStatus('Huấn luyện thất bại', 'error');
     } finally {
         isTraining = false;
         document.getElementById('training-progress').style.display = 'none';
@@ -264,7 +264,7 @@ async function handleGenerationSubmit(event) {
     event.preventDefault();
     
     if (isGenerating) {
-        updateStatus('Generation already in progress', 'warning');
+        updateStatus('Quá trình tạo video đang diễn ra', 'warning');
         return;
     }
 
@@ -274,7 +274,7 @@ async function handleGenerationSubmit(event) {
     const resolution = document.getElementById('resolution').value;
 
     if (!modelId || !prompt) {
-        updateStatus('Please select a model and enter a prompt', 'error');
+        updateStatus('Vui lòng chọn mô hình và nhập mô tả', 'error');
         return;
     }
 
@@ -300,19 +300,19 @@ async function startGeneration(config) {
             await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing time
         }
 
-        // Show video preview (placeholder)
+        // Hiển thị xem trước video (giữ chỗ)
         document.getElementById('generation-progress').style.display = 'none';
         document.getElementById('video-preview').style.display = 'block';
         
-        // Set a placeholder video source
+        // Đặt nguồn video giữ chỗ
         const video = document.getElementById('preview-video');
-        video.src = ''; // Would be the generated video path
+        video.src = ''; // Sẽ là đường dẫn video đã tạo
         
-        updateStatus('Video generated successfully', 'success');
+        updateStatus('Tạo video thành công', 'success');
         
     } catch (error) {
         console.error('Generation failed:', error);
-        updateStatus('Generation failed', 'error');
+        updateStatus('Tạo video thất bại', 'error');
     } finally {
         isGenerating = false;
     }
@@ -336,8 +336,8 @@ async function selectTrainingData() {
 }
 
 async function selectOutputDirectory() {
-    // Implementation would use dialog to select directory
-    document.getElementById('output-dir-path').textContent = 'Selected directory path';
+    // Triển khai sẽ sử dụng hộp thoại để chọn thư mục
+    document.getElementById('output-dir-path').textContent = 'Đường dẫn thư mục đã chọn';
 }
 
 async function importModel() {
@@ -363,11 +363,11 @@ async function importModel() {
             store.set('models', models);
 
             loadModels();
-            updateStatus('Model imported successfully', 'success');
+            updateStatus('Nhập mô hình thành công', 'success');
         }
     } catch (error) {
         console.error('Failed to import model:', error);
-        updateStatus('Failed to import model', 'error');
+        updateStatus('Không thể nhập mô hình', 'error');
     }
 }
 
@@ -375,11 +375,11 @@ async function saveGeneratedVideo() {
     try {
         const result = await ipcRenderer.invoke('save-file', null, 'generated_video.mp4');
         if (result.success) {
-            updateStatus('Video saved successfully', 'success');
+            updateStatus('Lưu video thành công', 'success');
         }
     } catch (error) {
         console.error('Failed to save video:', error);
-        updateStatus('Failed to save video', 'error');
+        updateStatus('Không thể lưu video', 'error');
     }
 }
 
@@ -401,27 +401,27 @@ function deleteModel(modelId) {
         const updatedModels = models.filter(model => model.id !== modelId);
         store.set('models', updatedModels);
         loadModels();
-        updateStatus('Model deleted', 'success');
+        updateStatus('Đã xóa mô hình', 'success');
     }
 }
 
 // Project management
 function handleNewProject() {
-    if (confirm('Create a new project? Any unsaved changes will be lost.')) {
+    if (confirm('Tạo dự án mới? Mọi thay đổi chưa lưu sẽ bị mất.')) {
         currentProject = null;
-        updateStatus('New project created', 'success');
+        updateStatus('Đã tạo dự án mới', 'success');
     }
 }
 
 function handleOpenProject(event, projectPath) {
     // Implementation for opening existing project
     currentProject = projectPath;
-    updateStatus(`Opened project: ${projectPath}`, 'success');
+    updateStatus(`Đã mở dự án: ${projectPath}`, 'success');
 }
 
 function handleSaveProject() {
     // Implementation for saving current project
-    updateStatus('Project saved', 'success');
+    updateStatus('Đã lưu dự án', 'success');
 }
 
 function handleBatchGenerate() {
@@ -451,7 +451,7 @@ function updateRecentProjects(projects) {
     const list = document.getElementById('recent-projects');
     
     if (projects.length === 0) {
-        list.innerHTML = '<li>No recent projects</li>';
+        list.innerHTML = '<li>Chưa có dự án gần đây</li>';
         return;
     }
 

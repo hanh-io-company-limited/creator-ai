@@ -26,23 +26,23 @@
                 <nav class="nav">
                     <button class="nav-btn active" data-tab="dashboard">
                         <span class="icon">🏠</span>
-                        Dashboard
+                        Bảng điều khiển
                     </button>
                     <button class="nav-btn" data-tab="train">
                         <span class="icon">🧠</span>
-                        Train Model
+                        Huấn luyện mô hình
                     </button>
                     <button class="nav-btn" data-tab="generate">
                         <span class="icon">🎬</span>
-                        Generate Video
+                        Tạo Video
                     </button>
                     <button class="nav-btn" data-tab="library">
                         <span class="icon">📚</span>
-                        Model Library
+                        Thư viện mô hình
                     </button>
                     <button class="nav-btn" data-tab="settings">
                         <span class="icon">⚙️</span>
-                        Settings
+                        Cài đặt
                     </button>
                 </nav>
             </aside>
@@ -134,27 +134,27 @@
 
                 <!-- Generate Video Tab -->
                 <div id="generate" class="tab-content">
-                    <h2>Generate Video</h2>
+                    <h2>Tạo Video</h2>
                     <form id="generation-form" class="form">
                         <div class="form-group">
-                            <label for="selected-model">Select Model:</label>
+                            <label for="selected-model">Chọn mô hình:</label>
                             <select id="selected-model">
-                                <option value="">No models available</option>
+                                <option value="">Không có mô hình nào</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
-                            <label for="prompt">Video Prompt:</label>
-                            <textarea id="prompt" placeholder="Describe the video you want to generate..." rows="3"></textarea>
+                            <label for="prompt">Mô tả video:</label>
+                            <textarea id="prompt" placeholder="Mô tả video bạn muốn tạo..." rows="3"></textarea>
                         </div>
                         
                         <div class="form-group">
-                            <label for="duration">Duration (seconds):</label>
+                            <label for="duration">Thời lượng (giây):</label>
                             <input type="number" id="duration" value="5" min="1" max="30">
                         </div>
                         
                         <div class="form-group">
-                            <label for="resolution">Resolution:</label>
+                            <label for="resolution">Độ phân giải:</label>
                             <select id="resolution">
                                 <option value="512x512">512x512</option>
                                 <option value="1024x1024">1024x1024</option>
@@ -162,63 +162,63 @@
                             </select>
                         </div>
                         
-                        <button type="submit" class="btn-primary">Generate Video</button>
+                        <button type="submit" class="btn-primary">Tạo Video</button>
                     </form>
                     
                     <div id="generation-progress" class="progress-section" style="display: none;">
-                        <h3>Generating Video</h3>
+                        <h3>Đang tạo Video</h3>
                         <div class="progress-bar">
                             <div id="gen-progress-fill" class="progress-fill"></div>
                         </div>
-                        <div id="generation-status">Initializing...</div>
+                        <div id="generation-status">Đang khởi tạo...</div>
                     </div>
                     
                     <div id="video-preview" class="preview-section" style="display: none;">
-                        <h3>Generated Video</h3>
+                        <h3>Video đã tạo</h3>
                         <video id="preview-video" controls width="100%"></video>
                         <div class="preview-actions">
-                            <button class="btn-secondary" id="save-video">Save Video</button>
-                            <button class="btn-secondary" id="regenerate">Regenerate</button>
+                            <button class="btn-secondary" id="save-video">Lưu Video</button>
+                            <button class="btn-secondary" id="regenerate">Tạo lại</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Model Library Tab -->
                 <div id="library" class="tab-content">
-                    <h2>Model Library</h2>
+                    <h2>Thư viện mô hình</h2>
                     <div class="library-controls">
-                        <button class="btn-primary" id="import-model">Import Model</button>
-                        <button class="btn-secondary" id="refresh-library">Refresh</button>
+                        <button class="btn-primary" id="import-model">Nhập mô hình</button>
+                        <button class="btn-secondary" id="refresh-library">Làm mới</button>
                     </div>
                     
                     <div id="models-grid" class="models-grid">
-                        <!-- Models will be populated here -->
+                        <!-- Các mô hình sẽ được hiển thị tại đây -->
                     </div>
                 </div>
 
                 <!-- Settings Tab -->
                 <div id="settings" class="tab-content">
-                    <h2>Settings</h2>
+                    <h2>Cài đặt</h2>
                     <form class="form">
                         <div class="form-group">
-                            <label for="gpu-acceleration">GPU Acceleration:</label>
+                            <label for="gpu-acceleration">Tăng tốc GPU:</label>
                             <input type="checkbox" id="gpu-acceleration" checked>
                         </div>
                         
                         <div class="form-group">
-                            <label for="output-directory">Default Output Directory:</label>
+                            <label for="output-directory">Thư mục xuất mặc định:</label>
                             <div class="file-input">
-                                <button type="button" id="select-output-dir">Select Directory</button>
+                                <button type="button" id="select-output-dir">Chọn thư mục</button>
                                 <span id="output-dir-path">Documents/Creator AI</span>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="max-memory">Max Memory Usage (GB):</label>
+                            <label for="max-memory">Bộ nhớ tối đa (GB):</label>
                             <input type="number" id="max-memory" value="4" min="1" max="32">
                         </div>
                         
-                        <button type="submit" class="btn-primary">Save Settings</button>
+                        <button type="submit" class="btn-primary">Lưu cài đặt</button>
                     </form>
                 </div>
             </section>
