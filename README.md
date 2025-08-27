@@ -167,26 +167,36 @@ Creator AI is designed with privacy as a core principle:
 
 ## 🤝 Contributing
 
-We welcome contributions to Creator AI! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+**IMPORTANT INTELLECTUAL PROPERTY NOTICE:**
+By contributing to this repository, you acknowledge and agree that:
+
+1. **All contributions become the exclusive property of Hanh IO Company Limited**
+2. **You assign all rights, title, and interest in your contributions to Hanh IO Company Limited**
+3. **Your contributions are subject to the proprietary license terms**
+4. **No external use or redistribution of contributions is permitted**
 
 ### Development Setup
 
-1. Fork the repository
-2. Create a feature branch
+1. Ensure you have proper authorization from Hanh IO Company Limited
+2. Create a feature branch within the authorized environment
 3. Install dependencies: `npm install`
-4. Make your changes
+4. Make your changes following company standards
 5. Test thoroughly: `npm test`
-6. Submit a pull request
+6. Submit for internal review
+
+### Contributor Agreement
+All contributors must sign the Hanh IO Company Limited Contributor License Agreement (CLA) before any contributions can be accepted. Contact legal@hanh-io.com for the CLA.
 
 ## 📄 License
 
-This project is licensed under the Creative Commons Attribution-NoDerivatives 4.0 International License (CC BY-ND 4.0). See the [LICENSE](LICENSE) file for details.
+This project is proprietary software owned exclusively by Hanh IO Company Limited. See the [LICENSE](LICENSE) file for complete terms.
 
-### What this means:
-- ✅ **Share**: Copy and redistribute the material in any medium or format
-- ✅ **Commercial Use**: Use for commercial purposes
-- ❌ **No Derivatives**: Cannot modify, transform, or build upon the material
-- 📝 **Attribution Required**: Must give appropriate credit
+### Intellectual Property Notice:
+- ✅ **Exclusive Ownership**: All rights reserved by Hanh IO Company Limited
+- ✅ **Proprietary Technology**: Protected by copyright and trade secret laws
+- ❌ **No Redistribution**: Cannot be copied, shared, or distributed
+- ❌ **No Derivatives**: Cannot be modified or used to create derivative works
+- 🔒 **Confidential**: All code and methodologies are trade secrets
 
 ## 🆘 Support
 
@@ -200,10 +210,10 @@ This project is licensed under the Creative Commons Attribution-NoDerivatives 4.
 - 💡 **Feature Requests**: [GitHub Discussions](https://github.com/hanh-io-company-limited/creator-ai/discussions)
 - 📧 **Email Support**: support@hanh-io.com
 
-### Community
-- 💬 **Discord**: [Join our community](https://discord.gg/creator-ai)
-- 🐦 **Twitter**: [@HanhIOCompany](https://twitter.com/HanhIOCompany)
-- 📹 **YouTube**: [Creator AI Tutorials](https://youtube.com/@CreatorAI)
+### Official Channels
+- 🌐 **Website**: [hanh-io.com](https://hanh-io.com)
+- 📧 **Business Inquiries**: business@hanh-io.com
+- ⚖️ **Legal Contact**: legal@hanh-io.com
 
 ## 🙏 Acknowledgments
 
@@ -234,6 +244,9 @@ This project is licensed under the Creative Commons Attribution-NoDerivatives 4.
 
 ---
 
-**Made with ❤️ by [Hanh IO Company Limited](https://hanh-io.com)**
+**© 2024 Hanh IO Company Limited - All Rights Reserved**
 
-*Empowering creators with offline AI technology*
+*Proprietary AI Technology - Confidential and Trade Secret*
+
+**INTELLECTUAL PROPERTY NOTICE:**
+This software and all associated intellectual property, including but not limited to source code, algorithms, methodologies, designs, and concepts, are the exclusive property of Hanh IO Company Limited. Any unauthorized use, reproduction, distribution, or reverse engineering is strictly prohibited and may result in severe legal penalties.

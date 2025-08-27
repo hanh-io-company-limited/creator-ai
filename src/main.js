@@ -1,3 +1,18 @@
+/*
+ * Creator AI - Main Process
+ * 
+ * Copyright (C) 2024 Hanh IO Company Limited. All Rights Reserved.
+ * 
+ * PROPRIETARY AND CONFIDENTIAL
+ * 
+ * This file contains proprietary source code and trade secrets of Hanh IO Company Limited.
+ * Any unauthorized copying, distribution, modification, or reverse engineering is strictly 
+ * prohibited and may result in severe legal penalties.
+ * 
+ * All rights, title, and interest in this software are owned exclusively by 
+ * Hanh IO Company Limited.
+ */
+
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
@@ -141,7 +156,7 @@ function createMenu() {
               type: 'info',
               title: 'About Creator AI',
               message: 'Creator AI v1.0.0',
-              detail: 'AI-powered video content creation tool for offline use.\\n\\n© 2024 Hanh IO Company Limited'
+              detail: 'AI-powered video content creation tool for offline use.\\n\\n© 2024 Hanh IO Company Limited - All Rights Reserved\\nProprietary Software - Confidential and Trade Secret'
             });
           }
         },
