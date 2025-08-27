@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  creator-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: creator-ai-app
+    restart: unless-stopped
+    
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${PORT:-3000}
+      - GPU_ACCELERATION=${GPU_ACCELERATION:-false}
+      - MAX_MEMORY=${MAX_MEMORY:-4}
+      - OUTPUT_DIRECTORY=${OUTPUT_DIRECTORY:-/app/data/output}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    
+    ports:
+      - "${PORT:-3000}:3000"
+      - "5900:5900"  # VNC port for remote access
+    
+    volumes:
+      - creator-ai-data:/app/data
+      - creator-ai-models:/app/models
+      - creator-ai-output:/app/data/output
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    
+    networks:
+      - creator-ai-network
+    
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:-2G}
+          cpus: '${CPU_LIMIT:-2.0}'
+        reservations:
+          memory: ${MEMORY_RESERVATION:-1G}
+          cpus: '${CPU_RESERVATION:-1.0}'
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: creator-ai-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    
+    volumes:
+      - creator-ai-redis:/data
+    
+    networks:
+      - creator-ai-network
+    
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: creator-ai-nginx
+    restart: unless-stopped
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/ssl:/etc/nginx/ssl:ro
+      - creator-ai-logs:/var/log/nginx
+    
+    depends_on:
+      - creator-ai
+    
+    networks:
+      - creator-ai-network
+    
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.5'
+
+volumes:
+  creator-ai-data:
+    driver: local
+  creator-ai-models:
+    driver: local
+  creator-ai-output:
+    driver: local
+  creator-ai-redis:
+    driver: local
+  creator-ai-logs:
+    driver: local
+
+networks:
+  creator-ai-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

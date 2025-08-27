@@ -56,6 +56,9 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.local
+.env.production
+.env.staging
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -132,8 +135,23 @@ training_data/
 # Security
 *.pem
 *.key
-.env.local
-.env.production
+secrets/
+ssl/
 
 # Build tools
 .electron-builder.yml
+
+# Docker
+.dockerignore
+
+# Backups
+backups/
+*.backup
+
+# Cloud deployment
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Container volumes
+docker-volumes/
