@@ -1,3 +1,18 @@
+/*
+ * Creator AI - AI Engine Module
+ * 
+ * Copyright (C) 2024 Hanh IO Company Limited. All Rights Reserved.
+ * 
+ * PROPRIETARY AND CONFIDENTIAL
+ * 
+ * This file contains proprietary AI algorithms and trade secrets of Hanh IO Company Limited.
+ * Any unauthorized copying, distribution, modification, or reverse engineering is strictly 
+ * prohibited and may result in severe legal penalties.
+ * 
+ * All rights, title, and interest in this software are owned exclusively by 
+ * Hanh IO Company Limited.
+ */
+
 // AI Engine for Creator AI (Lightweight Mock Version)
 // This module provides AI simulation for demonstration purposes
 
