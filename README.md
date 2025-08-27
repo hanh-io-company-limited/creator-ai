@@ -201,9 +201,9 @@ This project is licensed under the Creative Commons Attribution-NoDerivatives 4.
 ## 🙏 Acknowledgments
 
 - TensorFlow.js team for the AI framework
-- Electron team for the desktop application platform
-- Open source community for various dependencies and tools
-- Beta testers and early adopters for valuable feedback
+- Electron team for the desktop application platform  
+- Third-party library authors for development dependencies
+- Internal Hanh IO Company Limited team for development and testing
 
 ## 🚧 Roadmap
 
