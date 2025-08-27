@@ -2,7 +2,7 @@
 
 ![Creator AI Logo](assets/logo.png)
 
-Creator AI is a standalone desktop application that empowers content creators to generate AI-powered videos offline, ensuring complete control over their creative intellectual property. The application allows users to train custom models and generate high-quality video content without relying on external platforms or cloud services.
+Creator AI is a proprietary standalone desktop application developed by Hanh IO Company Limited that empowers content creators to generate AI-powered videos offline, ensuring complete control over their creative intellectual property. The application allows users to train custom models and generate high-quality video content without relying on external platforms or cloud services, maintaining full data sovereignty.
 
 ## 🌟 Features
 
@@ -163,47 +163,40 @@ Creator AI is designed with privacy as a core principle:
 - **Local Model Storage**: All models stored locally
 - **No Telemetry**: No usage tracking or data collection
 - **Secure Processing**: All AI processing happens on your machine
-- **Intellectual Property Protection**: Your data remains completely private
+- **Intellectual Property Protection**: Your data remains completely private and under your control
+- **No External Sharing**: All processing, storage, and operations remain within your local environment
+- **Proprietary Security**: Built with enterprise-grade security standards by Hanh IO Company Limited
 
-## 🤝 Contributing
+## 🏢 Ownership & Development
 
-We welcome contributions to Creator AI! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+Creator AI is developed and maintained exclusively by **Hanh IO Company Limited**. All source code, intellectual property, and related assets are proprietary to the company.
 
-### Development Setup
+### Internal Development
 
-1. Fork the repository
-2. Create a feature branch
-3. Install dependencies: `npm install`
-4. Make your changes
-5. Test thoroughly: `npm test`
-6. Submit a pull request
+This software is developed internally by Hanh IO Company Limited development team following strict proprietary development processes to ensure complete control over intellectual property and security.
 
 ## 📄 License
 
 This project is licensed under the Creative Commons Attribution-NoDerivatives 4.0 International License (CC BY-ND 4.0). See the [LICENSE](LICENSE) file for details.
 
 ### What this means:
-- ✅ **Share**: Copy and redistribute the material in any medium or format
-- ✅ **Commercial Use**: Use for commercial purposes
+- ✅ **Share**: Copy and redistribute the material in any medium or format under company authorization
+- ✅ **Commercial Use**: Use for commercial purposes under license terms
 - ❌ **No Derivatives**: Cannot modify, transform, or build upon the material
-- 📝 **Attribution Required**: Must give appropriate credit
+- 📝 **Attribution Required**: Must give appropriate credit to Hanh IO Company Limited
 
 ## 🆘 Support
+
+### Official Support Channels
+- 📧 **Technical Support**: support@hanh-io.com
+- 🏢 **Enterprise Support**: enterprise@hanh-io.com
 
 ### Documentation
 - [User Guide](docs/user-guide.md)
 - [API Documentation](docs/api.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
-### Getting Help
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/hanh-io-company-limited/creator-ai/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/hanh-io-company-limited/creator-ai/discussions)
-- 📧 **Email Support**: support@hanh-io.com
-
-### Community
-- 💬 **Discord**: [Join our community](https://discord.gg/creator-ai)
-- 🐦 **Twitter**: [@HanhIOCompany](https://twitter.com/HanhIOCompany)
-- 📹 **YouTube**: [Creator AI Tutorials](https://youtube.com/@CreatorAI)
+**Note**: All support is provided exclusively through official Hanh IO Company Limited channels to ensure security and proper handling of inquiries.
 
 ## 🙏 Acknowledgments
 
@@ -217,14 +210,14 @@ This project is licensed under the Creative Commons Attribution-NoDerivatives 4.
 ### Version 1.1.0
 - [ ] Real-time preview during generation
 - [ ] Additional model architectures
-- [ ] Plugin system for custom models
 - [ ] Advanced batch processing
+- [ ] Enhanced security features
 
 ### Version 1.2.0
-- [ ] Cloud model marketplace (optional)
-- [ ] Collaborative features
 - [ ] Advanced editing tools
-- [ ] Performance optimizations
+- [ ] Performance optimizations  
+- [ ] Enterprise workflow integration
+- [ ] Enhanced proprietary AI algorithms
 
 ### Version 2.0.0
 - [ ] 3D video generation
@@ -234,6 +227,6 @@ This project is licensed under the Creative Commons Attribution-NoDerivatives 4.
 
 ---
 
-**Made with ❤️ by [Hanh IO Company Limited](https://hanh-io.com)**
+**© 2024 Hanh IO Company Limited - All Rights Reserved**
 
-*Empowering creators with offline AI technology*
+*Proprietary AI technology for professional content creation*
