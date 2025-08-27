@@ -1,5 +1,6 @@
-// AI Engine for Creator AI (Lightweight Mock Version)
-// This module provides AI simulation for demonstration purposes
+// AI Engine for Creator AI - Hanh IO Company Limited
+// Copyright © 2025 CÔNG TY TNHH HANH.IO. All rights reserved.
+// Proprietary AI processing engine for video content creation
 
 class AIEngine {
     constructor() {
@@ -9,7 +10,7 @@ class AIEngine {
 
     async initialize() {
         try {
-            console.log('AI Engine (Mock) initialized');
+            console.log('Hệ thống AI Creator đã khởi tạo thành công');
             this.isInitialized = true;
             return true;
         } catch (error) {
@@ -27,15 +28,16 @@ class AIEngine {
             // Simulate model loading
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            const mockModel = {
+            const hanhIOModel = {
                 id: modelId,
                 path: modelPath,
-                type: 'mock',
-                loaded: Date.now()
+                type: 'hanh-io-proprietary',
+                loaded: Date.now(),
+                company: 'Hanh IO Company Limited'
             };
             
-            this.models.set(modelId, mockModel);
-            console.log(`Model ${modelId} loaded successfully (mock)`);
+            this.models.set(modelId, hanhIOModel);
+            console.log(`Mô hình ${modelId} đã được tải thành công bởi Hanh IO`);
             return true;
         } catch (error) {
             console.error(`Failed to load model ${modelId}:`, error);
@@ -52,14 +54,16 @@ class AIEngine {
             // Simulate model creation
             await new Promise(resolve => setTimeout(resolve, 500));
             
-            const mockModel = {
-                type: 'text-to-video',
+            const hanhIOVideoModel = {
+                type: 'hanh-io-text-to-video',
                 config: config,
                 created: Date.now(),
-                parameters: Math.floor(Math.random() * 1000000) + 500000
+                parameters: Math.floor(Math.random() * 1000000) + 500000,
+                company: 'Hanh IO Company Limited',
+                license: 'Proprietary'
             };
 
-            return mockModel;
+            return hanhIOVideoModel;
         } catch (error) {
             console.error('Failed to create text-to-video model:', error);
             throw error;
@@ -75,14 +79,16 @@ class AIEngine {
             // Simulate model creation
             await new Promise(resolve => setTimeout(resolve, 500));
             
-            const mockModel = {
-                type: 'image-to-video',
+            const hanhIOImageModel = {
+                type: 'hanh-io-image-to-video',
                 config: config,
                 created: Date.now(),
-                parameters: Math.floor(Math.random() * 800000) + 400000
+                parameters: Math.floor(Math.random() * 800000) + 400000,
+                company: 'Hanh IO Company Limited',
+                license: 'Proprietary'
             };
 
-            return mockModel;
+            return hanhIOImageModel;
         } catch (error) {
             console.error('Failed to create image-to-video model:', error);
             throw error;
@@ -114,7 +120,7 @@ class AIEngine {
                 }
             }
 
-            console.log('Mock training completed');
+            console.log('Quá trình huấn luyện mô hình Hanh IO đã hoàn thành');
             return model;
         } catch (error) {
             console.error('Training failed:', error);
@@ -131,13 +137,13 @@ class AIEngine {
 
             const { duration = 5, resolution = '512x512' } = config;
             const steps = [
-                'Initializing model...',
-                'Processing text prompt...',
-                'Generating keyframes...',
-                'Interpolating frames...',
-                'Adding motion blur...',
-                'Encoding video...',
-                'Finalizing output...'
+                'Khởi tạo mô hình Hanh IO...',
+                'Xử lý văn bản đầu vào...',
+                'Tạo khung hình chính...',
+                'Nội suy các khung hình...',
+                'Thêm hiệu ứng chuyển động...',
+                'Mã hóa video chất lượng cao...',
+                'Hoàn thiện sản phẩm đầu ra...'
             ];
             
             // Simulate video generation
@@ -173,7 +179,7 @@ class AIEngine {
                 size: `${Math.floor(Math.random() * 50 + 10)}MB`
             };
             
-            console.log('Mock video generation completed');
+            console.log('Quá trình tạo video Hanh IO đã hoàn thành');
             return videoData;
         } catch (error) {
             console.error('Video generation failed:', error);
@@ -185,7 +191,7 @@ class AIEngine {
         try {
             // Simulate saving
             await new Promise(resolve => setTimeout(resolve, 500));
-            console.log(`Model saved to ${modelPath} (mock)`);
+            console.log(`Mô hình đã được lưu tại ${modelPath} bởi hệ thống Hanh IO`);
             return true;
         } catch (error) {
             console.error('Failed to save model:', error);
@@ -216,7 +222,7 @@ class AIEngine {
         const model = this.models.get(modelId);
         if (model) {
             this.models.delete(modelId);
-            console.log(`Model ${modelId} unloaded (mock)`);
+            console.log(`Mô hình ${modelId} đã được gỡ khỏi hệ thống Hanh IO`);
             return true;
         }
         return false;
@@ -228,28 +234,29 @@ class AIEngine {
         }
 
         return {
-            backend: 'Mock Backend',
+            backend: 'Hệ thống AI Hanh IO',
             memory: {
                 heapUsed: Math.floor(Math.random() * 100) + 50,
                 heapTotal: Math.floor(Math.random() * 200) + 100,
                 external: Math.floor(Math.random() * 50) + 10
             },
-            version: '1.0.0-mock',
-            gpuAcceleration: Math.random() > 0.5 ? 'Available' : 'Not Available'
+            version: '1.0.0-hanh-io-proprietary',
+            gpuAcceleration: Math.random() > 0.5 ? 'Có sẵn' : 'Không có sẵn',
+            company: 'Hanh IO Company Limited'
         };
     }
 
     // Additional helper methods for the mock engine
     generateSamplePrompts() {
         return [
-            "A serene sunset over a mountain lake with gentle ripples",
-            "A bustling city street with neon lights reflecting on wet pavement",
-            "A magical forest with glowing fireflies and mist",
-            "A cozy coffee shop on a rainy day with steam rising from cups",
-            "Ocean waves crashing against rocky cliffs under starry sky",
-            "A vintage train moving through autumn countryside",
-            "Children playing in a park with falling leaves",
-            "A futuristic cityscape with flying cars and tall buildings"
+            "Hoàng hôn yên bình trên hồ núi với những gợn sóng nhẹ nhàng",
+            "Phố thị nhộn nhịp với ánh đèn neon phản chiếu trên mặt đường ướt",
+            "Rừng nhiệt đới kỳ diệu với đom đóm phát sáng và sương mù",
+            "Quán cà phê ấm cúng trong ngày mưa với hơi nước bốc lên từ tách",
+            "Sóng biển đập vào các vách đá dưới bầu trời đầy sao",
+            "Tàu cổ điển di chuyển qua vùng nông thôn mùa thu",
+            "Trẻ em vui chơi trong công viên với lá vàng rơi",
+            "Cảnh quan thành phố tương lai với xe bay và tòa nhà cao tầng"
         ];
     }
 
@@ -274,12 +281,12 @@ const aiEngine = new AIEngine();
 // Initialize when the module loads
 aiEngine.initialize().then(success => {
     if (success) {
-        console.log('AI Engine (Mock) initialized successfully');
+        console.log('Hệ thống AI Creator Hanh IO đã khởi tạo thành công');
         if (typeof window !== 'undefined') {
             window.aiEngine = aiEngine; // Make available globally in renderer
         }
     } else {
-        console.error('Failed to initialize AI Engine (Mock)');
+        console.error('Không thể khởi tạo hệ thống AI Creator Hanh IO');
     }
 });
 

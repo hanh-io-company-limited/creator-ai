@@ -139,9 +139,9 @@ function createMenu() {
           click: () => {
             dialog.showMessageBox(mainWindow, {
               type: 'info',
-              title: 'About Creator AI',
-              message: 'Creator AI v1.0.0',
-              detail: 'AI-powered video content creation tool for offline use.\\n\\n© 2024 Hanh IO Company Limited'
+              title: 'Về Creator AI',
+              message: 'Creator AI v1.0.0 - Hanh IO Company Limited',
+              detail: 'Công cụ tạo nội dung video bằng AI cho sử dụng offline.\\n\\n© 2025 CÔNG TY TNHH HANH.IO'
             });
           }
         },
