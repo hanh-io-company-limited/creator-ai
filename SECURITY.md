@@ -2,20 +2,26 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+Hanh IO Company Limited provides security updates for the following versions of Creator AI:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 1.0.x   | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+For security vulnerabilities, please contact us directly through our official channels:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+- **Security Team**: security@hanh-io.com
+- **Response Time**: We aim to respond within 24 hours
+- **Process**: All security reports are handled confidentially by our internal security team
+
+**Important**: Do not report security vulnerabilities through public channels. All security-related communications must go through official Hanh IO Company Limited channels to ensure proper handling and confidentiality.
+
+## Security Measures
+
+- All processing occurs offline - no data transmission to external servers
+- Local model storage with encrypted data protection
+- Regular security audits by our internal team
+- Compliance with enterprise security standards

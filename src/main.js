@@ -141,7 +141,7 @@ function createMenu() {
               type: 'info',
               title: 'About Creator AI',
               message: 'Creator AI v1.0.0',
-              detail: 'AI-powered video content creation tool for offline use.\\n\\n© 2024 Hanh IO Company Limited'
+              detail: 'Proprietary AI-powered video content creation tool for offline use.\\n\\nDeveloped exclusively by Hanh IO Company Limited\\n© 2024 Hanh IO Company Limited - All Rights Reserved'
             });
           }
         },
