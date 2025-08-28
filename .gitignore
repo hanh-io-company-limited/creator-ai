@@ -137,3 +137,17 @@ training_data/
 
 # Build tools
 .electron-builder.yml
+
+# Hardhat files
+cache/
+artifacts/
+deployments/
+typechain/
+typechain-types/
+
+# Frontend build files
+nft-frontend/build/
+nft-frontend/.env.local
+nft-frontend/.env.development.local
+nft-frontend/.env.test.local
+nft-frontend/.env.production.local
