@@ -1,7 +1,7 @@
 {
   "name": "creator-ai",
   "version": "1.0.0",
-  "description": "AI-powered video content creation tool for offline use",
+  "description": "AI-powered video content creation tool with multi-chain NFT minting capabilities",
   "main": "src/main.js",
   "homepage": "https://hanh-io.com",
   "author": "Hanh IO Company Limited",
@@ -21,10 +21,21 @@
     "content-creation",
     "machine-learning",
     "desktop",
-    "offline"
+    "offline",
+    "nft",
+    "blockchain",
+    "ethereum",
+    "solana",
+    "multi-chain"
   ],
   "dependencies": {
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "web3": "^4.3.0",
+    "@solana/web3.js": "^1.87.6",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-phantom": "^0.9.24",
+    "@metaplex-foundation/js": "^0.19.4",
+    "ethers": "^6.8.1"
   },
   "devDependencies": {
     "electron": "^27.1.0",

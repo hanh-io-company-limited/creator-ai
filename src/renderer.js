@@ -1,5 +1,5 @@
 /*
- * Creator AI - Renderer Process
+ * Creator AI - Multi-Chain NFT Platform Renderer Process
  * 
  * Copyright (C) 2024 Hanh IO Company Limited. All Rights Reserved.
  * 
@@ -13,18 +13,25 @@
  * Hanh IO Company Limited.
  */
 
-// Creator AI Renderer Process
+// Creator AI NFT Platform Renderer Process
 const { ipcRenderer } = require('electron');
 const Store = require('electron-store');
+const { BlockchainManager } = require('./blockchain');
 
 // Initialize application store
 const store = new Store();
+
+// Initialize blockchain manager
+const blockchainManager = new BlockchainManager();
 
 // Application state
 let currentProject = null;
 let loadedModels = [];
 let isTraining = false;
 let isGenerating = false;
+let isMinting = false;
+let selectedFile = null;
+let nftAttributes = [];
 
 // DOM elements
 const navButtons = document.querySelectorAll('.nav-btn');
@@ -38,16 +45,628 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
     checkSystemStatus();
     loadModels();
+    updateNetworkSelector();
 });
 
 function initializeApp() {
-    console.log('Creator AI initialized');
+    console.log('Creator AI NFT Platform initialized');
     updateStatus('Ready');
     
     // Load recent projects
     const recentProjects = store.get('recentProjects', []);
     updateRecentProjects(recentProjects);
+    
+    // Set default tab
+    switchTab('nft-mint');
 }
+
+function setupEventListeners() {
+    // Navigation
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            switchTab(tabId);
+        });
+    });
+
+    // Network selection
+    document.getElementById('network-selector').addEventListener('change', handleNetworkChange);
+    
+    // Wallet connection
+    document.getElementById('connect-wallet').addEventListener('click', showWalletModal);
+    document.getElementById('disconnect-wallet').addEventListener('click', disconnectWallet);
+
+    // NFT minting form
+    const nftForm = document.getElementById('nft-mint-form');
+    nftForm.addEventListener('submit', handleNftMint);
+    
+    // File upload
+    document.getElementById('nft-image').addEventListener('change', handleFileUpload);
+    
+    // Attribute management
+    document.getElementById('add-attribute').addEventListener('click', addAttributeField);
+    
+    // Fee estimation
+    document.getElementById('estimate-fees').addEventListener('click', estimateMintingFees);
+    
+    // Collection checkbox for Solana
+    document.getElementById('use-collection').addEventListener('change', toggleCollectionField);
+
+    // AI generation form
+    const generationForm = document.getElementById('generation-form');
+    generationForm.addEventListener('submit', handleGenerationSubmit);
+
+    // Library actions
+    document.getElementById('import-model').addEventListener('click', importModel);
+    document.getElementById('refresh-library').addEventListener('click', loadModels);
+
+    // Settings
+    document.getElementById('use-testnet').addEventListener('change', handleTestnetToggle);
+
+    // Modal events
+    document.getElementById('wallet-modal').addEventListener('click', handleModalClick);
+    document.querySelector('.close-modal').addEventListener('click', hideWalletModal);
+    
+    // Wallet option selection
+    document.querySelectorAll('.wallet-option').forEach(option => {
+        option.addEventListener('click', handleWalletSelection);
+    });
+
+    // Menu event listeners
+    ipcRenderer.on('menu-new-project', handleNewProject);
+    ipcRenderer.on('menu-train-model', () => switchTab('ai-generate'));
+    ipcRenderer.on('menu-load-model', importModel);
+    ipcRenderer.on('menu-model-manager', () => switchTab('library'));
+    ipcRenderer.on('menu-generate-video', () => switchTab('ai-generate'));
+    ipcRenderer.on('menu-batch-generate', handleBatchGenerate);
+    ipcRenderer.on('menu-help', showUserGuide);
+}
+
+// Tab switching
+function switchTab(tabId) {
+    // Update nav buttons
+    navButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+    });
+
+    // Update tab content
+    tabContents.forEach(content => {
+        content.classList.toggle('active', content.id === tabId);
+    });
+
+    // Update status based on active tab
+    const tabTitles = {
+        'nft-mint': 'NFT Minting',
+        'ai-generate': 'AI Generation',
+        'library': 'Model Library',
+        'settings': 'Settings'
+    };
+    updateStatus(`${tabTitles[tabId]} - Ready`);
+}
+
+// Status management
+function updateStatus(message, type = 'info') {
+    if (statusElement) {
+        statusElement.textContent = message;
+        statusElement.className = type === 'error' ? 'text-error' : 
+                                   type === 'warning' ? 'text-warning' :
+                                   type === 'success' ? 'text-success' : '';
+    }
+}
+
+// Network Management
+function updateNetworkSelector() {
+    const selector = document.getElementById('network-selector');
+    const networks = blockchainManager.getAvailableNetworks();
+    
+    selector.innerHTML = '<option value="">Select Network</option>';
+    networks.forEach(network => {
+        const option = document.createElement('option');
+        option.value = network.id;
+        option.textContent = `${network.name} (${network.currency})`;
+        selector.appendChild(option);
+    });
+}
+
+async function handleNetworkChange(event) {
+    const networkType = event.target.value;
+    if (!networkType) return;
+
+    const useTestnet = document.getElementById('use-testnet').checked;
+    
+    try {
+        updateStatus('Switching network...', 'warning');
+        const result = await blockchainManager.switchNetwork(networkType, useTestnet);
+        
+        if (result.success) {
+            updateStatus(`Connected to ${result.network.name}`, 'success');
+            updateNetworkStatus(result.network);
+            showNetworkFields(networkType);
+            updateGasFees();
+        } else {
+            updateStatus(`Network switch failed: ${result.error}`, 'error');
+        }
+    } catch (error) {
+        updateStatus(`Network error: ${error.message}`, 'error');
+    }
+}
+
+function updateNetworkStatus(network) {
+    const currentNetworkEl = document.getElementById('current-network');
+    const connectionStatusEl = document.getElementById('connection-status');
+    
+    if (currentNetworkEl) {
+        currentNetworkEl.textContent = network.connected ? 
+            `${network.name} (Connected)` : 
+            `${network.name} (Not Connected)`;
+    }
+    
+    if (connectionStatusEl) {
+        connectionStatusEl.style.color = network.connected ? '#4ade80' : '#fbbf24';
+    }
+}
+
+function showNetworkFields(networkType) {
+    const ethereumFields = document.getElementById('ethereum-fields');
+    const solanaFields = document.getElementById('solana-fields');
+    
+    ethereumFields.classList.toggle('hidden', networkType !== 'ethereum');
+    solanaFields.classList.toggle('hidden', networkType !== 'solana');
+}
+
+async function updateGasFees() {
+    try {
+        const fees = await blockchainManager.getNetworkGasFees();
+        const gasFeesEl = document.getElementById('gas-fees');
+        
+        if (fees && gasFeesEl) {
+            const currentNetwork = blockchainManager.currentNetwork;
+            
+            if (currentNetwork === 'ethereum') {
+                gasFeesEl.textContent = `Gas: ${fees.gasPrice} Gwei`;
+            } else if (currentNetwork === 'solana') {
+                gasFeesEl.textContent = `Fee: ${fees.lamportsPerSignature} lamports`;
+            }
+        }
+    } catch (error) {
+        console.error('Failed to update gas fees:', error);
+    }
+}
+
+// Wallet Management
+function showWalletModal() {
+    const modal = document.getElementById('wallet-modal');
+    modal.classList.remove('hidden');
+}
+
+function hideWalletModal() {
+    const modal = document.getElementById('wallet-modal');
+    modal.classList.add('hidden');
+}
+
+function handleModalClick(event) {
+    if (event.target.id === 'wallet-modal') {
+        hideWalletModal();
+    }
+}
+
+async function handleWalletSelection(event) {
+    const walletType = event.currentTarget.getAttribute('data-wallet');
+    const currentNetwork = blockchainManager.currentNetwork;
+    
+    if (!currentNetwork) {
+        updateStatus('Please select a network first', 'warning');
+        return;
+    }
+    
+    if ((walletType === 'metamask' && currentNetwork !== 'ethereum') ||
+        (walletType === 'phantom' && currentNetwork !== 'solana')) {
+        updateStatus('Wallet not compatible with selected network', 'warning');
+        return;
+    }
+    
+    try {
+        updateStatus('Connecting wallet...', 'warning');
+        const result = await blockchainManager.connectWallet(walletType);
+        
+        if (result.success) {
+            updateStatus(`${result.wallet} connected`, 'success');
+            updateWalletUI(result.address, result.wallet);
+            hideWalletModal();
+            document.getElementById('mint-nft').disabled = false;
+        } else {
+            updateStatus(`Connection failed: ${result.error}`, 'error');
+        }
+    } catch (error) {
+        updateStatus(`Wallet error: ${error.message}`, 'error');
+    }
+}
+
+async function disconnectWallet() {
+    try {
+        const result = await blockchainManager.disconnectWallet();
+        if (result.success) {
+            updateStatus('Wallet disconnected', 'info');
+            updateWalletUI(null, null);
+            document.getElementById('mint-nft').disabled = true;
+        }
+    } catch (error) {
+        updateStatus(`Disconnect failed: ${error.message}`, 'error');
+    }
+}
+
+function updateWalletUI(address, walletName) {
+    const connectBtn = document.getElementById('connect-wallet');
+    const walletInfo = document.getElementById('wallet-info');
+    const walletAddressEl = document.getElementById('wallet-address');
+    
+    if (address) {
+        connectBtn.classList.add('hidden');
+        walletInfo.classList.remove('hidden');
+        walletAddressEl.textContent = `${walletName}: ${address.slice(0, 6)}...${address.slice(-4)}`;
+    } else {
+        connectBtn.classList.remove('hidden');
+        walletInfo.classList.add('hidden');
+        walletAddressEl.textContent = '';
+    }
+}
+
+// NFT Minting
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    selectedFile = file;
+    
+    // Create preview
+    const preview = document.getElementById('upload-preview');
+    const nftPreview = document.getElementById('nft-preview');
+    
+    if (file.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.onload = () => URL.revokeObjectURL(img.src);
+        
+        preview.innerHTML = '';
+        preview.appendChild(img);
+        
+        nftPreview.innerHTML = '';
+        nftPreview.appendChild(img.cloneNode());
+    } else if (file.type.startsWith('video/')) {
+        const video = document.createElement('video');
+        video.src = URL.createObjectURL(file);
+        video.controls = true;
+        video.onload = () => URL.revokeObjectURL(video.src);
+        
+        preview.innerHTML = '';
+        preview.appendChild(video);
+        
+        nftPreview.innerHTML = '';
+        nftPreview.appendChild(video.cloneNode());
+    }
+    
+    updateNftPreview();
+}
+
+function addAttributeField() {
+    const container = document.getElementById('attributes-container');
+    const attributePair = document.createElement('div');
+    attributePair.className = 'attribute-pair';
+    
+    attributePair.innerHTML = `
+        <input type="text" placeholder="Trait type" class="trait-type">
+        <input type="text" placeholder="Value" class="trait-value">
+        <button type="button" class="remove-attr" onclick="removeAttributeField(this)">×</button>
+    `;
+    
+    container.appendChild(attributePair);
+}
+
+function removeAttributeField(button) {
+    button.parentElement.remove();
+}
+
+function toggleCollectionField() {
+    const useCollection = document.getElementById('use-collection').checked;
+    const collectionField = document.getElementById('collection-field');
+    collectionField.style.display = useCollection ? 'block' : 'none';
+}
+
+function updateNftPreview() {
+    const name = document.getElementById('nft-name').value;
+    const description = document.getElementById('nft-description').value;
+    
+    // Update preview info (could be expanded)
+    if (name || description) {
+        updateStatus('NFT preview updated', 'info');
+    }
+}
+
+async function estimateMintingFees() {
+    if (!blockchainManager.isWalletConnected()) {
+        updateStatus('Please connect wallet first', 'warning');
+        return;
+    }
+    
+    try {
+        updateStatus('Estimating fees...', 'info');
+        const fees = await blockchainManager.getNetworkGasFees();
+        
+        if (fees) {
+            const currentNetwork = blockchainManager.currentNetwork;
+            let estimate = '';
+            
+            if (currentNetwork === 'ethereum') {
+                // Rough estimate for NFT minting (100,000 gas * current gas price)
+                const gasEstimate = parseFloat(fees.gasPrice) * 100;
+                estimate = `Estimated gas fee: ~${gasEstimate.toFixed(4)} ETH`;
+            } else if (currentNetwork === 'solana') {
+                const solFees = fees.lamportsPerSignature / 1000000000; // Convert to SOL
+                estimate = `Estimated fee: ~${solFees.toFixed(6)} SOL`;
+            }
+            
+            updateMintStatus(`Fee Estimation: ${estimate}`);
+        }
+    } catch (error) {
+        updateStatus(`Fee estimation failed: ${error.message}`, 'error');
+    }
+}
+
+async function handleNftMint(event) {
+    event.preventDefault();
+    
+    if (isMinting) {
+        updateStatus('Minting already in progress', 'warning');
+        return;
+    }
+    
+    if (!blockchainManager.isWalletConnected()) {
+        updateStatus('Please connect wallet first', 'warning');
+        return;
+    }
+    
+    if (!selectedFile) {
+        updateStatus('Please select an image or video file', 'warning');
+        return;
+    }
+    
+    const nftData = collectNftData();
+    if (!nftData) return;
+    
+    try {
+        isMinting = true;
+        document.getElementById('mint-nft').disabled = true;
+        updateStatus('Minting NFT...', 'warning');
+        updateMintStatus('Preparing metadata...');
+        
+        // Simulate metadata upload (in real implementation, upload to IPFS)
+        const metadataUri = await uploadMetadata(nftData);
+        updateMintStatus('Metadata uploaded. Minting on blockchain...');
+        
+        // Mint NFT
+        const contractAddress = document.getElementById('contract-address').value || null;
+        const result = await blockchainManager.mintNFT(contractAddress, { uri: metadataUri });
+        
+        if (result.success) {
+            updateStatus('NFT minted successfully!', 'success');
+            updateMintStatus(`Minted! Transaction: ${result.transactionHash || result.transactionSignature}`);
+        } else {
+            updateStatus(`Minting failed: ${result.error}`, 'error');
+            updateMintStatus(`Minting failed: ${result.error}`);
+        }
+    } catch (error) {
+        updateStatus(`Minting error: ${error.message}`, 'error');
+        updateMintStatus(`Error: ${error.message}`);
+    } finally {
+        isMinting = false;
+        document.getElementById('mint-nft').disabled = false;
+    }
+}
+
+function collectNftData() {
+    const name = document.getElementById('nft-name').value;
+    const description = document.getElementById('nft-description').value;
+    
+    if (!name || !description) {
+        updateStatus('Please fill in NFT name and description', 'warning');
+        return null;
+    }
+    
+    // Collect attributes
+    const attributes = [];
+    const attributePairs = document.querySelectorAll('.attribute-pair');
+    
+    attributePairs.forEach(pair => {
+        const traitType = pair.querySelector('.trait-type').value;
+        const value = pair.querySelector('.trait-value').value;
+        
+        if (traitType && value) {
+            attributes.push({ trait_type: traitType, value: value });
+        }
+    });
+    
+    return {
+        name,
+        description,
+        attributes,
+        file: selectedFile
+    };
+}
+
+async function uploadMetadata(nftData) {
+    // Mock metadata upload - in real implementation, use IPFS
+    const metadata = {
+        name: nftData.name,
+        description: nftData.description,
+        image: `ipfs://mock_image_hash_${Date.now()}`,
+        attributes: nftData.attributes
+    };
+    
+    // Simulate upload delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    return `ipfs://mock_metadata_hash_${Date.now()}`;
+}
+
+function updateMintStatus(message) {
+    const statusContent = document.querySelector('.mint-status .status-content');
+    if (statusContent) {
+        statusContent.innerHTML = `<p>${message}</p>`;
+    }
+}
+
+// AI Generation (existing functionality)
+async function handleGenerationSubmit(event) {
+    event.preventDefault();
+    
+    if (isGenerating) {
+        updateStatus('Generation already in progress', 'warning');
+        return;
+    }
+
+    const modelId = document.getElementById('selected-model').value;
+    const prompt = document.getElementById('prompt').value;
+    const duration = parseInt(document.getElementById('duration').value);
+    const resolution = document.getElementById('resolution').value;
+
+    if (!modelId || !prompt) {
+        updateStatus('Please select a model and enter a prompt', 'error');
+        return;
+    }
+
+    startGeneration({ modelId, prompt, duration, resolution });
+}
+
+async function startGeneration(config) {
+    isGenerating = true;
+    updateStatus('Generating content...', 'warning');
+    
+    // Mock generation process
+    setTimeout(() => {
+        isGenerating = false;
+        updateStatus('Content generated successfully', 'success');
+    }, 5000);
+}
+
+// Model management
+async function loadModels() {
+    try {
+        const models = store.get('models', []);
+        loadedModels = models;
+        
+        updateModelsGrid(models);
+        updateModelSelect(models);
+        
+        const modelsCountEl = document.getElementById('models-count');
+        if (modelsCountEl) {
+            modelsCountEl.textContent = models.length;
+        }
+    } catch (error) {
+        console.error('Failed to load models:', error);
+        updateStatus('Failed to load models', 'error');
+    }
+}
+
+function updateModelsGrid(models) {
+    // Implementation for models grid update
+}
+
+function updateModelSelect(models) {
+    const select = document.getElementById('selected-model');
+    
+    if (!select) return;
+    
+    if (models.length === 0) {
+        select.innerHTML = '<option value="">No models available</option>';
+        return;
+    }
+
+    select.innerHTML = models.map(model => 
+        `<option value="${model.id}">${model.name} (${model.type})</option>`
+    ).join('');
+}
+
+async function importModel() {
+    // Mock model import
+    updateStatus('Model import functionality would be implemented here', 'info');
+}
+
+// Settings
+function handleTestnetToggle() {
+    const useTestnet = document.getElementById('use-testnet').checked;
+    store.set('useTestnet', useTestnet);
+    updateStatus(`Testnet mode: ${useTestnet ? 'Enabled' : 'Disabled'}`, 'info');
+}
+
+function loadSettings() {
+    const useTestnet = store.get('useTestnet', false);
+    document.getElementById('use-testnet').checked = useTestnet;
+    
+    const ipfsGateway = store.get('ipfsGateway', 'https://ipfs.io/ipfs/');
+    document.getElementById('ipfs-gateway').value = ipfsGateway;
+}
+
+// System status check
+async function checkSystemStatus() {
+    try {
+        // Check GPU availability
+        const gpuStatus = await checkGPUStatus();
+        const gpuStatusEl = document.getElementById('gpu-status');
+        if (gpuStatusEl) {
+            gpuStatusEl.textContent = gpuStatus;
+        }
+
+        // Check memory
+        const memoryInfo = process.memoryUsage();
+        const memoryMB = Math.round(memoryInfo.heapUsed / 1024 / 1024);
+        const memoryStatusEl = document.getElementById('memory-status');
+        if (memoryStatusEl) {
+            memoryStatusEl.textContent = `${memoryMB} MB`;
+        }
+    } catch (error) {
+        console.error('System status check failed:', error);
+    }
+}
+
+async function checkGPUStatus() {
+    try {
+        // This would integrate with TensorFlow.js or similar
+        // For now, return a placeholder
+        return 'Available';
+    } catch (error) {
+        return 'Not Available';
+    }
+}
+
+// Project management (existing functionality)
+function handleNewProject() {
+    if (confirm('Create a new project? Any unsaved changes will be lost.')) {
+        currentProject = null;
+        updateStatus('New project created', 'success');
+    }
+}
+
+function handleBatchGenerate() {
+    switchTab('ai-generate');
+    updateStatus('Batch generation mode', 'info');
+}
+
+function showUserGuide() {
+    alert('User guide: This is the Creator AI NFT Platform. Select a network, connect your wallet, and start minting NFTs!');
+}
+
+function updateRecentProjects(projects) {
+    // Implementation for recent projects update
+}
+
+// Utility functions
+function formatAddress(address) {
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+// Global function for removing attributes (called from HTML)
+window.removeAttributeField = removeAttributeField;
 
 function setupEventListeners() {
     // Navigation
