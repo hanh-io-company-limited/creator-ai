@@ -31,7 +31,8 @@ class MetalaxSolanaClient {
     constructor(options = {}) {
         // Solana network configuration
         this.network = options.network || 'devnet';
-        this.programId = new PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS');
+        const programIdStr = options.programId || process.env.METALAX_PROGRAM_ID || 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS';
+        this.programId = new PublicKey(programIdStr);
         
         // Connection setup
         this.connection = new Connection(
