@@ -34,7 +34,7 @@
     "@solana/web3.js": "^1.87.6",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-phantom": "^0.9.24",
-    "@metaplex-foundation/js": "^0.19.4",
+    "@metaplex-foundation/js": "^0.20.1",
     "ethers": "^6.8.1"
   },
   "devDependencies": {
