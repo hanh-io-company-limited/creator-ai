@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Build outputs
+dist/
+release/
+*.asar
+
+# Frontend build
+desktop-frontend/build/
+desktop-frontend/node_modules/
+frontend-build/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads and temporary files
+uploads/
