@@ -3,108 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator AI</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #4285f4 0%, #2563eb 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        .ai-container {
-            text-align: center;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-
-        .ai-text {
-            font-size: clamp(8rem, 20vw, 24rem);
-            font-weight: 300;
-            color: white;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            letter-spacing: 0.1em;
-            margin: 0;
-            line-height: 1;
-        }
-
-        .subtitle {
-            font-size: clamp(1rem, 3vw, 1.5rem);
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-        }
-
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .ai-text {
-                font-size: clamp(6rem, 15vw, 12rem);
-            }
-            
-            .subtitle {
-                font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-                margin-top: 0.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .ai-text {
-                font-size: clamp(4rem, 12vw, 8rem);
-            }
-            
-            .subtitle {
-                font-size: clamp(0.8rem, 2vw, 1rem);
-            }
-        }
-
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            .ai-container {
-                animation: none;
-            }
-        }
-
-        /* High contrast mode support */
-        @media (prefers-contrast: high) {
-            .ai-text {
-                text-shadow: none;
-                font-weight: 500;
-            }
-            
-            .subtitle {
-                color: white;
-            }
-        }
-    </style>
+    <title>Creator AI - NFT Platform</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <main class="ai-container">
-        <h1 class="ai-text">AI</h1>
-        <p class="subtitle">Creator AI</p>
-    </main>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="nav-brand">
+                <h1>Creator AI</h1>
+                <span class="nav-subtitle">Multi-Chain NFT Platform</span>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-btn active" data-tab="nft-mint">NFT Mint</button>
+                <button class="nav-btn" data-tab="ai-generate">AI Generate</button>
+                <button class="nav-btn" data-tab="library">Library</button>
+                <button class="nav-btn" data-tab="settings">Settings</button>
+            </div>
+            <div class="wallet-section">
+                <select id="network-selector" class="network-select">
+                    <option value="">Select Network</option>
+                    <option value="ethereum">Ethereum</option>
+                    <option value="solana">Solana</option>
+                </select>
+                <button id="connect-wallet" class="wallet-btn">Connect Wallet</button>
+                <div id="wallet-info" class="wallet-info hidden">
+                    <span id="wallet-address"></span>
+                    <button id="disconnect-wallet" class="disconnect-btn">Disconnect</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- NFT Minting Tab -->
+            <div id="nft-mint" class="tab-content active">
+                <div class="tab-header">
+                    <h2>Multi-Chain NFT Minting</h2>
+                    <div class="network-status">
+                        <span id="current-network">No network selected</span>
+                        <span id="gas-fees" class="gas-info"></span>
+                    </div>
+                </div>
+
+                <div class="mint-container">
+                    <div class="mint-form-section">
+                        <h3>NFT Details</h3>
+                        <form id="nft-mint-form" class="mint-form">
+                            <div class="form-group">
+                                <label for="nft-name">NFT Name</label>
+                                <input type="text" id="nft-name" required placeholder="Enter NFT name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="nft-description">Description</label>
+                                <textarea id="nft-description" required placeholder="Describe your NFT"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="nft-image">Image/Media</label>
+                                <div class="file-upload">
+                                    <input type="file" id="nft-image" accept="image/*,video/*" required>
+                                    <div class="upload-preview" id="upload-preview"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nft-attributes">Attributes (Optional)</label>
+                                <div id="attributes-container">
+                                    <div class="attribute-pair">
+                                        <input type="text" placeholder="Trait type" class="trait-type">
+                                        <input type="text" placeholder="Value" class="trait-value">
+                                        <button type="button" class="remove-attr">×</button>
+                                    </div>
+                                </div>
+                                <button type="button" id="add-attribute" class="add-btn">+ Add Attribute</button>
+                            </div>
+
+                            <!-- Ethereum specific fields -->
+                            <div id="ethereum-fields" class="network-fields hidden">
+                                <div class="form-group">
+                                    <label for="contract-address">Contract Address</label>
+                                    <input type="text" id="contract-address" placeholder="0x...">
+                                    <small>Leave empty to use default contract</small>
+                                </div>
+                            </div>
+
+                            <!-- Solana specific fields -->
+                            <div id="solana-fields" class="network-fields hidden">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="use-collection"> 
+                                        Add to Collection
+                                    </label>
+                                </div>
+                                <div class="form-group" id="collection-field" style="display: none;">
+                                    <label for="collection-address">Collection Address</label>
+                                    <input type="text" id="collection-address" placeholder="Collection mint address">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" id="estimate-fees" class="secondary-btn">Estimate Fees</button>
+                                <button type="submit" id="mint-nft" class="primary-btn" disabled>Mint NFT</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="mint-preview-section">
+                        <h3>Preview</h3>
+                        <div class="nft-preview" id="nft-preview">
+                            <div class="preview-placeholder">
+                                <p>Upload an image to see preview</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mint-status" id="mint-status">
+                            <h4>Minting Status</h4>
+                            <div class="status-content">
+                                <p>Ready to mint</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Generation Tab -->
+            <div id="ai-generate" class="tab-content">
+                <div class="tab-header">
+                    <h2>AI Content Generation</h2>
+                    <p>Generate AI content for your NFTs</p>
+                </div>
+
+                <div class="generation-container">
+                    <form id="generation-form" class="generation-form">
+                        <div class="form-group">
+                            <label for="selected-model">AI Model</label>
+                            <select id="selected-model">
+                                <option value="">Select a model</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prompt">Prompt</label>
+                            <textarea id="prompt" placeholder="Describe what you want to generate..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="duration">Duration (seconds)</label>
+                                <input type="number" id="duration" min="1" max="60" value="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="resolution">Resolution</label>
+                                <select id="resolution">
+                                    <option value="512x512">512x512</option>
+                                    <option value="1024x1024">1024x1024</option>
+                                    <option value="1920x1080">1920x1080</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="primary-btn">Generate Content</button>
+                    </form>
+
+                    <div class="generation-result">
+                        <div class="result-placeholder">
+                            <p>Generated content will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Tab -->
+            <div id="library" class="tab-content">
+                <div class="tab-header">
+                    <h2>NFT Library</h2>
+                    <div class="library-stats">
+                        <span>Models: <span id="models-count">0</span></span>
+                        <span>Memory: <span id="memory-status">--</span></span>
+                        <span>GPU: <span id="gpu-status">--</span></span>
+                    </div>
+                </div>
+
+                <div class="library-actions">
+                    <button id="import-model" class="secondary-btn">Import Model</button>
+                    <button id="refresh-library" class="secondary-btn">Refresh</button>
+                </div>
+
+                <div class="models-grid" id="models-grid">
+                    <div class="empty-state">
+                        <p>No models available. Import a model to get started.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <div class="tab-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h3>Network Settings</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="use-testnet"> 
+                                Use Testnet Networks
+                            </label>
+                            <small>Enable for testing with testnet tokens</small>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>IPFS Settings</h3>
+                        <div class="form-group">
+                            <label for="ipfs-gateway">IPFS Gateway</label>
+                            <input type="url" id="ipfs-gateway" value="https://ipfs.io/ipfs/">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Application</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="auto-save"> 
+                                Auto-save drafts
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span id="status">Ready</span>
+            <div class="status-indicators">
+                <span class="indicator" id="connection-status">●</span>
+                <span id="block-height">--</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for wallet selection -->
+    <div id="wallet-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Connect Wallet</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wallet-options">
+                    <button class="wallet-option" data-wallet="metamask">
+                        <img src="assets/metamask-icon.png" alt="MetaMask" onerror="this.style.display='none'">
+                        <span>MetaMask</span>
+                        <small>For Ethereum</small>
+                    </button>
+                    <button class="wallet-option" data-wallet="phantom">
+                        <img src="assets/phantom-icon.png" alt="Phantom" onerror="this.style.display='none'">
+                        <span>Phantom</span>
+                        <small>For Solana</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="blockchain.js"></script>
+    <script src="renderer.js"></script>
 </body>
 </html>

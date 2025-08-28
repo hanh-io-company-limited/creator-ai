@@ -1,22 +1,38 @@
-# Creator AI - Offline AI Video Content Creation
+# Creator AI - Multi-Chain NFT Platform with AI Content Generation
 
 ![Creator AI Logo](assets/logo.png)
 
-Creator AI is a standalone desktop application that empowers content creators to generate AI-powered videos offline, ensuring complete control over their creative intellectual property. The application allows users to train custom models and generate high-quality video content without relying on external platforms or cloud services.
+Creator AI is a revolutionary desktop application that combines AI-powered content creation with multi-chain NFT minting capabilities. Generate unique digital art and media using AI, then mint it as NFTs on Ethereum, Solana, or other supported blockchain networks - all from a single, user-friendly interface.
 
 ## 🌟 Features
 
-- **Offline AI Video Generation**: Create videos entirely offline without internet dependency
-- **Custom Model Training**: Train your own AI models with your proprietary data
-- **Multiple Generation Types**:
-  - Text-to-Video: Generate videos from text prompts
-  - Image-to-Video: Transform static images into dynamic videos
-  - Style Transfer: Apply artistic styles to video content
-- **Intellectual Property Protection**: Keep your data and models completely private
-- **Professional Interface**: Intuitive desktop application built with Electron
-- **Batch Processing**: Generate multiple videos efficiently
+### Multi-Chain NFT Support
+- **Ethereum Integration**: Full ERC-721 NFT minting with MetaMask wallet support
+- **Solana Integration**: Native Solana NFT minting with Phantom wallet integration
+- **Network Switching**: Seamless switching between mainnet and testnet environments
+- **Gas Fee Estimation**: Real-time transaction cost calculation
+- **Smart Contract Interaction**: Automated contract deployment and interaction
+
+### AI Content Generation
+- **Offline AI Processing**: Generate unique content without internet dependency
+- **Multiple AI Models**: Support for various AI models and algorithms
+- **Custom Training**: Train your own AI models with your data
+- **Text-to-Media**: Generate images and videos from text prompts
+- **Style Transfer**: Apply artistic styles to existing content
+
+### Advanced NFT Features
+- **Metadata Management**: Comprehensive NFT metadata creation and editing
+- **Attribute System**: Flexible trait and property assignment
+- **IPFS Integration**: Decentralized storage for NFT metadata and assets
+- **Collection Support**: Create and manage NFT collections across chains
+- **Preview System**: Real-time NFT preview before minting
+
+### Professional Tools
+- **Wallet Management**: Secure connection to multiple wallet types
+- **Batch Operations**: Generate and mint multiple NFTs efficiently
 - **Project Management**: Save and organize your creative projects
 - **Cross-Platform**: Available for Windows, macOS, and Linux
+- **Intellectual Property Protection**: Keep your data and models completely private
 
 ## 📋 System Requirements
 
