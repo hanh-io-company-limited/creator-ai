@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator AI - Metalax NFT Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1 class="app-title">Creator AI - Metalax NFT Platform</h1>
+                <div class="connection-status">
+                    <span id="wallet-status" class="status-indicator">Wallet: Disconnected</span>
+                    <span id="network-status" class="status-indicator">Network: Devnet</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="connect-wallet-btn" class="primary-btn">Connect Wallet</button>
+                <div id="wallet-balance" class="balance-display" style="display: none;">
+                    <span class="balance-label">Balance:</span>
+                    <span id="balance-amount">0 SOL</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
+            <button class="nav-btn" data-tab="mint-nft">Mint NFT</button>
+            <button class="nav-btn" data-tab="my-nfts">My NFTs</button>
+            <button class="nav-btn" data-tab="image-processor">Image Processor</button>
+            <button class="nav-btn" data-tab="platform-stats">Platform Stats</button>
+            <button class="nav-btn" data-tab="training">AI Training</button>
+            <button class="nav-btn" data-tab="generate">AI Generation</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="welcome-section">
+                    <h2>Welcome to Metalax NFT Platform</h2>
+                    <p>Create, mint, and manage NFTs with on-chain image storage on Solana</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h3>🖼️ On-Chain Images</h3>
+                            <p>Store your images directly on the Solana blockchain for permanent accessibility</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>⚡ Low Minting Fee</h3>
+                            <p>Only 0.006 SOL per mint - cost-effective NFT creation</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>🔧 Image Processing</h3>
+                            <p>Automatic image optimization for blockchain storage efficiency</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>🎨 AI Integration</h3>
+                            <p>Combined with AI-powered content creation tools</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="system-status">
+                    <h3>System Status</h3>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span class="status-label">GPU:</span>
+                            <span id="gpu-status">Checking...</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Memory:</span>
+                            <span id="memory-status">Checking...</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Backend:</span>
+                            <span id="backend-status">Offline</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Solana Network:</span>
+                            <span id="solana-status">Checking...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mint NFT Tab -->
+            <div id="mint-nft" class="tab-content">
+                <div class="mint-section">
+                    <h2>Mint New NFT</h2>
+                    <p>Upload and optimize your image, then mint it as an NFT with on-chain storage</p>
+
+                    <form id="mint-nft-form" class="mint-form">
+                        <div class="form-section">
+                            <h3>Image Upload</h3>
+                            <div class="file-upload-area" id="image-upload-area">
+                                <input type="file" id="image-input" accept="image/*" hidden>
+                                <div class="upload-content">
+                                    <div class="upload-icon">📁</div>
+                                    <p>Click to select an image or drag and drop</p>
+                                    <p class="upload-hint">Supported: JPG, PNG, WebP, GIF (max 50MB)</p>
+                                </div>
+                            </div>
+                            <div id="image-preview" class="image-preview" style="display: none;">
+                                <img id="preview-img" alt="Preview">
+                                <div class="image-info">
+                                    <p id="image-details">Image details will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Processing Options</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="target-size">Target Size (bytes):</label>
+                                    <input type="number" id="target-size" value="10240" max="10240" min="1024">
+                                    <small>Max 10KB for on-chain storage</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="image-quality">Quality (%):</label>
+                                    <input type="range" id="image-quality" min="20" max="100" value="80">
+                                    <span id="quality-value">80%</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="image-format">Format:</label>
+                                    <select id="image-format">
+                                        <option value="jpeg">JPEG</option>
+                                        <option value="png">PNG</option>
+                                        <option value="webp">WebP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" id="process-image-btn" class="secondary-btn" disabled>
+                                Process Image
+                            </button>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>NFT Metadata</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="nft-name">NFT Name *:</label>
+                                    <input type="text" id="nft-name" maxlength="32" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nft-symbol">Symbol *:</label>
+                                    <input type="text" id="nft-symbol" maxlength="10" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nft-uri">URI (optional):</label>
+                                    <input type="url" id="nft-uri" maxlength="200">
+                                </div>
+                                <div class="form-group">
+                                    <label for="royalty-percentage">Royalty %:</label>
+                                    <input type="number" id="royalty-percentage" min="0" max="100" value="5" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Minting Summary</h3>
+                            <div class="mint-summary">
+                                <div class="summary-item">
+                                    <span>Minting Fee:</span>
+                                    <span class="fee-amount">0.006 SOL</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Transaction Fee:</span>
+                                    <span>~0.001 SOL</span>
+                                </div>
+                                <div class="summary-item total">
+                                    <span>Total Cost:</span>
+                                    <span>~0.007 SOL</span>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" id="mint-nft-btn" class="primary-btn large" disabled>
+                                Mint NFT
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Progress Section -->
+                    <div id="mint-progress" class="progress-section" style="display: none;">
+                        <h3>Minting in Progress...</h3>
+                        <div class="progress-bar">
+                            <div id="mint-progress-fill" class="progress-fill"></div>
+                        </div>
+                        <p id="mint-status">Preparing transaction...</p>
+                    </div>
+
+                    <!-- Result Section -->
+                    <div id="mint-result" class="result-section" style="display: none;">
+                        <div id="mint-success" class="success-message" style="display: none;">
+                            <h3>✅ NFT Minted Successfully!</h3>
+                            <div class="result-details">
+                                <p><strong>Transaction:</strong> <a id="tx-link" target="_blank"></a></p>
+                                <p><strong>Mint Address:</strong> <span id="mint-address"></span></p>
+                                <p><strong>Token Account:</strong> <span id="token-account"></span></p>
+                            </div>
+                        </div>
+                        <div id="mint-error" class="error-message" style="display: none;">
+                            <h3>❌ Minting Failed</h3>
+                            <p id="error-details"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My NFTs Tab -->
+            <div id="my-nfts" class="tab-content">
+                <div class="nfts-section">
+                    <h2>My NFTs</h2>
+                    <div id="nfts-grid" class="nfts-grid">
+                        <div class="empty-state">
+                            <p>No NFTs found. Connect your wallet and mint some NFTs!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Processor Tab -->
+            <div id="image-processor" class="tab-content">
+                <div class="processor-section">
+                    <h2>Image Processor</h2>
+                    <p>Test and optimize images for on-chain storage</p>
+                    
+                    <div class="processor-status">
+                        <h3>Backend Status</h3>
+                        <div class="status-display">
+                            <span id="processor-status">Checking...</span>
+                            <button id="start-backend-btn" class="secondary-btn">Start Backend</button>
+                        </div>
+                    </div>
+
+                    <div class="processing-tools">
+                        <h3>Processing Tools</h3>
+                        <form id="batch-process-form" class="processor-form">
+                            <div class="form-group">
+                                <label for="batch-images">Select Multiple Images:</label>
+                                <input type="file" id="batch-images" multiple accept="image/*">
+                            </div>
+                            <button type="submit" class="primary-btn">Process Batch</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Platform Stats Tab -->
+            <div id="platform-stats" class="tab-content">
+                <div class="stats-section">
+                    <h2>Platform Statistics</h2>
+                    <div id="platform-stats-grid" class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total NFTs Minted</h3>
+                            <span id="total-minted" class="stat-value">-</span>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Fees Collected</h3>
+                            <span id="total-fees" class="stat-value">-</span>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Platform Owner</h3>
+                            <span id="platform-owner" class="stat-value">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Training Tab (existing functionality) -->
+            <div id="training" class="tab-content">
+                <div class="training-section">
+                    <h2>AI Model Training</h2>
+                    <p>Train custom AI models for content generation</p>
+                    
+                    <form id="training-form" class="training-form">
+                        <div class="form-group">
+                            <label for="model-type">Model Type:</label>
+                            <select id="model-type">
+                                <option value="text-to-video">Text to Video</option>
+                                <option value="image-to-video">Image to Video</option>
+                                <option value="style-transfer">Style Transfer</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="model-name">Model Name:</label>
+                            <input type="text" id="model-name" placeholder="My Custom Model">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="training-data">Training Data:</label>
+                            <button type="button" id="select-training-data" class="secondary-btn">Select Files</button>
+                            <div id="training-data-info" class="file-info"></div>
+                        </div>
+                        
+                        <button type="submit" class="primary-btn">Start Training</button>
+                    </form>
+                    
+                    <div id="training-progress" class="progress-section" style="display: none;">
+                        <h3>Training in Progress...</h3>
+                        <div class="progress-bar">
+                            <div id="training-progress-fill" class="progress-fill"></div>
+                        </div>
+                        <p id="training-status">Initializing...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Generation Tab (existing functionality) -->
+            <div id="generate" class="tab-content">
+                <div class="generation-section">
+                    <h2>AI Video Generation</h2>
+                    
+                    <form id="generation-form" class="generation-form">
+                        <div class="form-group">
+                            <label for="selected-model">Select Model:</label>
+                            <select id="selected-model">
+                                <option value="">Choose a model...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="prompt">Prompt:</label>
+                            <textarea id="prompt" placeholder="Describe the video you want to generate..."></textarea>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="duration">Duration (seconds):</label>
+                                <input type="number" id="duration" min="1" max="30" value="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="resolution">Resolution:</label>
+                                <select id="resolution">
+                                    <option value="512x512">512x512</option>
+                                    <option value="768x768">768x768</option>
+                                    <option value="1024x1024">1024x1024</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="primary-btn">Generate Video</button>
+                    </form>
+                    
+                    <div id="generation-progress" class="progress-section" style="display: none;">
+                        <h3>Generating Video...</h3>
+                        <div class="progress-bar">
+                            <div id="gen-progress-fill" class="progress-fill"></div>
+                        </div>
+                        <p id="generation-status">Initializing model...</p>
+                    </div>
+                    
+                    <div id="video-preview" class="video-preview" style="display: none;">
+                        <h3>Generated Video</h3>
+                        <video id="preview-video" controls></video>
+                        <div class="video-actions">
+                            <button id="save-video-btn" class="primary-btn">Save Video</button>
+                            <button id="regenerate-btn" class="secondary-btn">Regenerate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-left">
+                <span id="status">Ready</span>
+            </div>
+            <div class="status-right">
+                <span id="app-version">v1.0.0</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="solana/metalax-client.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>

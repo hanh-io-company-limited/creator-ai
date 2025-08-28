@@ -13,7 +13,10 @@
     "build:win": "electron-builder --win",
     "build:all": "electron-builder --win --linux --mac",
     "dist": "npm run build:win",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "backend": "node src/backend/image-processor.js",
+    "dev:backend": "nodemon src/backend/image-processor.js",
+    "test:solana": "node tests/solana-integration.test.js"
   },
   "keywords": [
     "ai",
@@ -24,7 +27,16 @@
     "offline"
   ],
   "dependencies": {
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "@solana/web3.js": "^1.87.6",
+    "@solana/spl-token": "^0.3.9",
+    "@coral-xyz/anchor": "^0.29.0",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.0",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0"
   },
   "devDependencies": {
     "electron": "^27.1.0",

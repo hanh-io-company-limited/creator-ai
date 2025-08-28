@@ -44,7 +44,7 @@ function createWindow() {
   });
 
   // Load the app
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  mainWindow.loadFile(path.join(__dirname, 'app-interface.html'));
 
   // Show window when ready to prevent visual flash
   mainWindow.once('ready-to-show', () => {
@@ -231,4 +231,44 @@ ipcMain.handle('load-file', async (event, filters) => {
     }
   }
   return { success: false, error: 'Load cancelled' };
+});
+
+// IPC handler for starting backend server
+ipcMain.handle('start-backend-server', async (event) => {
+  try {
+    const { spawn } = require('child_process');
+    const serverPath = path.join(__dirname, 'backend', 'image-processor.js');
+    
+    // Check if server file exists
+    if (!fs.existsSync(serverPath)) {
+      return { success: false, error: 'Backend server file not found' };
+    }
+    
+    // Start the backend server
+    const serverProcess = spawn('node', [serverPath], {
+      detached: false,
+      stdio: 'pipe'
+    });
+    
+    serverProcess.stdout.on('data', (data) => {
+      console.log(`Backend stdout: ${data}`);
+    });
+    
+    serverProcess.stderr.on('data', (data) => {
+      console.error(`Backend stderr: ${data}`);
+    });
+    
+    serverProcess.on('close', (code) => {
+      console.log(`Backend process exited with code ${code}`);
+    });
+    
+    // Give it a moment to start
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return { success: true, message: 'Backend server started' };
+    
+  } catch (error) {
+    console.error('Failed to start backend server:', error);
+    return { success: false, error: error.message };
+  }
 });

@@ -13,7 +13,7 @@
  * Hanh IO Company Limited.
  */
 
-// Creator AI Renderer Process
+// Creator AI Renderer Process - Extended for Metalax NFT Platform
 const { ipcRenderer } = require('electron');
 const Store = require('electron-store');
 
@@ -26,6 +26,12 @@ let loadedModels = [];
 let isTraining = false;
 let isGenerating = false;
 
+// Metalax NFT Platform state
+let metalaxClient = null;
+let connectedWallet = null;
+let backendStatus = false;
+let processedImageData = null;
+
 // DOM elements
 const navButtons = document.querySelectorAll('.nav-btn');
 const tabContents = document.querySelectorAll('.tab-content');
@@ -35,18 +41,25 @@ const statusElement = document.getElementById('status');
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
     setupEventListeners();
+    setupMetalaxEventListeners();
     loadSettings();
     checkSystemStatus();
     loadModels();
+    initializeMetalaxClient();
+    checkBackendStatus();
 });
 
 function initializeApp() {
-    console.log('Creator AI initialized');
+    console.log('Creator AI - Metalax NFT Platform initialized');
     updateStatus('Ready');
     
     // Load recent projects
     const recentProjects = store.get('recentProjects', []);
     updateRecentProjects(recentProjects);
+    
+    // Initialize Metalax components
+    updateWalletStatus('Disconnected');
+    updateNetworkStatus('Devnet');
 }
 
 function setupEventListeners() {
@@ -473,6 +486,511 @@ function updateRecentProjects(projects) {
     list.innerHTML = projects.map(project => 
         `<li><a href="#" onclick="handleOpenProject(null, '${project.path}')">${project.name}</a></li>`
     ).join('');
+}
+
+// ============================================================================
+// METALAX NFT PLATFORM FUNCTIONALITY
+// ============================================================================
+
+/**
+ * Initialize Metalax Solana client
+ */
+async function initializeMetalaxClient() {
+    try {
+        if (typeof MetalaxSolanaClient !== 'undefined') {
+            metalaxClient = new MetalaxSolanaClient({
+                network: 'devnet' // Switch to mainnet for production
+            });
+            console.log('Metalax client initialized');
+            updateStatus('Metalax client ready');
+        } else {
+            console.error('MetalaxSolanaClient not available');
+            updateStatus('Failed to initialize Metalax client', 'error');
+        }
+    } catch (error) {
+        console.error('Failed to initialize Metalax client:', error);
+        updateStatus('Metalax client error', 'error');
+    }
+}
+
+/**
+ * Setup event listeners for Metalax functionality
+ */
+function setupMetalaxEventListeners() {
+    // Wallet connection
+    const connectWalletBtn = document.getElementById('connect-wallet-btn');
+    if (connectWalletBtn) {
+        connectWalletBtn.addEventListener('click', handleWalletConnection);
+    }
+
+    // Image upload and processing
+    const imageInput = document.getElementById('image-input');
+    const imageUploadArea = document.getElementById('image-upload-area');
+    const processImageBtn = document.getElementById('process-image-btn');
+    const qualitySlider = document.getElementById('image-quality');
+    const qualityValue = document.getElementById('quality-value');
+    
+    if (imageInput) {
+        imageInput.addEventListener('change', handleImageSelection);
+    }
+    
+    if (imageUploadArea) {
+        imageUploadArea.addEventListener('click', () => imageInput?.click());
+        imageUploadArea.addEventListener('dragover', handleDragOver);
+        imageUploadArea.addEventListener('drop', handleImageDrop);
+    }
+    
+    if (processImageBtn) {
+        processImageBtn.addEventListener('click', handleImageProcessing);
+    }
+    
+    if (qualitySlider && qualityValue) {
+        qualitySlider.addEventListener('input', (e) => {
+            qualityValue.textContent = e.target.value + '%';
+        });
+    }
+
+    // NFT minting
+    const mintForm = document.getElementById('mint-nft-form');
+    if (mintForm) {
+        mintForm.addEventListener('submit', handleNFTMinting);
+    }
+
+    // Backend management
+    const startBackendBtn = document.getElementById('start-backend-btn');
+    if (startBackendBtn) {
+        startBackendBtn.addEventListener('click', startBackendServer);
+    }
+
+    // Tab switching (existing functionality updated)
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tabId = e.target.dataset.tab;
+            switchTab(tabId);
+            
+            // Load tab-specific data
+            if (tabId === 'platform-stats') {
+                loadPlatformStats();
+            } else if (tabId === 'my-nfts') {
+                loadMyNFTs();
+            }
+        });
+    });
+}
+
+/**
+ * Handle wallet connection/disconnection
+ */
+async function handleWalletConnection() {
+    try {
+        if (!metalaxClient) {
+            updateStatus('Metalax client not initialized', 'error');
+            return;
+        }
+
+        const connectBtn = document.getElementById('connect-wallet-btn');
+        
+        if (connectedWallet) {
+            // Disconnect wallet
+            const result = await metalaxClient.disconnectWallet();
+            if (result.success) {
+                connectedWallet = null;
+                updateWalletStatus('Disconnected');
+                connectBtn.textContent = 'Connect Wallet';
+                document.getElementById('wallet-balance').style.display = 'none';
+                updateStatus('Wallet disconnected');
+            }
+        } else {
+            // Connect wallet
+            connectBtn.textContent = 'Connecting...';
+            connectBtn.disabled = true;
+            
+            const result = await metalaxClient.connectWallet();
+            
+            if (result.success) {
+                connectedWallet = result.publicKey;
+                updateWalletStatus(`Connected: ${result.publicKey.slice(0, 8)}...`);
+                connectBtn.textContent = 'Disconnect';
+                
+                // Show balance
+                const balanceDiv = document.getElementById('wallet-balance');
+                const balanceAmount = document.getElementById('balance-amount');
+                balanceAmount.textContent = `${result.balance.toFixed(4)} SOL`;
+                balanceDiv.style.display = 'block';
+                
+                updateStatus('Wallet connected successfully');
+                
+                // Enable minting button if image is processed
+                updateMintButtonState();
+            } else {
+                updateStatus(`Wallet connection failed: ${result.error}`, 'error');
+                connectBtn.textContent = 'Connect Wallet';
+            }
+            
+            connectBtn.disabled = false;
+        }
+    } catch (error) {
+        console.error('Wallet connection error:', error);
+        updateStatus('Wallet connection error', 'error');
+        document.getElementById('connect-wallet-btn').disabled = false;
+    }
+}
+
+/**
+ * Handle image selection
+ */
+function handleImageSelection(event) {
+    const file = event.target.files[0];
+    if (file) {
+        displayImagePreview(file);
+        document.getElementById('process-image-btn').disabled = false;
+    }
+}
+
+/**
+ * Handle drag and drop
+ */
+function handleDragOver(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add('drag-over');
+}
+
+function handleImageDrop(event) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('drag-over');
+    
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/')) {
+            document.getElementById('image-input').files = files;
+            displayImagePreview(file);
+            document.getElementById('process-image-btn').disabled = false;
+        }
+    }
+}
+
+/**
+ * Display image preview
+ */
+function displayImagePreview(file) {
+    const preview = document.getElementById('image-preview');
+    const img = document.getElementById('preview-img');
+    const details = document.getElementById('image-details');
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        img.src = e.target.result;
+        details.textContent = `${file.name} - ${(file.size / 1024).toFixed(1)} KB - ${file.type}`;
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+/**
+ * Handle image processing
+ */
+async function handleImageProcessing() {
+    try {
+        const fileInput = document.getElementById('image-input');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            updateStatus('No image selected', 'error');
+            return;
+        }
+
+        const targetSize = parseInt(document.getElementById('target-size').value);
+        const quality = parseInt(document.getElementById('image-quality').value);
+        const format = document.getElementById('image-format').value;
+
+        updateStatus('Processing image...');
+        
+        // Create FormData for image upload
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('targetSize', targetSize);
+        formData.append('quality', quality);
+        formData.append('format', format);
+
+        // Send to backend for processing
+        const response = await fetch('http://localhost:3001/api/process-image', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Backend error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.success) {
+            processedImageData = result.data.processedImage;
+            
+            // Update UI with processed image info
+            const details = document.getElementById('image-details');
+            details.innerHTML = `
+                <strong>Original:</strong> ${(file.size / 1024).toFixed(1)} KB<br>
+                <strong>Processed:</strong> ${(result.data.size / 1024).toFixed(1)} KB<br>
+                <strong>Compression:</strong> ${result.data.metadata.compressionRatio}<br>
+                <strong>Format:</strong> ${result.data.format.toUpperCase()}<br>
+                <strong>Hash:</strong> ${result.data.hash.slice(0, 16)}...
+            `;
+            
+            updateStatus('Image processed successfully');
+            updateMintButtonState();
+        } else {
+            throw new Error('Image processing failed');
+        }
+
+    } catch (error) {
+        console.error('Image processing error:', error);
+        updateStatus(`Image processing failed: ${error.message}`, 'error');
+    }
+}
+
+/**
+ * Handle NFT minting
+ */
+async function handleNFTMinting(event) {
+    event.preventDefault();
+    
+    try {
+        if (!connectedWallet) {
+            updateStatus('Please connect your wallet first', 'error');
+            return;
+        }
+
+        if (!processedImageData) {
+            updateStatus('Please process an image first', 'error');
+            return;
+        }
+
+        const name = document.getElementById('nft-name').value.trim();
+        const symbol = document.getElementById('nft-symbol').value.trim();
+        const uri = document.getElementById('nft-uri').value.trim();
+        const royalty = parseFloat(document.getElementById('royalty-percentage').value);
+
+        if (!name || !symbol) {
+            updateStatus('Please fill in NFT name and symbol', 'error');
+            return;
+        }
+
+        // Show progress
+        document.getElementById('mint-progress').style.display = 'block';
+        document.getElementById('mint-result').style.display = 'none';
+        
+        updateMintProgress(0, 'Preparing transaction...');
+        
+        // Mint NFT
+        const nftData = {
+            name,
+            symbol,
+            uri,
+            imageData: processedImageData,
+            royaltyBasisPoints: Math.floor(royalty * 100)
+        };
+
+        updateMintProgress(25, 'Creating mint transaction...');
+        
+        const result = await metalaxClient.mintNFT(nftData);
+        
+        if (result.success) {
+            updateMintProgress(100, 'NFT minted successfully!');
+            
+            // Show success result
+            setTimeout(() => {
+                document.getElementById('mint-progress').style.display = 'none';
+                document.getElementById('mint-result').style.display = 'block';
+                document.getElementById('mint-success').style.display = 'block';
+                document.getElementById('mint-error').style.display = 'none';
+                
+                // Update result details
+                const txLink = document.getElementById('tx-link');
+                const mintAddress = document.getElementById('mint-address');
+                const tokenAccount = document.getElementById('token-account');
+                
+                txLink.href = `https://explorer.solana.com/tx/${result.signature}?cluster=devnet`;
+                txLink.textContent = result.signature.slice(0, 16) + '...';
+                mintAddress.textContent = result.mintAddress;
+                tokenAccount.textContent = result.tokenAccount;
+                
+                updateStatus('NFT minted successfully!');
+                
+                // Reset form
+                resetMintForm();
+            }, 1000);
+            
+        } else {
+            throw new Error(result.error);
+        }
+
+    } catch (error) {
+        console.error('NFT minting error:', error);
+        
+        document.getElementById('mint-progress').style.display = 'none';
+        document.getElementById('mint-result').style.display = 'block';
+        document.getElementById('mint-success').style.display = 'none';
+        document.getElementById('mint-error').style.display = 'block';
+        document.getElementById('error-details').textContent = error.message;
+        
+        updateStatus(`Minting failed: ${error.message}`, 'error');
+    }
+}
+
+/**
+ * Update mint progress
+ */
+function updateMintProgress(percentage, status) {
+    const progressFill = document.getElementById('mint-progress-fill');
+    const statusText = document.getElementById('mint-status');
+    
+    if (progressFill) {
+        progressFill.style.width = `${percentage}%`;
+    }
+    
+    if (statusText) {
+        statusText.textContent = status;
+    }
+}
+
+/**
+ * Reset mint form
+ */
+function resetMintForm() {
+    document.getElementById('mint-nft-form').reset();
+    document.getElementById('image-preview').style.display = 'none';
+    document.getElementById('process-image-btn').disabled = true;
+    processedImageData = null;
+    updateMintButtonState();
+}
+
+/**
+ * Update mint button state
+ */
+function updateMintButtonState() {
+    const mintBtn = document.getElementById('mint-nft-btn');
+    if (mintBtn) {
+        mintBtn.disabled = !(connectedWallet && processedImageData);
+    }
+}
+
+/**
+ * Load platform statistics
+ */
+async function loadPlatformStats() {
+    try {
+        if (!metalaxClient) return;
+        
+        const result = await metalaxClient.getPlatformStats();
+        
+        if (result.success) {
+            const data = result.data;
+            document.getElementById('total-minted').textContent = data.totalMinted;
+            document.getElementById('total-fees').textContent = `${data.totalFeesCollectedSOL.toFixed(4)} SOL`;
+            document.getElementById('platform-owner').textContent = `${data.owner.slice(0, 8)}...${data.owner.slice(-8)}`;
+        }
+    } catch (error) {
+        console.error('Failed to load platform stats:', error);
+    }
+}
+
+/**
+ * Load user's NFTs
+ */
+async function loadMyNFTs() {
+    try {
+        if (!connectedWallet) {
+            document.getElementById('nfts-grid').innerHTML = 
+                '<div class="empty-state"><p>Please connect your wallet to view your NFTs</p></div>';
+            return;
+        }
+
+        // TODO: Implement NFT fetching logic
+        document.getElementById('nfts-grid').innerHTML = 
+            '<div class="empty-state"><p>NFT loading functionality will be implemented</p></div>';
+        
+    } catch (error) {
+        console.error('Failed to load NFTs:', error);
+    }
+}
+
+/**
+ * Check backend server status
+ */
+async function checkBackendStatus() {
+    try {
+        const response = await fetch('http://localhost:3001/health');
+        if (response.ok) {
+            backendStatus = true;
+            updateBackendStatus('Online');
+        } else {
+            throw new Error('Backend not responding');
+        }
+    } catch (error) {
+        backendStatus = false;
+        updateBackendStatus('Offline');
+    }
+}
+
+/**
+ * Start backend server
+ */
+async function startBackendServer() {
+    try {
+        updateStatus('Starting backend server...');
+        
+        // Use IPC to start backend server
+        const result = await ipcRenderer.invoke('start-backend-server');
+        
+        if (result.success) {
+            updateStatus('Backend server started');
+            setTimeout(checkBackendStatus, 2000);
+        } else {
+            updateStatus('Failed to start backend server', 'error');
+        }
+        
+    } catch (error) {
+        console.error('Failed to start backend:', error);
+        updateStatus('Backend start error', 'error');
+    }
+}
+
+/**
+ * Update wallet status display
+ */
+function updateWalletStatus(status) {
+    const walletStatus = document.getElementById('wallet-status');
+    if (walletStatus) {
+        walletStatus.textContent = `Wallet: ${status}`;
+    }
+}
+
+/**
+ * Update network status display
+ */
+function updateNetworkStatus(network) {
+    const networkStatus = document.getElementById('network-status');
+    if (networkStatus) {
+        networkStatus.textContent = `Network: ${network}`;
+    }
+}
+
+/**
+ * Update backend status display
+ */
+function updateBackendStatus(status) {
+    const backendStatusEl = document.getElementById('backend-status');
+    if (backendStatusEl) {
+        backendStatusEl.textContent = status;
+        backendStatusEl.className = `status-indicator ${status.toLowerCase() === 'online' ? 'online' : 'offline'}`;
+    }
+    
+    const processorStatus = document.getElementById('processor-status');
+    if (processorStatus) {
+        processorStatus.textContent = `Backend Server: ${status}`;
+    }
 }
 
 // Make functions globally available

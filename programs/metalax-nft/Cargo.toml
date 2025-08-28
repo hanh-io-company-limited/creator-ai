@@ -1,0 +1,25 @@
+[package]
+name = "metalax-nft"
+version = "0.1.0"
+description = "Metalax NFT Platform - On-chain image storage and minting with fees"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "metalax_nft"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.29.0"
+anchor-spl = "0.29.0"
+spl-token = "4.0.0"
+spl-associated-token-account = "2.0.0"
+mpl-token-metadata = "4.1.2"
+solana-program = "1.17.0"
+borsh = "0.10.0"
