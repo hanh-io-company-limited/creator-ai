@@ -8,12 +8,15 @@ Creator AI is a standalone desktop application that empowers content creators to
 
 - **Offline AI Video Generation**: Create videos entirely offline without internet dependency
 - **Custom Model Training**: Train your own AI models with your proprietary data
+- **NFT Platform**: Complete blockchain-based NFT minting system for AI-generated content
 - **Multiple Generation Types**:
   - Text-to-Video: Generate videos from text prompts
   - Image-to-Video: Transform static images into dynamic videos
   - Style Transfer: Apply artistic styles to video content
+  - **NFT Minting**: Convert AI creations into blockchain NFTs
 - **Intellectual Property Protection**: Keep your data and models completely private
 - **Professional Interface**: Intuitive desktop application built with Electron
+- **Web3 Integration**: MetaMask wallet connection and blockchain interaction
 - **Batch Processing**: Generate multiple videos efficiently
 - **Project Management**: Save and organize your creative projects
 - **Cross-Platform**: Available for Windows, macOS, and Linux
@@ -80,7 +83,14 @@ Creator AI is a standalone desktop application that empowers content creators to
 - Configure duration and resolution settings
 - Click **Generate Video** and wait for processing
 
-### 4. Manage Your Models
+### 4. Mint Your AI Creations as NFTs
+- Navigate to the **NFT Platform** tab (or run `npm run nft:dev` for standalone)
+- Connect your MetaMask wallet
+- Upload metadata for your AI-generated content
+- Mint single NFTs or batch mint multiple creations
+- View your NFT collection and manage blockchain assets
+
+### 5. Manage Your Models
 - Use the **Model Library** tab to view all your models
 - Import pre-trained models or export your custom models
 - Delete unused models to free up space
@@ -101,6 +111,13 @@ npm run build:win
 
 # Build for all platforms
 npm run build:all
+
+# NFT Platform Development
+npm run hardhat:compile      # Compile smart contracts
+npm run hardhat:test         # Run contract tests
+npm run hardhat:node         # Start local blockchain
+npm run deploy:local         # Deploy contracts locally
+npm run nft:dev             # Start NFT frontend
 ```
 
 ### Project Structure
@@ -113,6 +130,11 @@ creator-ai/
 │   ├── renderer.js       # UI logic and interactions
 │   ├── ai-engine.js      # AI model operations
 │   └── styles.css        # Application styling
+├── contracts/            # Smart contracts (NFT platform)
+│   └── CreatorAINFT.sol  # ERC-721 NFT contract
+├── scripts/              # Blockchain deployment scripts
+├── tests/                # Smart contract tests
+├── nft-frontend/         # React NFT minting interface
 ├── assets/               # Icons and images
 ├── build/               # Build configuration
 ├── .github/workflows/   # CI/CD automation
@@ -225,6 +247,10 @@ This project is proprietary software owned exclusively by Hanh IO Company Limite
 ## 🚧 Roadmap
 
 ### Version 1.1.0
+- [x] **NFT Platform Implementation**: Complete ERC-721 NFT minting platform
+- [x] **Smart Contract Development**: CreatorAINFT contract with advanced features
+- [x] **Web Interface**: React-based NFT minting interface
+- [x] **Blockchain Integration**: Hardhat development environment
 - [ ] Real-time preview during generation
 - [ ] Additional model architectures
 - [ ] Plugin system for custom models

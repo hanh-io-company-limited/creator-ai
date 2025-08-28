@@ -13,7 +13,15 @@
     "build:win": "electron-builder --win",
     "build:all": "electron-builder --win --linux --mac",
     "dist": "npm run build:win",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "hardhat:compile": "hardhat compile",
+    "hardhat:test": "hardhat test",
+    "hardhat:node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "nft:dev": "cd nft-frontend && npm start",
+    "nft:build": "cd nft-frontend && npm run build",
+    "nft:install": "cd nft-frontend && npm install"
   },
   "keywords": [
     "ai",
@@ -24,7 +32,11 @@
     "offline"
   ],
   "dependencies": {
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.19.0",
+    "dotenv": "^16.3.0"
   },
   "devDependencies": {
     "electron": "^27.1.0",
