@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator AI</title>
+    <link rel="stylesheet" href="css/popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="icons/icon32.png" alt="Creator AI" class="logo-img">
+                <h1>Creator AI</h1>
+            </div>
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">Đang kết nối...</span>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="generation">
+                <span class="tab-icon">✨</span>
+                Tạo ảnh
+            </button>
+            <button class="nav-tab" data-tab="animation">
+                <span class="tab-icon">🎬</span>
+                Animation
+            </button>
+            <button class="nav-tab" data-tab="video">
+                <span class="tab-icon">🎥</span>
+                Video
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Image Generation Tab -->
+            <div class="tab-panel active" id="generation">
+                <div class="section">
+                    <h3>Tạo hình ảnh từ lời nhắc</h3>
+                    <p class="description">Sử dụng AI để tạo ra hình ảnh đẹp và chi tiết từ mô tả văn bản.</p>
+                    
+                    <div class="form-group">
+                        <label for="promptInput">Mô tả hình ảnh:</label>
+                        <textarea id="promptInput" placeholder="Nhập mô tả hình ảnh bạn muốn tạo..." rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="styleSelect">Phong cách:</label>
+                            <select id="styleSelect">
+                                <option value="realistic">Thực tế</option>
+                                <option value="anime">Anime</option>
+                                <option value="artistic">Nghệ thuật</option>
+                                <option value="portrait">Chân dung</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="resolutionSelect">Độ phân giải:</label>
+                            <select id="resolutionSelect">
+                                <option value="512x512">512x512</option>
+                                <option value="768x768">768x768</option>
+                                <option value="1024x1024">1024x1024</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary" id="generateBtn">
+                        <span class="btn-icon">✨</span>
+                        Tạo hình ảnh
+                    </button>
+                    
+                    <div class="progress-section" id="generationProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="generationProgressBar"></div>
+                        </div>
+                        <p class="progress-text">Đang xử lý với AI...</p>
+                    </div>
+                    
+                    <div class="result-section" id="generationResult" style="display: none;">
+                        <h4>Kết quả:</h4>
+                        <div class="result-image">
+                            <img id="generatedImage" alt="Generated Image">
+                            <div class="result-actions">
+                                <button class="btn-secondary" id="downloadImageBtn">Tải về</button>
+                                <button class="btn-secondary" id="regenerateBtn">Tạo lại</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Animation Tab -->
+            <div class="tab-panel" id="animation">
+                <div class="section">
+                    <h3>Tạo Animation</h3>
+                    <p class="description">Chuyển đổi hình ảnh tĩnh thành animation sống động bằng AI.</p>
+                    
+                    <div class="form-group">
+                        <label for="imageUpload">Chọn hình ảnh:</label>
+                        <div class="file-upload-area" id="imageUploadArea">
+                            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                            <div class="upload-placeholder">
+                                <span class="upload-icon">📁</span>
+                                <p>Nhấp để chọn hình ảnh</p>
+                                <small>Hỗ trợ JPG, PNG, WEBP</small>
+                            </div>
+                        </div>
+                        <div class="uploaded-image" id="uploadedImagePreview" style="display: none;">
+                            <img id="previewImage" alt="Preview">
+                            <button class="remove-image" id="removeImageBtn">×</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="animationTypeSelect">Loại animation:</label>
+                        <select id="animationTypeSelect">
+                            <option value="lip_sync">Đồng bộ môi</option>
+                            <option value="head_movement">Chuyển động đầu</option>
+                            <option value="eye_blink">Chớp mắt</option>
+                            <option value="facial_expression">Biểu cảm khuôn mặt</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn-primary" id="createAnimationBtn" disabled>
+                        <span class="btn-icon">🎬</span>
+                        Tạo Animation
+                    </button>
+                    
+                    <div class="progress-section" id="animationProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="animationProgressBar"></div>
+                        </div>
+                        <p class="progress-text">Đang tạo animation...</p>
+                    </div>
+                    
+                    <div class="result-section" id="animationResult" style="display: none;">
+                        <h4>Kết quả:</h4>
+                        <div class="result-video">
+                            <video id="animationVideo" controls></video>
+                            <div class="result-actions">
+                                <button class="btn-secondary" id="downloadAnimationBtn">Tải về</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Tab -->
+            <div class="tab-panel" id="video">
+                <div class="section">
+                    <h3>Tạo Video</h3>
+                    <p class="description">Tạo video chuyên nghiệp với âm thanh và hiệu ứng.</p>
+                    
+                    <div class="form-group">
+                        <label for="videoSourceSelect">Nguồn video:</label>
+                        <select id="videoSourceSelect">
+                            <option value="">Chọn nguồn...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="voiceSelect">Giọng nói:</label>
+                        <select id="voiceSelect">
+                            <option value="female_vn">Nữ - Tiếng Việt</option>
+                            <option value="male_vn">Nam - Tiếng Việt</option>
+                            <option value="female_en">Female - English</option>
+                            <option value="male_en">Male - English</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="textInput">Văn bản để đọc:</label>
+                        <textarea id="textInput" placeholder="Nhập văn bản để tạo audio..." rows="4"></textarea>
+                    </div>
+                    
+                    <button class="btn-primary" id="createVideoBtn" disabled>
+                        <span class="btn-icon">🎥</span>
+                        Tạo Video
+                    </button>
+                    
+                    <div class="progress-section" id="videoProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="videoProgressBar"></div>
+                        </div>
+                        <p class="progress-text">Đang tạo video...</p>
+                    </div>
+                    
+                    <div class="result-section" id="videoResult" style="display: none;">
+                        <h4>Kết quả:</h4>
+                        <div class="result-video">
+                            <video id="finalVideo" controls></video>
+                            <div class="result-actions">
+                                <button class="btn-secondary" id="downloadVideoBtn">Tải về</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>🎨 Creator AI Extension v1.0.0</p>
+            <p class="copyright">© 2024 Hanh IO Company Limited</p>
+        </div>
+    </div>
+
+    <script src="js/error-handler.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/popup.js"></script>
+</body>
+</html>
