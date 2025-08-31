@@ -1,0 +1,47 @@
+{
+  "name": "creator-ai-edge-extension",
+  "version": "1.0.0",
+  "description": "Edge extension for Creator AI platform - Generate images, animations, and videos using AI",
+  "author": "Hanh IO Company Limited",
+  "license": "PROPRIETARY",
+  "homepage": "https://hanh-io.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hanh-io-company-limited/creator-ai.git",
+    "directory": "edge-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/hanh-io-company-limited/creator-ai/issues"
+  },
+  "keywords": [
+    "edge-extension",
+    "ai",
+    "content-creation",
+    "image-generation",
+    "animation",
+    "video-creation",
+    "creator-ai"
+  ],
+  "scripts": {
+    "build": "echo 'Extension is ready to use'",
+    "pack": "zip -r creator-ai-extension.zip . -x '*.git*' '*.DS_Store*' 'node_modules/*' 'package*.json'",
+    "test": "echo 'No tests specified'",
+    "validate": "echo 'Validating extension structure...' && node validate.js"
+  },
+  "devDependencies": {},
+  "engines": {
+    "edge": ">=88.0.0"
+  },
+  "manifest": {
+    "version": 3,
+    "permissions": [
+      "activeTab",
+      "storage",
+      "background"
+    ],
+    "host_permissions": [
+      "http://localhost:*/*",
+      "http://127.0.0.1:*/*"
+    ]
+  }
+}
